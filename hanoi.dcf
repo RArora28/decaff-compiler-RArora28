@@ -6,6 +6,7 @@ class Program {
         }
         f(n - 1, f, e, t);
         f(n - 1, e, t, f);
+        return; 
     }
     int main() {
         int n;
