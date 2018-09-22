@@ -1,6 +1,7 @@
 class Program {
 	int main() {
-		int n = read(); 
+		int n;
+		n = read(); 
 		int arr[n]; 
 		for (i = 0, n) {
 			arr[i] = read(); 
