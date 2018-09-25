@@ -1,0 +1,24 @@
+/* simplest version of calculator */ 
+%{
+	#include <stdio.h>	
+%} 
+
+/* token declaration */ 
+%token CLASS 
+%token CALLOUT
+%token VOID INT BOOLEAN TRUE FALSE 
+%token BREAK CONTINUE RETURN 
+%token FOR 
+%token IF ELSE 
+%token NUM
+%token ID 
+%token ADD SUBTRACT MULTIPLY DIVIDE 
+%token EQUAL PLUS_EQUAL MINUS_EQUAL EQUALITY 
+%token NOT_EQUAL GREATER_EQUAL LESS_EQUAL GREATER LESS 
+%token CONDITIONAL_AND CONDITIONAL_OR
+%token NOT ABSOLUTE MODULO 
+%token CURLY_OPEN CURLY_CLOSE 
+%token SQUARE_OPEN SQUARE_CLOSE 
+%token NORMAL_OPEN NORMAL_CLOSE 
+%token SEMI_COLON COMMA 
+
