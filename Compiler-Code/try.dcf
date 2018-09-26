@@ -1,5 +1,5 @@
 class Program {
-	int F (int a, int b, boolean c) 
-	void Y (int a, int b, int c)
-
+	void main() {
+		x = a + b * c; 
+	}
 }

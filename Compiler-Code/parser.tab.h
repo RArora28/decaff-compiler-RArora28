@@ -77,8 +77,8 @@
      CURLY_CLOSE = 293,
      SQUARE_OPEN = 294,
      SQUARE_CLOSE = 295,
-     NORMAL_OPEN = 296,
-     NORMAL_CLOSE = 297,
+     OPEN = 296,
+     CLOSE = 297,
      SEMI_COLON = 298,
      COMMA = 299
    };
@@ -122,8 +122,8 @@
 #define CURLY_CLOSE 293
 #define SQUARE_OPEN 294
 #define SQUARE_CLOSE 295
-#define NORMAL_OPEN 296
-#define NORMAL_CLOSE 297
+#define OPEN 296
+#define CLOSE 297
 #define SEMI_COLON 298
 #define COMMA 299
 

@@ -2,65 +2,70 @@
 	#include "parser.tab.h"
 %}
 
-digit [0-9]
-
+digit 		[0-9]
+alpha 		[a-zA-Z]
+alpha_num 	[0-9a-zA-Z]
+hex_alpha 	[0-9a-fA-F]
+char 		[ -!]|[#-&]|[(-\[]|[\]-~]|[\\"]|[\\']|[\\\\]|[\t]|[\n]
+character 	\'{char}\'
+delim 		[ \t\n]+
 
 %% 
 
-"program"   { return PROGRAM; 	}
-"class" 	{ return CLASS; 	}
+"Program"   			{ return PROGRAM; 			}
+"class" 				{ return CLASS; 			}
 
-"callout" 	{ return CALLOUT; }
+"callout" 				{ return CALLOUT; 			}
 
-"void" 		{ return VOID; }
-"int" 		{ return INT; }
-"boolean" 	{ return BOOLEAN; }
-"true" 		{ return TRUE; }
-"false" 	{ return FALSE; }
+"void" 					{ return VOID; 				}
+"int" 					{ return INT; 				}
+"boolean" 				{ return BOOLEAN; 			}
+"true" 					{ return TRUE; 				}
+"false" 				{ return FALSE; 			}
 
-"break" 	{ return BREAK; }
-"continue" 	{ return CONTINUE; }
-"return" 	{ return RETURN; }
+"break" 				{ return BREAK; 			}
+"continue" 				{ return CONTINUE; 			}
+"return" 				{ return RETURN; 			}
 
-"for" 	{ return FOR; }
+"for" 					{ return FOR; 				}
 
-"if" 	{ return IF; }
-"else" 	{ return ELSE; }
+"if" 					{ return IF; 				}
+"else" 					{ return ELSE;	 			}
 
-[0-9]+		{ yylval = atoi(yytext); return NUM; }
-[A-Za-z]+   { return ID;}
+digit+					{ return NUM; 				}
+{alpha}{alpha_num}*   	{ return ID;				}
 
-"+"		{ return ADD; }
-"-"		{ return SUBTRACT; }
-"*"		{ return MULTIPLY; }
-"/"		{ return DIVIDE; }
+"+"						{ return ADD; 				}
+"-"						{ return SUBTRACT; 			}
+"*"						{ return MULTIPLY; 			}
+"/"						{ return DIVIDE; 			}
+"="						{ return EQUAL; 			}
+"+="    				{ return PLUS_EQUAL; 		}
+"-="    				{ return MINUS_EQUAL; 		}
 
-"="		{ return EQUAL; }
-"+="    { return PLUS_EQUAL; }
-"-="    { return MINUS_EQUAL; }
-"=="    { return EQUALITY; }
-"!="    { return NOT_EQUAL; }
-">="    { return GREATER_EQUAL; }
-"<="    { return LESS_EQUAL; }
-">"     { return GREATER; }
-"<"     { return LESS; }
-"&&"    { return CONDITIONAL_AND; }
-"||"    { return CONDITIONAL_OR; }
-"!"     { return NOT; }
-"|"     { return ABSOLUTE; }
-"%"     { return MODULO; }
+"=="    				{ return EQUALITY; 			}
+"!="    				{ return NOT_EQUAL; 		}
+">="    				{ return GREATER_EQUAL; 	}
+"<="    				{ return LESS_EQUAL; 		}
+">"     				{ return GREATER; 			}
+"<"     				{ return LESS; 				}
+"&&"    				{ return CONDITIONAL_AND; 	}
+"||"    				{ return CONDITIONAL_OR; 	}
+"!"     				{ return NOT; 				}
+"|"     				{ return ABSOLUTE; 			}
+"%"     				{ return MODULO; 			}
 
-"("     { return NORMAL_OPEN;  }
-")"     { return NORMAL_CLOSE; }
-"{"     { return CURLY_OPEN;   }
-"}"     { return CURLY_CLOSE;  }
-"["     { return SQUARE_OPEN;  }
-"]"     { return SQUARE_CLOSE; }
+"("     				{ return OPEN;  			}
+")"     				{ return CLOSE;	 			}
+"{"     				{ return CURLY_OPEN;   		}
+"}"     				{ return CURLY_CLOSE;  		}
+"["     				{ return SQUARE_OPEN;  		}
+"]"     				{ return SQUARE_CLOSE; 		}
 
-";"     { return SEMI_COLON; }
-","     { return COMMA; }
+";"     				{ return SEMI_COLON; 		}
+","     				{ return COMMA; 			}
 
-\n      {}
-[ \t]+  { /* abcd */ }
-.	{ printf("Unidentified character %c.\n", *yytext); }
+{delim}    				{}
+.						{ printf("Unidentified character %c.\n", *yytext); }
+
 %%
