@@ -34,6 +34,7 @@ delim 		[ \t\n]+
 
 digit+					{ return NUM; 				}
 {alpha}{alpha_num}*   	{ return ID;				}
+{char}* 				{ return STRING; 			}
 
 "+"						{ return ADD; 				}
 "-"						{ return SUBTRACT; 			}

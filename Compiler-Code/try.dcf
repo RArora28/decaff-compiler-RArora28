@@ -1,5 +1,18 @@
 class Program {
 	void main() {
-		x = a + b * c; 
+		if (a > b) {
+			int y, x;
+			int a; 
+			boolean c;
+		}
+		for i = a, n {
+			p = -(b + c/true) + (a==b || c!=d) + (-b+-c)-d;				
+			if (r > t) {
+				break; 
+			} else {
+				continue; 
+			}
+		}
+		return y; 
 	}
 }
