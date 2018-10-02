@@ -54,33 +54,35 @@
      IF = 270,
      ELSE = 271,
      NUM = 272,
-     ID = 273,
-     ADD = 274,
-     SUBTRACT = 275,
-     MULTIPLY = 276,
-     DIVIDE = 277,
-     EQUAL = 278,
-     PLUS_EQUAL = 279,
-     MINUS_EQUAL = 280,
-     EQUALITY = 281,
-     NOT_EQUAL = 282,
-     GREATER_EQUAL = 283,
-     LESS_EQUAL = 284,
-     GREATER = 285,
-     LESS = 286,
-     CONDITIONAL_AND = 287,
-     CONDITIONAL_OR = 288,
-     NOT = 289,
-     ABSOLUTE = 290,
-     MODULO = 291,
-     CURLY_OPEN = 292,
-     CURLY_CLOSE = 293,
-     SQUARE_OPEN = 294,
-     SQUARE_CLOSE = 295,
-     OPEN = 296,
-     CLOSE = 297,
-     SEMI_COLON = 298,
-     COMMA = 299
+     HEX_DIGIT = 273,
+     STRING = 274,
+     ID = 275,
+     ADD = 276,
+     SUBTRACT = 277,
+     MULTIPLY = 278,
+     DIVIDE = 279,
+     EQUAL = 280,
+     PLUS_EQUAL = 281,
+     MINUS_EQUAL = 282,
+     EQUALITY = 283,
+     NOT_EQUAL = 284,
+     GREATER_EQUAL = 285,
+     LESS_EQUAL = 286,
+     GREATER = 287,
+     LESS = 288,
+     CONDITIONAL_AND = 289,
+     CONDITIONAL_OR = 290,
+     NOT = 291,
+     ABSOLUTE = 292,
+     MODULO = 293,
+     CURLY_OPEN = 294,
+     CURLY_CLOSE = 295,
+     SQUARE_OPEN = 296,
+     SQUARE_CLOSE = 297,
+     OPEN = 298,
+     CLOSE = 299,
+     SEMI_COLON = 300,
+     COMMA = 301
    };
 #endif
 /* Tokens.  */
@@ -99,33 +101,35 @@
 #define IF 270
 #define ELSE 271
 #define NUM 272
-#define ID 273
-#define ADD 274
-#define SUBTRACT 275
-#define MULTIPLY 276
-#define DIVIDE 277
-#define EQUAL 278
-#define PLUS_EQUAL 279
-#define MINUS_EQUAL 280
-#define EQUALITY 281
-#define NOT_EQUAL 282
-#define GREATER_EQUAL 283
-#define LESS_EQUAL 284
-#define GREATER 285
-#define LESS 286
-#define CONDITIONAL_AND 287
-#define CONDITIONAL_OR 288
-#define NOT 289
-#define ABSOLUTE 290
-#define MODULO 291
-#define CURLY_OPEN 292
-#define CURLY_CLOSE 293
-#define SQUARE_OPEN 294
-#define SQUARE_CLOSE 295
-#define OPEN 296
-#define CLOSE 297
-#define SEMI_COLON 298
-#define COMMA 299
+#define HEX_DIGIT 273
+#define STRING 274
+#define ID 275
+#define ADD 276
+#define SUBTRACT 277
+#define MULTIPLY 278
+#define DIVIDE 279
+#define EQUAL 280
+#define PLUS_EQUAL 281
+#define MINUS_EQUAL 282
+#define EQUALITY 283
+#define NOT_EQUAL 284
+#define GREATER_EQUAL 285
+#define LESS_EQUAL 286
+#define GREATER 287
+#define LESS 288
+#define CONDITIONAL_AND 289
+#define CONDITIONAL_OR 290
+#define NOT 291
+#define ABSOLUTE 292
+#define MODULO 293
+#define CURLY_OPEN 294
+#define CURLY_CLOSE 295
+#define SQUARE_OPEN 296
+#define SQUARE_CLOSE 297
+#define OPEN 298
+#define CLOSE 299
+#define SEMI_COLON 300
+#define COMMA 301
 
 
 

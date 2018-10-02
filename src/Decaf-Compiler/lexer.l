@@ -7,8 +7,10 @@ alpha 		[a-zA-Z]
 alpha_num 	[0-9a-zA-Z]
 hex_alpha 	[0-9a-fA-F]
 char 		[ -!]|[#-&]|[(-\[]|[\]-~]|[\\"]|[\\']|[\\\\]|[\t]|[\n]
-character 	\'{char}\'
 delim 		[ \t\n]+
+single_character       	\'{char}\'
+string            		\"{char}*\"
+hex_digit    0x[0-9a-fA-F]+
 
 %% 
 
@@ -17,56 +19,56 @@ delim 		[ \t\n]+
 
 "callout" 				{ return CALLOUT; 			}
 
-"void" 					{ return VOID; 				}
-"int" 					{ return INT; 				}
-"boolean" 				{ return BOOLEAN; 			}
-"true" 					{ return TRUE; 				}
-"false" 				{ return FALSE; 			}
+"void" 					{ printf("%s ", yytext); return VOID; 				}
+"int" 					{ printf("%s ", yytext); return INT; 				}
+"boolean" 				{ printf("%s ", yytext); return BOOLEAN; 			}
+"true" 					{ printf("%s ", yytext); return TRUE; 				}
+"false" 				{ printf("%s ", yytext); return FALSE; 			}
 
-"break" 				{ return BREAK; 			}
-"continue" 				{ return CONTINUE; 			}
-"return" 				{ return RETURN; 			}
+"break" 				{ printf("%s ", yytext); return BREAK; 			}
+"continue" 				{ printf("%s ", yytext); return CONTINUE; 			}
+"return" 				{ printf("%s ", yytext); return RETURN; 			}
 
-"for" 					{ return FOR; 				}
+"for" 					{ printf("%s ", yytext); return FOR; 				}
 
-"if" 					{ return IF; 				}
-"else" 					{ return ELSE;	 			}
+"if" 					{ printf("%s ", yytext); return IF; 				}
+"else" 					{ printf("%s ", yytext); return ELSE;	 			}
 
-digit+					{ return NUM; 				}
-{alpha}{alpha_num}*   	{ return ID;				}
-{char}* 				{ return STRING; 			}
+{digit}+				{ printf("%s ", yytext); return NUM; 				}
+{alpha}{alpha_num}*   	{ printf("%s ", yytext); return ID;				}
+{string}				{ printf("%s ", yytext); return STRING; 			}
+{hex_digit}				{ printf("%s ", yytext); return HEX_DIGIT;			}
+"+"						{ printf("%s ", yytext); return ADD; 				}
+"-"						{ printf("%s ", yytext); return SUBTRACT; 			}
+"*"						{ printf("%s ", yytext); return MULTIPLY; 			}
+"/"						{ printf("%s ", yytext); return DIVIDE; 			}
+"="						{ printf("%s ", yytext); return EQUAL; 			}
+"+="    				{ printf("%s ", yytext); return PLUS_EQUAL; 		}
+"-="    				{ printf("%s ", yytext); return MINUS_EQUAL; 		}
 
-"+"						{ return ADD; 				}
-"-"						{ return SUBTRACT; 			}
-"*"						{ return MULTIPLY; 			}
-"/"						{ return DIVIDE; 			}
-"="						{ return EQUAL; 			}
-"+="    				{ return PLUS_EQUAL; 		}
-"-="    				{ return MINUS_EQUAL; 		}
+"=="    				{ printf("%s ", yytext); return EQUALITY; 			}
+"!="    				{ printf("%s ", yytext); return NOT_EQUAL; 		}
+">="    				{ printf("%s ", yytext); return GREATER_EQUAL; 	}
+"<="    				{ printf("%s ", yytext); return LESS_EQUAL; 		}
+">"     				{ printf("%s ", yytext); return GREATER; 			}
+"<"     				{ printf("%s ", yytext); return LESS; 				}
+"&&"    				{ printf("%s ", yytext); return CONDITIONAL_AND; 	}
+"||"    				{ printf("%s ", yytext); return CONDITIONAL_OR; 	}
+"!"     				{ printf("%s ", yytext); return NOT; 				}
+"|"     				{ printf("%s ", yytext); return ABSOLUTE; 			}
+"%"     				{ printf("%s ", yytext); return MODULO; 			}
 
-"=="    				{ return EQUALITY; 			}
-"!="    				{ return NOT_EQUAL; 		}
-">="    				{ return GREATER_EQUAL; 	}
-"<="    				{ return LESS_EQUAL; 		}
-">"     				{ return GREATER; 			}
-"<"     				{ return LESS; 				}
-"&&"    				{ return CONDITIONAL_AND; 	}
-"||"    				{ return CONDITIONAL_OR; 	}
-"!"     				{ return NOT; 				}
-"|"     				{ return ABSOLUTE; 			}
-"%"     				{ return MODULO; 			}
+"("     				{ printf("%s ", yytext); return OPEN;  			}
+")"     				{ printf("%s ", yytext); return CLOSE;	 			}
+"{"     				{ printf("%s ", yytext); return CURLY_OPEN;   		}
+"}"     				{ printf("%s ", yytext); return CURLY_CLOSE;  		}
+"["     				{ printf("%s ", yytext); return SQUARE_OPEN;  		}
+"]"     				{ printf("%s ", yytext); return SQUARE_CLOSE; 		}
 
-"("     				{ return OPEN;  			}
-")"     				{ return CLOSE;	 			}
-"{"     				{ return CURLY_OPEN;   		}
-"}"     				{ return CURLY_CLOSE;  		}
-"["     				{ return SQUARE_OPEN;  		}
-"]"     				{ return SQUARE_CLOSE; 		}
-
-";"     				{ return SEMI_COLON; 		}
-","     				{ return COMMA; 			}
+";"     				{ printf("%s ", yytext); return SEMI_COLON; 		}
+","     				{ printf("%s ", yytext); return COMMA; 			}
 
 {delim}    				{}
+"//".*					{} 
 .						{ printf("Unidentified character %c.\n", *yytext); }
-
 %%
