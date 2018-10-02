@@ -12,7 +12,8 @@
 %token FOR 
 %token IF ELSE 
 %token NUM
-%token HEX_DIGIT
+%token HEX_LITERAL
+%token CHAR_LITERAL
 %token STRING 
 %token ID 
 %token ADD SUBTRACT MULTIPLY DIVIDE 
@@ -37,16 +38,16 @@ var_type: INT | BOOLEAN;
 /* Field Declaration */ 
 field_declarations: /* Epsilon */ | field_declarations field_declaration SEMI_COLON; 
 field_declaration: var_type field_names; 
-field_names: ID | ID SQUARE_OPEN SQUARE_CLOSE | field_names COMMA ID; 
+field_names: ID | ID SQUARE_OPEN literal SQUARE_CLOSE | field_names COMMA ID |
+	field_names COMMA ID SQUARE_OPEN literal SQUARE_CLOSE ;
 
 /* Declaration for a method */ 
 method_declarations: /* Epsilon */| method_declaration method_declarations; 
-method_declaration: 
-	VOID ID OPEN parameter_declarations CLOSE code_block 
+method_declaration: VOID ID OPEN parameter_declarations CLOSE code_block 
 	| var_type ID OPEN parameter_declarations CLOSE code_block   ; 
 parameter_declarations: /* Epsilon */ | non_empty_parameter_declaration;
 non_empty_parameter_declaration: 
-	parameter_declaration | parameter_declaration COMMA non_empty_parameter_declaration ; 
+	parameter_declaration | parameter_declaration COMMA 	non_empty_parameter_declaration ; 
 parameter_declaration: var_type ID; 
 
 /* Block of code inside a method */ 
@@ -54,7 +55,7 @@ code_block: CURLY_OPEN block CURLY_CLOSE;
 block: /* Epsilon */ | var_declarations statements; 
 
 /* Variable Declarations inside a code block */ 
-var_declarations:  /* Epsilon */ | var_declaration var_declarations SEMI_COLON ; 
+var_declarations:  /* Epsilon */ | var_declarations var_declaration SEMI_COLON ; 
 var_declaration: var_type var_names ; 
 var_names: ID | ID COMMA var_names ; 
 
@@ -76,14 +77,14 @@ location: ID | ID SQUARE_OPEN expr SQUARE_CLOSE ;
 
 /* General Method Call */ 
 method_call: ID OPEN method_call_args CLOSE 
-	| CALLOUT OPEN string_literal callout_args CLOSE ; 
+	| CALLOUT OPEN string_literal CLOSE 
+	| CALLOUT OPEN string_literal COMMA non_empty_callout_args CLOSE; 
+
 method_call_args: /* Epsilon */ | non_empty_method_call_args;
 non_empty_method_call_args: 
 	method_call_arg | non_empty_method_call_args COMMA method_call_arg; 
 method_call_arg: expr; 
 
-/* Callout */ 
-callout_args: /* Epsilon */ | non_empty_callout_args; 
 non_empty_callout_args: callout_arg | non_empty_callout_args COMMA callout_arg; 
 callout_arg: expr | string_literal;
 
@@ -106,8 +107,9 @@ eq_op: 		EQUALITY | NOT_EQUAL;
 cond_op: 	CONDITIONAL_AND | CONDITIONAL_OR; 
 
 /* All literals in the grammar */ 
-literal: 		string_literal | bool_literal | int_literal; 
-int_literal: 	NUM | HEX_DIGIT; 
+literal: 		char_literal | bool_literal | int_literal; 
+char_literal: 	CHAR_LITERAL; 
+int_literal: 	NUM | HEX_LITERAL; 
 bool_literal:	TRUE | FALSE; 
 string_literal: STRING; 
 %%

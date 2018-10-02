@@ -54,35 +54,36 @@
      IF = 270,
      ELSE = 271,
      NUM = 272,
-     HEX_DIGIT = 273,
-     STRING = 274,
-     ID = 275,
-     ADD = 276,
-     SUBTRACT = 277,
-     MULTIPLY = 278,
-     DIVIDE = 279,
-     EQUAL = 280,
-     PLUS_EQUAL = 281,
-     MINUS_EQUAL = 282,
-     EQUALITY = 283,
-     NOT_EQUAL = 284,
-     GREATER_EQUAL = 285,
-     LESS_EQUAL = 286,
-     GREATER = 287,
-     LESS = 288,
-     CONDITIONAL_AND = 289,
-     CONDITIONAL_OR = 290,
-     NOT = 291,
-     ABSOLUTE = 292,
-     MODULO = 293,
-     CURLY_OPEN = 294,
-     CURLY_CLOSE = 295,
-     SQUARE_OPEN = 296,
-     SQUARE_CLOSE = 297,
-     OPEN = 298,
-     CLOSE = 299,
-     SEMI_COLON = 300,
-     COMMA = 301
+     HEX_LITERAL = 273,
+     CHAR_LITERAL = 274,
+     STRING = 275,
+     ID = 276,
+     ADD = 277,
+     SUBTRACT = 278,
+     MULTIPLY = 279,
+     DIVIDE = 280,
+     EQUAL = 281,
+     PLUS_EQUAL = 282,
+     MINUS_EQUAL = 283,
+     EQUALITY = 284,
+     NOT_EQUAL = 285,
+     GREATER_EQUAL = 286,
+     LESS_EQUAL = 287,
+     GREATER = 288,
+     LESS = 289,
+     CONDITIONAL_AND = 290,
+     CONDITIONAL_OR = 291,
+     NOT = 292,
+     ABSOLUTE = 293,
+     MODULO = 294,
+     CURLY_OPEN = 295,
+     CURLY_CLOSE = 296,
+     SQUARE_OPEN = 297,
+     SQUARE_CLOSE = 298,
+     OPEN = 299,
+     CLOSE = 300,
+     SEMI_COLON = 301,
+     COMMA = 302
    };
 #endif
 /* Tokens.  */
@@ -101,35 +102,36 @@
 #define IF 270
 #define ELSE 271
 #define NUM 272
-#define HEX_DIGIT 273
-#define STRING 274
-#define ID 275
-#define ADD 276
-#define SUBTRACT 277
-#define MULTIPLY 278
-#define DIVIDE 279
-#define EQUAL 280
-#define PLUS_EQUAL 281
-#define MINUS_EQUAL 282
-#define EQUALITY 283
-#define NOT_EQUAL 284
-#define GREATER_EQUAL 285
-#define LESS_EQUAL 286
-#define GREATER 287
-#define LESS 288
-#define CONDITIONAL_AND 289
-#define CONDITIONAL_OR 290
-#define NOT 291
-#define ABSOLUTE 292
-#define MODULO 293
-#define CURLY_OPEN 294
-#define CURLY_CLOSE 295
-#define SQUARE_OPEN 296
-#define SQUARE_CLOSE 297
-#define OPEN 298
-#define CLOSE 299
-#define SEMI_COLON 300
-#define COMMA 301
+#define HEX_LITERAL 273
+#define CHAR_LITERAL 274
+#define STRING 275
+#define ID 276
+#define ADD 277
+#define SUBTRACT 278
+#define MULTIPLY 279
+#define DIVIDE 280
+#define EQUAL 281
+#define PLUS_EQUAL 282
+#define MINUS_EQUAL 283
+#define EQUALITY 284
+#define NOT_EQUAL 285
+#define GREATER_EQUAL 286
+#define LESS_EQUAL 287
+#define GREATER 288
+#define LESS 289
+#define CONDITIONAL_AND 290
+#define CONDITIONAL_OR 291
+#define NOT 292
+#define ABSOLUTE 293
+#define MODULO 294
+#define CURLY_OPEN 295
+#define CURLY_CLOSE 296
+#define SQUARE_OPEN 297
+#define SQUARE_CLOSE 298
+#define OPEN 299
+#define CLOSE 300
+#define SEMI_COLON 301
+#define COMMA 302
 
 
 

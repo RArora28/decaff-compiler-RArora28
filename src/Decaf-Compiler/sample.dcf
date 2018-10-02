@@ -1,9 +1,10 @@
 class Program {
-      int x,y;
+      int t, y[10], x;
       int k,x;
       boolean c;
-      void justgone(int x) {
+      int justgone(int x) {
       
+      int x,y;
       boolean dsadsadsa;
       x=-k/true+(!(y+5*k+3))%4+(k>=4)+(k<3) + ((r+2==1) && (k==3 || y==4));
       if ( !(a==3 && k==2)  ) {
@@ -23,6 +24,7 @@ class Program {
       }
       break;
       continue;
+      a='a';
       for a = (-k/true+(!(y+5*k+3))%4) ,  ((r+2==1) && (k==3 || y==4)) {
       	int k,x;
       	k+=3;
@@ -34,17 +36,16 @@ class Program {
       	k+=3;
       	break;
       continue;
-      for a = (-k/true+(!(y+5*k+3))%4) , ((r+2==1) && (k==3 || y==4)) {
+      for a = (-k/true+(!(y+5*k+3))%4) ,  ((r+2==1) && (k==3 || y==4)) {
       	int k,x;
       	k+=3;
       	x=-k/true+(!(y+5*k+3))%4;
       	y+= ((r+2==1) && (k==3 || y==4));	
       }
       }
-      // hello
       tabahi();
       tabahi(a,-k/true+(!(y+5*k+3))%4,tabahi2());
-      callout("padfa", "adfaf", a + b);
+      callout("haggs","burrAh",(k==3 || y==4),'a',4,0xAb123,'b');
       return !((r+2==1) && (k==3 || y==4)); 
       }
 }

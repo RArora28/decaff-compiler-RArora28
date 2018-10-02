@@ -2,15 +2,16 @@
 	#include "parser.tab.h"
 %}
 
-digit 		[0-9]
-alpha 		[a-zA-Z]
-alpha_num 	[0-9a-zA-Z]
-hex_alpha 	[0-9a-fA-F]
-char 		[ -!]|[#-&]|[(-\[]|[\]-~]|[\\"]|[\\']|[\\\\]|[\t]|[\n]
-delim 		[ \t\n]+
-single_character       	\'{char}\'
-string            		\"{char}*\"
-hex_digit    0x[0-9a-fA-F]+
+digit [0-9]
+alpha [a-zA-Z]
+alpha_num [0-9a-zA-Z]
+hex_digit [0-9a-fA-F]
+single [\x20\x21\x23-\x26\x28-\x5b\x5d-\x7e]
+addons \\[nt\'\"\\]
+char {single}|{addons}
+character \'{char}\'
+string \"{char}*\"
+delim [ \t\n]+
 
 %% 
 
@@ -37,7 +38,8 @@ hex_digit    0x[0-9a-fA-F]+
 {digit}+				{ printf("%s ", yytext); return NUM; 				}
 {alpha}{alpha_num}*   	{ printf("%s ", yytext); return ID;				}
 {string}				{ printf("%s ", yytext); return STRING; 			}
-{hex_digit}				{ printf("%s ", yytext); return HEX_DIGIT;			}
+"0x"{hex_digit}+ 		{ printf("%s ", yytext); return HEX_LITERAL;			}
+{character}				{ printf("%s ", yytext); return CHAR_LITERAL;			}
 "+"						{ printf("%s ", yytext); return ADD; 				}
 "-"						{ printf("%s ", yytext); return SUBTRACT; 			}
 "*"						{ printf("%s ", yytext); return MULTIPLY; 			}
