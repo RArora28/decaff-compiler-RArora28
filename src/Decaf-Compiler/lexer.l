@@ -67,7 +67,7 @@ delim [ \t\n]+
 "["     				{ printf("%s ", yytext); return SQUARE_OPEN;  		}
 "]"     				{ printf("%s ", yytext); return SQUARE_CLOSE; 		}
 
-";"     				{ printf("%s ", yytext); return SEMI_COLON; 		}
+";"     				{ printf("%s\n", yytext); return SEMI_COLON; 		}
 ","     				{ printf("%s ", yytext); return COMMA; 			}
 
 {delim}    				{}

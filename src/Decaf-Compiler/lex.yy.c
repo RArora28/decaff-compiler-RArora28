@@ -1023,7 +1023,7 @@ YY_RULE_SETUP
 case 44:
 YY_RULE_SETUP
 #line 70 "lexer.l"
-{ printf("%s ", yytext); return SEMI_COLON; 		}
+{ printf("%s\n", yytext); return SEMI_COLON; 		}
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
