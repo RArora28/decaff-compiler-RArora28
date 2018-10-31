@@ -166,7 +166,12 @@
 /* Copy the first part of user declarations.  */
 #line 1 "parser.y"
 
-	#include <stdio.h>	
+	#include <bits/stdc++.h>	
+	#include "ast.h"
+	extern "C" int yylex();
+	extern "C" int yyparse();
+	extern "C" void yyerror(const char *s);
+	extern union Node yylval;
 
 
 /* Enabling traces.  */
@@ -200,7 +205,7 @@ typedef int YYSTYPE;
 
 
 /* Line 216 of yacc.c.  */
-#line 204 "parser.tab.c"
+#line 209 "parser.tab.c"
 
 #ifdef short
 # undef short
@@ -521,16 +526,16 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    32,    32,    36,    37,    42,    43,    46,    49,    50,
-      51,    52,    57,    58,    61,    62,    65,    66,    70,    71,
-      74,    79,    82,    83,    88,    89,    92,    95,    96,   101,
-     102,   105,   106,   107,   108,   109,   110,   111,   112,   115,
-     116,   119,   120,   123,   124,   129,   130,   131,   134,   135,
-     139,   140,   143,   146,   147,   150,   151,   154,   155,   156,
-     157,   158,   159,   160,   165,   166,   167,   170,   171,   172,
-     173,   176,   177,   178,   179,   180,   183,   184,   185,   186,
-     189,   190,   193,   194,   199,   200,   201,   204,   206,   207,
-     210,   211,   214
+       0,    39,    39,    44,    45,    50,    51,    54,    57,    58,
+      59,    60,    65,    66,    69,    70,    73,    74,    78,    79,
+      82,    87,    90,    91,    96,    97,   100,   103,   104,   109,
+     110,   113,   114,   115,   116,   117,   118,   119,   120,   123,
+     124,   127,   128,   131,   132,   137,   138,   139,   142,   143,
+     147,   148,   151,   154,   155,   158,   159,   162,   163,   164,
+     165,   166,   167,   168,   173,   174,   175,   178,   179,   180,
+     181,   184,   185,   186,   187,   188,   191,   192,   193,   194,
+     197,   198,   201,   202,   207,   208,   209,   212,   214,   215,
+     218,   219,   222
 };
 #endif
 
@@ -1564,9 +1569,19 @@ yyreduce:
   YY_REDUCE_PRINT (yyn);
   switch (yyn)
     {
-      
+        case 2:
+#line 40 "parser.y"
+    { (yyval.prog) = new program((yyvsp[(4) - (6)].fieldDecl)); ;}
+    break;
+
+  case 5:
+#line 50 "parser.y"
+    { (yyval.fieldDecl) = new fieldDeclarations(); ;}
+    break;
+
+
 /* Line 1267 of yacc.c.  */
-#line 1570 "parser.tab.c"
+#line 1585 "parser.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -1780,7 +1795,7 @@ yyreturn:
 }
 
 
-#line 217 "parser.y"
+#line 225 "parser.y"
 
 
 int main(int argc, char **argv) {
@@ -1788,8 +1803,8 @@ int main(int argc, char **argv) {
  	return 0; 
 }
 
-int yyerror(char *s) {
+void yyerror(const char *s) {
  	fprintf(stderr, "error: %s\n", s);
- 	return 0;
+ 	return;
 }
 

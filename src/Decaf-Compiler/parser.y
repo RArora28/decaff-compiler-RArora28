@@ -1,5 +1,10 @@
 %{
-	#include <stdio.h>	
+	#include <bits/stdc++.h>	
+	#include "ast.h"
+	extern "C" int yylex();
+	extern "C" int yyparse();
+	extern "C" void yyerror(const char *s);
+	extern union Node yylval;
 %} 
 
 /* token declaration */ 
@@ -26,32 +31,53 @@
 %token OPEN CLOSE 
 %token SEMI_COLON COMMA 
 
+%type <prog> program_declaration;
+%type <fieldDecls> field_declarations; 
+%type <fieldDecl> field_declaration; 
+%type <varType> var_type; 
+%type <field
 %%
 
 /* Outermost Match */ 
-program_declaration		: 	CLASS PROGRAM CURLY_OPEN field_declarations 									method_declarations CURLY_CLOSE; 
+program_declaration		: 	CLASS PROGRAM CURLY_OPEN field_declarations 									method_declarations CURLY_CLOSE
+							{ $$ = new program($4); }
 
-
+						; 
 /* Data types in grammar */ 
-var_type				: 	INT 
+var_type				: 	INT  	
+							{ $$ = new varType("int"); }
 						| 	BOOLEAN
+							{ $$ = new varType("boolean"); }
 						; 
 
 
 /* Field Declaration */ 
-field_declarations		: 	/* Epsilon */ 
+field_declarations		: 	/* Epsilon */ 	
+							{ $$ = new fieldDeclarations(); }
 						| 	field_declarations field_declaration SEMI_COLON
+							{ $$->add($2); }
 						;
 
 field_declaration 		: 	var_type field_names
+							{ $$ = new fieldDeclaration($1, $2); }
 						;
 
-field_names				: 	ID 
-						| 	ID SQUARE_OPEN literal SQUARE_CLOSE 
-						| 	field_names COMMA ID 
-						|	field_names COMMA ID SQUARE_OPEN literal 				SQUARE_CLOSE 
+field_names				: 	field_name 
+							{ 
+								$$ = new fieldNames(); 
+								$$->add($1); 
+							}
+						| 	field_names COMMA field_name
+							{ 
+								$$->add($3); 
+							}
+						
 						;
 
+field_name: 			: ID
+
+						| ID SQUARE OPEN literal SQUARE_CLOSE
+						; 
 
 /* Declaration for a method */ 
 method_declarations		: 	/* Epsilon */
@@ -221,7 +247,7 @@ int main(int argc, char **argv) {
  	return 0; 
 }
 
-int yyerror(char *s) {
+void yyerror(const char *s) {
  	fprintf(stderr, "error: %s\n", s);
- 	return 0;
+ 	return;
 }

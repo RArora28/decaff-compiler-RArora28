@@ -1,6 +1,4 @@
 class Program {
-	int a[a + 9];
-	void main() {
-		callout("printf", "%d", a + !b % k * y || t && t); 
-	}
+	int x, y;
+	int a, b; 
 }

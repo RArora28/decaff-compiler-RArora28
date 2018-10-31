@@ -1,4 +1,2 @@
 *.dcf 
-*.yy.c
-*.tab.c
-*.tab.h
+*.gch
