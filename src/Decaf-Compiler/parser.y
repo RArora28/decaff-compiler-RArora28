@@ -20,7 +20,7 @@
 %token HEX_LITERAL
 %token CHAR_LITERAL
 %token STRING 
-%token ID 
+%token <lit> 	ID
 %token ADD SUBTRACT MULTIPLY DIVIDE 
 %token EQUAL PLUS_EQUAL MINUS_EQUAL EQUALITY 
 %token NOT_EQUAL GREATER_EQUAL LESS_EQUAL GREATER LESS 
@@ -31,11 +31,12 @@
 %token OPEN CLOSE 
 %token SEMI_COLON COMMA 
 
-%type <prog> program_declaration;
-%type <fieldDecls> field_declarations; 
-%type <fieldDecl> field_declaration; 
-%type <varType> var_type; 
-%type <field
+%type <prog> 			program_declaration;
+%type <fieldDecls> 		field_declarations; 
+%type <fieldDecl> 		field_declaration; 
+%type <vType> 			var_type; 
+%type <fieldN> 			field_names; 
+%type <singleField> 	field_name;		
 %%
 
 /* Outermost Match */ 
@@ -74,9 +75,10 @@ field_names				: 	field_name
 						
 						;
 
-field_name: 			: ID
-
-						| ID SQUARE OPEN literal SQUARE_CLOSE
+field_name 				: 	ID 
+						  	{ $$ = new field($1); }
+						| 	ID SQUARE_OPEN literal SQUARE_CLOSE
+							{ $$ = new field($1); }
 						; 
 
 /* Declaration for a method */ 

@@ -6,20 +6,29 @@ union Node {
 	char *lit; 
 	class program* prog; 
 	class fieldDeclarations* fieldDecls; 
-	class fieldDeclaration* field
+	class fieldDeclaration* fieldDecl;
+	class fieldNames* fieldN; 
+	class field* singleField;
+	class varType* vType; 
 }; 
 
 typedef union Node YYSTYPE; 
 #define YYSTYPE_IS_DECLARED 1 
 
-class baseAstNode {
+class baseAstNode { 
 }; 
 
 class program: public baseAstNode {
 public:
-	class fieldDeclarations* fieldDecl; 
-	program(class fieldDeclarations* fieldDecl_);
+	class fieldDeclarations* fieldDecls; 
+	program(class fieldDeclarations* fieldDecls);
 };
+
+class varType: public baseAstNode {
+public: 
+	string type;  
+	varType(const string& type_); 
+}; 
 
 class fieldDeclarations: public baseAstNode {
 public: 
@@ -30,21 +39,22 @@ public:
 
 class fieldDeclaration: public baseAstNode {
 public:
-	class *varType type; 
-	vector < class *fieldName > list; 
-	fieldDeclaration(class varType* type_);
-	add(class *fieldName field);  
-}
+	class varType* type; 
+	class fieldNames* fNames;  
+	fieldDeclaration(class varType* type_, 
+					 class fieldNames* fNames_);
+}; 
 
-class varType: public baseAstNode {
+class fieldNames: public baseAstNode {
 public: 
-	string type;  
-	varType(const string& type_); 
-}
+	vector <class field*> fields; 
+	fieldNames(); 
+	void add(class field* field_); 
+};
 
-class fieldName: public baseAstNode {
+class field: public baseAstNode {
 public:
 	string name; 
-	int arraySize; 
-	fieldName(const string& name_, int arraySize_ = -1); 
-}
+	field(string name_); 
+}; 
+

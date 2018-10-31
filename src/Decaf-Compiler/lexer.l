@@ -18,18 +18,18 @@ delim [ \t\n]+
 
 %% 
 
-"Program"   			{ return PROGRAM; 									}
-"class" 				{ return CLASS; 									}
+"Program"   			{ return PROGRAM; 			}
+"class" 				{ return CLASS; 			}
 
-"callout" 				{ return CALLOUT; 									}
+"callout" 				{ return CALLOUT; 			}
 
 "void" 					{ return VOID; 				}
 "int" 					{ return INT; 				}
 "boolean" 				{ return BOOLEAN; 			}
 "true" 					{ return TRUE; 				}
-"false" 				{ return FALSE; 				}
+"false" 				{ return FALSE; 			}
 
-"break" 				{ return BREAK; 				}
+"break" 				{ return BREAK; 			}
 "continue" 				{ return CONTINUE; 			}
 "return" 				{ return RETURN; 			}
 
@@ -39,7 +39,8 @@ delim [ \t\n]+
 "else" 					{ return ELSE;	 			}
 
 {digit}+				{ return NUM; 				}
-{alpha}{alpha_num}*   	{ return ID;					}
+{alpha}{alpha_num}*   	{ yylval.lit = strdup(yytext); 
+						return ID;				 	}
 {string}				{ return STRING; 			}
 "0x"{hex_digit}+ 		{ return HEX_LITERAL;		}
 {character}				{ return CHAR_LITERAL;		}
@@ -47,13 +48,13 @@ delim [ \t\n]+
 "-"						{ return SUBTRACT; 			}
 "*"						{ return MULTIPLY; 			}
 "/"						{ return DIVIDE; 			}
-"="						{ return EQUAL; 				}
+"="						{ return EQUAL; 			}
 "+="    				{ return PLUS_EQUAL; 		}
 "-="    				{ return MINUS_EQUAL; 		}
 
 "=="    				{ return EQUALITY; 			}
-"!="    				{ return NOT_EQUAL; 			}
-">="    				{ return GREATER_EQUAL; 		}
+"!="    				{ return NOT_EQUAL; 		}
+">="    				{ return GREATER_EQUAL; 	}
 "<="    				{ return LESS_EQUAL; 		}
 ">"     				{ return GREATER; 			}
 "<"     				{ return LESS; 				}
@@ -63,7 +64,7 @@ delim [ \t\n]+
 "|"     				{ return ABSOLUTE; 			}
 "%"     				{ return MODULO; 			}
 
-"("     				{ return OPEN;  				}
+"("     				{ return OPEN;  			}
 ")"     				{ return CLOSE;	 			}
 "{"     				{ return CURLY_OPEN;   		}
 "}"     				{ return CURLY_CLOSE;  		}
@@ -71,9 +72,9 @@ delim [ \t\n]+
 "]"     				{ return SQUARE_CLOSE; 		}
 
 ";"     				{ return SEMI_COLON; 		}
-","     				{ return COMMA; 				}
+","     				{ return COMMA; 			}
 
-{delim}    				{													}
-"//".*					{													} 
+{delim}    				{}
+"//".*					{} 
 .						{ printf("Unidentified character %c.\n", *yytext); 	}
 %%
