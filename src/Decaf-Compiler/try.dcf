@@ -1,4 +1,17 @@
 class Program {
 	int x, y, z;
-	boolean t, y, u, i, o; 
+	boolean t, y, u, i, o;
+	int a[10];
+
+	void yeMeraFunctionChalega(int a, boolean b) {
+
+	}
+
+	int hello() {
+
+	} 
+
+	boolean takeAnotherFunction(boolean a, boolean c, boolean d, int x, int y) {
+
+	}
 }

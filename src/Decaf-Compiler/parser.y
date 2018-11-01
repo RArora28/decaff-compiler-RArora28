@@ -12,15 +12,16 @@
 %token CLASS 
 %token CALLOUT
 %token VOID INT BOOLEAN 
-%token TRUE FALSE 
+%token <boolLit> TRUE 
+%token <boolLit> FALSE 
 %token BREAK CONTINUE RETURN 
 %token FOR 
 %token IF ELSE 
-%token NUM
-%token HEX_LITERAL
-%token CHAR_LITERAL
-%token STRING 
-%token <lit> 	ID
+%token <intLit> NUM
+%token <intLit> HEX_LITERAL
+%token <strLit> CHAR_LITERAL
+%token <strLit> STRING 
+%token <keyword> ID
 %token ADD SUBTRACT MULTIPLY DIVIDE 
 %token EQUAL PLUS_EQUAL MINUS_EQUAL EQUALITY 
 %token NOT_EQUAL GREATER_EQUAL LESS_EQUAL GREATER LESS 
@@ -31,17 +32,33 @@
 %token OPEN CLOSE 
 %token SEMI_COLON COMMA 
 
+
 %type <prog> 			program_declaration;
+%type <vType> 			var_type; 
+
 %type <fieldDecls> 		field_declarations; 
 %type <fieldDecl> 		field_declaration; 
-%type <vType> 			var_type; 
 %type <fieldN> 			field_names; 
-%type <singleField> 	field_name;		
+%type <singleField> 	field_name;	
+
+%type <meDecls> method_declarations; 
+%type <meDecl> method_declaration; 
+%type <parDecls> parameter_declarations; 
+%type <nonEmpParDecl> non_empty_parameter_declaration; 
+%type <parDecl> parameter_declaration; 
+
+%type <codeBl> code_block; 
+
+%type <integerLit> 		int_literal;	
+%type <booleanLit> 		bool_literal;
+%type <characterLit> 	char_literal;		
+%type <stringLit> 		string_literal;	
+
 %%
 
 /* Outermost Match */ 
 program_declaration		: 	CLASS PROGRAM CURLY_OPEN field_declarations 									method_declarations CURLY_CLOSE
-							{ $$ = new program($4); }
+							{ $$ = new program($4, $5); }
 
 						; 
 /* Data types in grammar */ 
@@ -69,42 +86,67 @@ field_names				: 	field_name
 								$$->add($1); 
 							}
 						| 	field_names COMMA field_name
-							{ 
-								$$->add($3); 
-							}
-						
+							{ $$->add($3); }
 						;
 
 field_name 				: 	ID 
-						  	{ $$ = new field($1); }
-						| 	ID SQUARE_OPEN literal SQUARE_CLOSE
-							{ $$ = new field($1); }
+						  	{
+						  		class intLiteral* temp = new intLiteral(int(-1));  
+						  		$$ = new field($1, temp); 
+						  	}
+						| 	ID SQUARE_OPEN int_literal SQUARE_CLOSE
+							{ $$ = new field($1, $3); }
 						; 
 
 /* Declaration for a method */ 
 method_declarations		: 	/* Epsilon */
-						| 	method_declaration method_declarations
+							{ $$ = new methodDeclarations(); }
+						| 	method_declarations method_declaration
+							{ $$->add($2); }
 						; 
 
 method_declaration 		: 	VOID ID OPEN parameter_declarations CLOSE code_block 
+							{
+								class varType* temp = new varType("void");
+								$$ = new methodDeclaration(temp, $2, $4, $6); 
+							}
 						| 	var_type ID OPEN parameter_declarations CLOSE 			code_block   
+							{	
+								$$ = new methodDeclaration($1, $2, $4, $6); 	
+							}
 						; 
 
 parameter_declarations	: 	/* Epsilon */ 
+							{ $$ = new parameterDeclarations(NULL); }
 						| 	non_empty_parameter_declaration
+							{ $$ = new parameterDeclarations($1); }
 						;
 
 non_empty_parameter_declaration
 						: 	parameter_declaration 
-						| 	parameter_declaration COMMA 							non_empty_parameter_declaration 
+							{ 
+								$$ = new nonEmptyParDecl(); 
+								$$->add($1); 
+							}
+						| 	non_empty_parameter_declaration COMMA 
+							parameter_declaration
+							{
+								$$->add($3);  
+							}
 						; 
 
 parameter_declaration 	: 	var_type ID
+							{	
+								$$ = new parameterDeclaration($1, $2); 
+							}
 						; 
 
 
 /* Block of code inside a method */ 
 code_block				: 	CURLY_OPEN block CURLY_CLOSE
+							{
+								$$ = new codeBlock(); 
+							}
 						; 
 
 block 					: 	/* Epsilon */ 
@@ -229,17 +271,24 @@ literal 				: 	char_literal
 						| 	int_literal
 						;
 
-char_literal 			: 	CHAR_LITERAL;
+char_literal 			: 	CHAR_LITERAL
+							{ $$ = new charLiteral($1); }
+						;
 
-int_literal 			: 	NUM 
+int_literal 			: 	NUM
+							{ $$ = new intLiteral($1); 	} 
 						| 	HEX_LITERAL
+							{ $$ = new intLiteral($1); 	}
 						;
 
 bool_literal 			:	TRUE 
+							{ $$ = new boolLiteral($1); }
 						| 	FALSE
+							{ $$ = new boolLiteral($1); }
 						;
 
 string_literal 			: 	STRING
+							{ $$ = new stringLiteral($1); }
 						; 
 
 %%

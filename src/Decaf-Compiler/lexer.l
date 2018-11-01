@@ -26,9 +26,12 @@ delim [ \t\n]+
 "void" 					{ return VOID; 				}
 "int" 					{ return INT; 				}
 "boolean" 				{ return BOOLEAN; 			}
-"true" 					{ return TRUE; 				}
-"false" 				{ return FALSE; 			}
 
+"true" 					{ yylval.boolLit = true; 
+						  	return TRUE; 			}
+"false" 				{ yylval.boolLit = false;
+							return FALSE; 			}
+							
 "break" 				{ return BREAK; 			}
 "continue" 				{ return CONTINUE; 			}
 "return" 				{ return RETURN; 			}
@@ -38,12 +41,21 @@ delim [ \t\n]+
 "if" 					{ return IF; 				}
 "else" 					{ return ELSE;	 			}
 
-{digit}+				{ return NUM; 				}
-{alpha}{alpha_num}*   	{ yylval.lit = strdup(yytext); 
-						return ID;				 	}
-{string}				{ return STRING; 			}
-"0x"{hex_digit}+ 		{ return HEX_LITERAL;		}
-{character}				{ return CHAR_LITERAL;		}
+{digit}+				{ yylval.intLit = stoi(yytext); 
+							return NUM; 			}
+
+{alpha}{alpha_num}*   	{ yylval.keyword = strdup(yytext); 
+							return ID;				}
+
+{string}				{ yylval.strLit = strdup(yytext);
+						 	return STRING; 			}
+
+"0x"{hex_digit}+ 		{ yylval.intLit = stoi(yytext); 
+							return HEX_LITERAL;		}
+
+{character}				{ yylval.strLit = strdup(yytext); 
+						 	return CHAR_LITERAL;	}
+
 "+"						{ return ADD; 				}
 "-"						{ return SUBTRACT; 			}
 "*"						{ return MULTIPLY; 			}
