@@ -16,5 +16,12 @@ class Program {
 		int x; 
 		boolean y; 
 		int y; 
+		assignOperation = working;
+		if (a > 3) {
+			for a = 1, n {
+				a = c + b; 
+				a += d; 	
+			}
+		}
 	}
 }

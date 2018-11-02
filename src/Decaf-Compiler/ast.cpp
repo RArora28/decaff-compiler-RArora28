@@ -41,7 +41,6 @@ field::field(const string& name_, class intLiteral* size_) {
 methodDeclarations::methodDeclarations() {}
 void methodDeclarations::add(class methodDeclaration* methodDecl_) {
 	list.push_back(methodDecl_);
-	cout << "# methods: " << list.size() << endl;
 	return; 
 }
 methodDeclaration::methodDeclaration(class varType* returnType_, 
@@ -52,7 +51,6 @@ methodDeclaration::methodDeclaration(class varType* returnType_,
 	methodName = methodName_; 
 	params     = params_; 
 	code 	   = code_; 
-	cout << "methodName: " << methodName << endl;
 }
 parameterDeclarations::parameterDeclarations(class nonEmptyParDecl* nonEmptyParams_) {
 	nonEmptyParams = nonEmptyParams_; 
@@ -60,14 +58,12 @@ parameterDeclarations::parameterDeclarations(class nonEmptyParDecl* nonEmptyPara
 nonEmptyParDecl::nonEmptyParDecl() {} 
 void nonEmptyParDecl::add(class parameterDeclaration* param_) {
 	listParams.push_back(param_);
-	cout << "#params: " << listParams.size() << endl; 
 	return; 
 }
 parameterDeclaration::parameterDeclaration( class varType* type_,	
 											const string& name_) {
 	type = type_; 
 	name = name_;
-	cout << "type: " << type->type << ' ' << "name: " << name_ << endl;
 }
 
 
@@ -87,12 +83,47 @@ varDeclaration::varDeclaration(	class varType* type_,
 				  	 			class varNames* names_) {
 	type 	= type_; 
 	names 	= names_; 
-	cout << type->type << endl; 
 }
 varNames::varNames() {}
 void varNames::add(const string& name_) {
 	names.push_back(name_);
-	cout << name_ << endl; 
+}
+
+statements::statements() {} 
+void statements::add(class statement* st_) {
+	list.push_back(st_);
+}
+
+location::location(const string& name_) {
+	name = name_;
+}
+ 
+assignSt::assignSt(class location* loc_) {
+	loc = loc_;
+}
+ 
+ifSt::ifSt(	class codeBlock* bl_, 
+		 	class elseSt* eSt_) {
+	bl = bl_; 
+	eSt = eSt_;
+}
+
+elseSt::elseSt(class codeBlock* bl_) {
+	bl = bl_;
+}
+
+forSt::forSt(const string& var_,
+		  class codeBlock* bl_) {
+	var = var_; 
+	bl = bl_;
+}
+ 
+returnSt::returnSt(class returnVal* ret_) {
+	ret = ret_; 
+}
+
+terminalSt::terminalSt(const string& name_) {
+	name = name_;
 }
 
 intLiteral::intLiteral(int value_) {

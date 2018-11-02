@@ -53,8 +53,17 @@
 %type <varDecls> var_declarations;  
 %type <varDecl> var_declaration; 
 %type <varN> var_names; 
-%type <stmt> statements; 
+%type <stmts> statements; 
 
+%type <stmt> statement; 
+%type <Assign> assign_statement; 
+%type <If> if_statement; 
+%type <Else> else_statement;
+%type <For> for_statement; 
+%type <Return> return_statement; 
+%type <retVal> return_value; 
+%type <ter> terminal_statement; 
+%type <loc> location; 
 %type <integerLit> 		int_literal;	
 %type <booleanLit> 		bool_literal;
 %type <characterLit> 	char_literal;		
@@ -183,29 +192,62 @@ var_names				: 	ID
 
 /* Set of statements in a code block */ 
 statements				: 	/* Epsilon */
-						| 	statement statements
+							{ $$ = new statements() }
+						| 	statements statement
+							{ $$->add($2); }
 						; 
 
-statement 				:	location assign_op expr SEMI_COLON 
-						| 	method_call SEMI_COLON  
-						| 	IF OPEN expr CLOSE code_block possible_else 	
-						| 	FOR ID EQUAL expr COMMA expr code_block 
-						| 	RETURN return_value SEMI_COLON
-						| 	BREAK SEMI_COLON
-						| 	CONTINUE SEMI_COLON
-						| 	code_block /* Redudant rule */ 
+statement 				: 	assign_statement 		{ $$ = $1; }	
+						| 	method_call_statment 
+						| 	if_statement 			{ $$ = $1; }
+						|   for_statement 			{ $$ = $1; } 
+						| 	return_statement  		{ $$ = $1; } 
+						| 	terminal_statement 		{ $$ = $1; } 
+						/* | 	code_block				{ $$ = $1; } */ 
 						; 
 
-possible_else			:  	/* Epsilon */ 
-						| 	ELSE code_block
-						;
-
-return_value			: 	/* Epsilon */ 
-						| 	expr
-						;
+assign_statement		: 	location assign_op expr SEMI_COLON
+							{ $$ = new assignSt($1); } /* Fix 2nd, 3rd arg */ 
+						; 
 
 location				: 	ID 
+							{ $$ = new location($1); }
 						| 	ID SQUARE_OPEN expr SQUARE_CLOSE 
+							{ $$ = new location($1); } /* Fix 2nd arg */
+						; 
+
+method_call_statment 	: 	method_call SEMI_COLON
+						; 
+
+if_statement 			: 	IF OPEN expr CLOSE code_block else_statement 
+							{ $$ = new ifSt($5, $6); }
+							/* Fix 1st arg */ 
+						; 
+
+else_statement			:  	/* Epsilon */ 
+							{$$ = new elseSt(NULL); }
+						| 	ELSE code_block
+							{$$ = new elseSt($2); } // confirm this. 
+						;
+
+for_statement 			: 	FOR ID EQUAL expr COMMA expr code_block
+							{ $$ = new forSt($2, $7); } 
+						; 
+
+return_statement 		: 	RETURN return_value SEMI_COLON
+							{ $$ = new returnSt($2)}
+						
+						/* fix return val */ 
+return_value			: 	/* Epsilon */ 
+							{ $$ = new returnVal(); }
+						| 	expr
+							{ $$ = new returnVal(); }
+						;
+
+terminal_statement	 	: 	BREAK SEMI_COLON
+							{ $$ = new terminalSt("break");}
+						| 	CONTINUE SEMI_COLON
+							{ $$ = new terminalSt("continue"); }
 						; 
 
 

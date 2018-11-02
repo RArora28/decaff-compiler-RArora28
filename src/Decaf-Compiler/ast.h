@@ -7,7 +7,7 @@ union Node {
 	bool boolLit; 
 	char* strLit; 
 	char *keyword; 
-	
+
 	class program* prog; 
 	
 	class fieldDeclarations* fieldDecls; 
@@ -30,8 +30,16 @@ union Node {
 	class varDeclaration* varDecl; 
 	class varNames* varN; 
 
-	class statements* stmt; 
-
+	class statements* stmts;
+	class statement* stmt; 
+	class assignSt* Assign; 
+	class ifSt* If; 
+	class elseSt* Else; 
+	class forSt* For; 
+	class returnSt* Return; 
+	class returnVal* retVal; 
+	class terminalSt* ter; 
+	class location* loc; 
 	class intLiteral*  integerLit; 
 	class boolLiteral* booleanLit; 
 	class charLiteral*  characterLit; 
@@ -159,9 +167,66 @@ public:
 	void add(const string& name_); 
 };
 
-class statments: public	baseAstNode {
+
+class statements: public baseAstNode {
 public: 
+	vector <class statement*> list; 
+	statements(); 
+	void add(class statement* st_); 
 }; 
+
+class statement: public baseAstNode {
+public:
+	string label; 
+}; 
+
+class location: public baseAstNode {
+public: 
+	string name; 
+	location(const string& name_); 
+};
+
+class assignSt: public statement {
+public:
+	class location* loc; 
+	assignSt(class location* loc_);
+};
+
+class ifSt: public statement {
+public:
+	class codeBlock* bl; 
+	class elseSt* eSt; 
+	ifSt(class codeBlock* bl_, 
+		 class elseSt* eSt_); 
+}; 
+class elseSt: public baseAstNode {
+public: 
+	class codeBlock* bl; 
+	elseSt(class codeBlock* bl_);
+}; 
+
+class forSt: public statement {
+public:
+	string var; 
+	class codeBlock* bl;
+	forSt(const string& var_,
+		  class codeBlock* bl_); 
+}; 
+
+class returnSt: public statement {
+public:
+	class returnVal* ret; 
+	returnSt(class returnVal* ret_); 
+};
+class terminalSt: public statement {
+public:
+	string name; 
+	terminalSt(const string& name_); 
+}; 
+
+class returnVal: public baseAstNode {
+
+};
 
 class intLiteral: public baseAstNode {
 public:
