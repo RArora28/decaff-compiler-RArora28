@@ -71,8 +71,29 @@ parameterDeclaration::parameterDeclaration( class varType* type_,
 }
 
 
-codeBlock::codeBlock() {}
-
+codeBlock::codeBlock(class block* bl_) {
+	bl = bl_; 
+}
+block::block(varDeclarations* varDecls_, 
+		  	 statements* stmts_) {
+	varDecls = varDecls_; 
+	stmts 	 = stmts_; 
+}
+varDeclarations::varDeclarations() {}
+void varDeclarations::add(class varDeclaration* decl_) {
+	list.push_back(decl_);
+}
+varDeclaration::varDeclaration(	class varType* type_, 
+				  	 			class varNames* names_) {
+	type 	= type_; 
+	names 	= names_; 
+	cout << type->type << endl; 
+}
+varNames::varNames() {}
+void varNames::add(const string& name_) {
+	names.push_back(name_);
+	cout << name_ << endl; 
+}
 
 intLiteral::intLiteral(int value_) {
 	value = value_;

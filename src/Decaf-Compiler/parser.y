@@ -48,6 +48,12 @@
 %type <parDecl> parameter_declaration; 
 
 %type <codeBl> code_block; 
+%type <Bl> block; 
+
+%type <varDecls> var_declarations;  
+%type <varDecl> var_declaration; 
+%type <varN> var_names; 
+%type <stmt> statements; 
 
 %type <integerLit> 		int_literal;	
 %type <booleanLit> 		bool_literal;
@@ -144,26 +150,34 @@ parameter_declaration 	: 	var_type ID
 
 /* Block of code inside a method */ 
 code_block				: 	CURLY_OPEN block CURLY_CLOSE
-							{
-								$$ = new codeBlock(); 
-							}
+							{ $$ = new codeBlock($2); }
 						; 
 
 block 					: 	/* Epsilon */ 
+							{ $$ = new block(NULL, NULL); }
 						| 	var_declarations statements
+							{ $$ = new block($1, NULL); }
 						; 
 
 
 /* Variable Declarations inside a code block */ 
 var_declarations		:  	/* Epsilon */ 
+							{ $$ = new varDeclarations(); }
 						| 	var_declarations var_declaration SEMI_COLON 
+							{ $$->add($2); }
 						;
 
 var_declaration 		: 	var_type var_names 
+							{ $$ = new varDeclaration($1, $2); }
 						;
 
 var_names				: 	ID 
-						| 	ID COMMA var_names 
+							{ 
+								$$ = new varNames(); 
+								$$->add($1); 
+							}
+						| 	var_names COMMA ID 
+							{ $$->add($3); }
 						; 
 
 

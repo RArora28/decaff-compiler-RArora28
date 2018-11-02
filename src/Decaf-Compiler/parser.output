@@ -55,7 +55,7 @@ Grammar
    25 var_declaration: var_type var_names
 
    26 var_names: ID
-   27          | ID COMMA var_names
+   27          | var_names COMMA ID
 
    28 statements: /* empty */
    29           | statement statements
@@ -1123,9 +1123,6 @@ state 81
 state 82
 
    26 var_names: ID .
-   27          | ID . COMMA var_names
-
-    COMMA  shift, and go to state 122
 
     $default  reduce using rule 26 (var_names)
 
@@ -1133,6 +1130,9 @@ state 82
 state 83
 
    25 var_declaration: var_type var_names .
+   27 var_names: var_names . COMMA ID
+
+    COMMA  shift, and go to state 122
 
     $default  reduce using rule 25 (var_declaration)
 
@@ -1610,11 +1610,9 @@ state 121
 
 state 122
 
-   27 var_names: ID COMMA . var_names
+   27 var_names: var_names COMMA . ID
 
-    ID  shift, and go to state 82
-
-    var_names  go to state 133
+    ID  shift, and go to state 133
 
 
 state 123
@@ -1804,7 +1802,7 @@ state 132
 
 state 133
 
-   27 var_names: ID COMMA var_names .
+   27 var_names: var_names COMMA ID .
 
     $default  reduce using rule 27 (var_names)
 

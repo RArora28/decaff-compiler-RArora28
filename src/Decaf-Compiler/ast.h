@@ -24,6 +24,13 @@ union Node {
 	class parameterDeclaration* parDecl; 
 	
 	class codeBlock* codeBl; 
+	class block* Bl; 
+
+	class varDeclarations* varDecls; 
+	class varDeclaration* varDecl; 
+	class varNames* varN; 
+
+	class statements* stmt; 
 
 	class intLiteral*  integerLit; 
 	class boolLiteral* booleanLit; 
@@ -118,11 +125,43 @@ public:
 	parameterDeclaration(class varType* type_,
 			  const string& name_);
 }; 
+
 class codeBlock: public baseAstNode {
 public: 
-	codeBlock(); 
+	class block* bl; 
+	codeBlock(class block* bl_); 
+}; 
+class block: public baseAstNode {
+public:
+	class varDeclarations* varDecls; 
+	class statements* stmts;  
+	block(class varDeclarations* varDecls_, 
+		  class statements* stmts_); 
 }; 
 
+class varDeclarations: public baseAstNode {
+public: 
+	vector <class varDeclaration*> list; 
+	varDeclarations(); 
+	void add(class varDeclaration* decl_); 
+}; 
+class varDeclaration: public baseAstNode {
+public:
+	class varType* type; 
+	class varNames* names; 
+	varDeclaration(class varType* type_, 
+				   class varNames* names_); 
+};
+class varNames: public baseAstNode {
+public:
+	vector < string > names; 
+	varNames(); 
+	void add(const string& name_); 
+};
+
+class statments: public	baseAstNode {
+public: 
+}; 
 
 class intLiteral: public baseAstNode {
 public:
