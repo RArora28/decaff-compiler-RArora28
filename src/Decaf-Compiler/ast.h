@@ -39,7 +39,25 @@ union Node {
 	class returnSt* Return; 
 	class returnVal* retVal; 
 	class terminalSt* ter; 
-	class location* loc; 
+	class location* loc; 	
+
+	class methodCallSt* mCSt; 
+	class methodCall* mC; 
+	class normalCall* nC; 
+	class methodCallArgs* mCArgs; 
+	class nonEmptyCallArgs* nECArgs; 
+	
+	class calloutCall* cC; 
+	class nonEmptyCalloutArgs* nECalloutArgs; 
+	class calloutArg* cArgs; 
+
+	class Expr* Exp; 
+	class binExpr* binExp; 
+	class unaryExpr* unExp; 
+	class enclosedExpr* enExp; 
+
+	class assignOp* asOp; 
+
 	class intLiteral*  integerLit; 
 	class boolLiteral* booleanLit; 
 	class charLiteral*  characterLit; 
@@ -180,23 +198,35 @@ public:
 	string label; 
 }; 
 
-class location: public baseAstNode {
+
+class Expr: public baseAstNode {	
+}; 
+
+class location: public Expr {
 public: 
 	string name; 
-	location(const string& name_); 
+	class Expr* exp;
+	location(const string& name_,
+			 class Expr* exp_); 
 };
 
 class assignSt: public statement {
 public:
 	class location* loc; 
-	assignSt(class location* loc_);
+	class assignOp* asOp; 
+	class Expr* exp; 
+	assignSt(class location* loc_,
+			 class assignOp* asOp_,
+			 class Expr* exp_);
 };
 
 class ifSt: public statement {
 public:
-	class codeBlock* bl; 
+	class Expr* condition;
+	class codeBlock* code;  
 	class elseSt* eSt; 
-	ifSt(class codeBlock* bl_, 
+	ifSt(class Expr* condition_, 
+		 class codeBlock* code_, 
 		 class elseSt* eSt_); 
 }; 
 class elseSt: public baseAstNode {
@@ -208,8 +238,12 @@ public:
 class forSt: public statement {
 public:
 	string var; 
+	class Expr* start; 
+	class Expr* end; 
 	class codeBlock* bl;
 	forSt(const string& var_,
+		  class Expr* start_, 
+		  class Expr* end_, 
 		  class codeBlock* bl_); 
 }; 
 
@@ -225,20 +259,100 @@ public:
 }; 
 
 class returnVal: public baseAstNode {
-
+public:
+	class Expr* ret; 
+	returnVal(class Expr* ret_);
 };
 
-class intLiteral: public baseAstNode {
+class methodCallSt: public statement {
+public:
+	class methodCall* call; 
+	methodCallSt(class methodCall* call_); 
+}; 
+class methodCall: public Expr {
+
+}; 
+
+class normalCall: public methodCall {
+public:
+	class methodCallArgs* args; 
+	normalCall(class methodCallArgs* args_); 
+}; 
+class methodCallArgs: public baseAstNode {
+public:
+	class nonEmptyCallArgs* args;
+	methodCallArgs(class nonEmptyCallArgs* args_); 
+};
+class nonEmptyCallArgs: public baseAstNode {
+public:
+	vector < class Expr* > list; 
+	nonEmptyCallArgs();
+	void add(class Expr* exp);
+}; 
+
+class calloutCall: public methodCall {
+public:
+	class stringLiteral *callName; 
+	class nonEmptyCalloutArgs* args; 
+	calloutCall(class stringLiteral* callName_,
+				class nonEmptyCalloutArgs* args_); 
+}; 
+class nonEmptyCalloutArgs: public baseAstNode {
+public:
+	vector < class calloutArg* > list;  
+	nonEmptyCalloutArgs();
+	void add(class calloutArg* arg_);
+}; 
+
+class calloutArg: public baseAstNode {
+public:
+	class stringLiteral* argName; 
+	class Expr* exp; 
+	calloutArg(class stringLiteral* argName_,
+			   class Expr* exp_); 
+}; 
+
+class unaryExpr: public Expr {
+public:
+	string op; 
+	class Expr* exp; 
+	unaryExpr(const string& op_, 
+			  class Expr* exp);
+}; 
+
+class binExpr: public Expr {
+public:
+	class Expr* exp1; 
+	string op; 
+	class Expr* exp2; 
+	binExpr(class Expr* exp1_,
+			const string& op_, 
+			class Expr* exp2_); 
+}; 
+
+class enclosedExpr: public Expr {
+public:
+	class Expr* exp; 
+	enclosedExpr(class Expr* exp_); 
+}; 
+	
+class assignOp: public baseAstNode {
+public:
+	string op; 
+	assignOp(const string& op_); 
+};
+
+class intLiteral: public Expr {
 public:
 	int value; 
 	intLiteral(int value_); 
 };
-class boolLiteral: public baseAstNode {
+class boolLiteral: public Expr {
 public:
 	bool value; 
 	boolLiteral(bool value_); 
 };
-class charLiteral: public baseAstNode {
+class charLiteral: public Expr {
 public:
 	char* value; 
 	charLiteral(char* value_); 

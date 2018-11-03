@@ -5,9 +5,21 @@ Terminals which are not used
 
 State 6 conflicts: 2 shift/reduce
 State 40 conflicts: 1 reduce/reduce
-State 99 conflicts: 13 shift/reduce
-State 100 conflicts: 13 shift/reduce
+State 103 conflicts: 13 shift/reduce
+State 104 conflicts: 13 shift/reduce
+State 130 conflicts: 13 shift/reduce
+State 131 conflicts: 13 shift/reduce
 State 132 conflicts: 13 shift/reduce
+State 133 conflicts: 13 shift/reduce
+State 134 conflicts: 13 shift/reduce
+State 135 conflicts: 13 shift/reduce
+State 136 conflicts: 13 shift/reduce
+State 137 conflicts: 13 shift/reduce
+State 138 conflicts: 13 shift/reduce
+State 139 conflicts: 13 shift/reduce
+State 140 conflicts: 13 shift/reduce
+State 141 conflicts: 13 shift/reduce
+State 142 conflicts: 13 shift/reduce
 
 
 Grammar
@@ -72,88 +84,84 @@ Grammar
    37 location: ID
    38         | ID SQUARE_OPEN expr SQUARE_CLOSE
 
-   39 method_call_statment: method_call SEMI_COLON
+   39 if_statement: IF OPEN expr CLOSE code_block else_statement
 
-   40 if_statement: IF OPEN expr CLOSE code_block else_statement
+   40 else_statement: /* empty */
+   41               | ELSE code_block
 
-   41 else_statement: /* empty */
-   42               | ELSE code_block
+   42 for_statement: FOR ID EQUAL expr COMMA expr code_block
 
-   43 for_statement: FOR ID EQUAL expr COMMA expr code_block
+   43 return_statement: RETURN return_value SEMI_COLON
 
-   44 return_statement: RETURN return_value SEMI_COLON
+   44 return_value: /* empty */
+   45             | expr
 
-   45 return_value: /* empty */
-   46             | expr
+   46 terminal_statement: BREAK SEMI_COLON
+   47                   | CONTINUE SEMI_COLON
 
-   47 terminal_statement: BREAK SEMI_COLON
-   48                   | CONTINUE SEMI_COLON
+   48 method_call_statment: method_call SEMI_COLON
 
-   49 method_call: ID OPEN method_call_args CLOSE
-   50            | CALLOUT OPEN string_literal CLOSE
-   51            | CALLOUT OPEN string_literal COMMA non_empty_callout_args CLOSE
+   49 method_call: normal_call
+   50            | callout_call
+
+   51 normal_call: ID OPEN method_call_args CLOSE
 
    52 method_call_args: /* empty */
    53                 | non_empty_method_call_args
 
-   54 non_empty_method_call_args: method_call_arg
-   55                           | non_empty_method_call_args COMMA method_call_arg
+   54 non_empty_method_call_args: expr
+   55                           | non_empty_method_call_args COMMA expr
 
-   56 method_call_arg: expr
+   56 callout_call: CALLOUT OPEN string_literal CLOSE
+   57             | CALLOUT OPEN string_literal COMMA non_empty_callout_args CLOSE
 
-   57 non_empty_callout_args: callout_arg
-   58                       | non_empty_callout_args COMMA callout_arg
+   58 non_empty_callout_args: callout_arg
+   59                       | non_empty_callout_args COMMA callout_arg
 
-   59 callout_arg: expr
-   60            | string_literal
+   60 callout_arg: expr
+   61            | string_literal
 
-   61 expr: location
-   62     | method_call
-   63     | literal
-   64     | expr bin_op expr
-   65     | SUBTRACT expr
-   66     | NOT expr
-   67     | OPEN expr CLOSE
+   62 expr: location
+   63     | method_call
+   64     | char_literal
+   65     | int_literal
+   66     | bool_literal
+   67     | binary_expr
+   68     | unary_expr
+   69     | enclosed_expr
 
-   68 assign_op: EQUAL
-   69          | PLUS_EQUAL
-   70          | MINUS_EQUAL
+   70 binary_expr: expr ADD expr
+   71            | expr SUBTRACT expr
+   72            | expr MULTIPLY expr
+   73            | expr DIVIDE expr
+   74            | expr MODULO expr
+   75            | expr GREATER expr
+   76            | expr LESS expr
+   77            | expr GREATER_EQUAL expr
+   78            | expr LESS_EQUAL expr
+   79            | expr EQUALITY expr
+   80            | expr NOT_EQUAL expr
+   81            | expr CONDITIONAL_AND expr
+   82            | expr CONDITIONAL_OR expr
 
-   71 bin_op: arith_op
-   72       | rel_op
-   73       | eq_op
-   74       | cond_op
+   83 enclosed_expr: OPEN expr CLOSE
 
-   75 arith_op: ADD
-   76         | SUBTRACT
-   77         | MULTIPLY
-   78         | DIVIDE
-   79         | MODULO
+   84 unary_expr: SUBTRACT expr
+   85           | NOT expr
 
-   80 rel_op: GREATER
-   81       | LESS
-   82       | GREATER_EQUAL
-   83       | LESS_EQUAL
+   86 assign_op: EQUAL
+   87          | PLUS_EQUAL
+   88          | MINUS_EQUAL
 
-   84 eq_op: EQUALITY
-   85      | NOT_EQUAL
+   89 char_literal: CHAR_LITERAL
 
-   86 cond_op: CONDITIONAL_AND
-   87        | CONDITIONAL_OR
+   90 int_literal: NUM
+   91            | HEX_LITERAL
 
-   88 literal: char_literal
-   89        | bool_literal
-   90        | int_literal
+   92 bool_literal: TRUE
+   93             | FALSE
 
-   91 char_literal: CHAR_LITERAL
-
-   92 int_literal: NUM
-   93            | HEX_LITERAL
-
-   94 bool_literal: TRUE
-   95             | FALSE
-
-   96 string_literal: STRING
+   94 string_literal: STRING
 
 
 Terminals, with rules where they appear
@@ -162,49 +170,49 @@ $end (0) 0
 error (256)
 PROGRAM (258) 1
 CLASS (259) 1
-CALLOUT (260) 50 51
+CALLOUT (260) 56 57
 VOID (261) 13
 INT (262) 2
 BOOLEAN (263) 3
-TRUE (264) 94
-FALSE (265) 95
-BREAK (266) 47
-CONTINUE (267) 48
-RETURN (268) 44
-FOR (269) 43
-IF (270) 40
-ELSE (271) 42
-NUM (272) 92
-HEX_LITERAL (273) 93
-CHAR_LITERAL (274) 91
-STRING (275) 96
-ID (276) 9 10 13 14 19 26 27 37 38 43 49
-ADD (277) 75
-SUBTRACT (278) 65 76
-MULTIPLY (279) 77
-DIVIDE (280) 78
-EQUAL (281) 43 68
-PLUS_EQUAL (282) 69
-MINUS_EQUAL (283) 70
-EQUALITY (284) 84
-NOT_EQUAL (285) 85
-GREATER_EQUAL (286) 82
-LESS_EQUAL (287) 83
-GREATER (288) 80
-LESS (289) 81
-CONDITIONAL_AND (290) 86
-CONDITIONAL_OR (291) 87
-NOT (292) 66
+TRUE (264) 92
+FALSE (265) 93
+BREAK (266) 46
+CONTINUE (267) 47
+RETURN (268) 43
+FOR (269) 42
+IF (270) 39
+ELSE (271) 41
+NUM (272) 90
+HEX_LITERAL (273) 91
+CHAR_LITERAL (274) 89
+STRING (275) 94
+ID (276) 9 10 13 14 19 26 27 37 38 42 51
+ADD (277) 70
+SUBTRACT (278) 71 84
+MULTIPLY (279) 72
+DIVIDE (280) 73
+EQUAL (281) 42 86
+PLUS_EQUAL (282) 87
+MINUS_EQUAL (283) 88
+EQUALITY (284) 79
+NOT_EQUAL (285) 80
+GREATER_EQUAL (286) 77
+LESS_EQUAL (287) 78
+GREATER (288) 75
+LESS (289) 76
+CONDITIONAL_AND (290) 81
+CONDITIONAL_OR (291) 82
+NOT (292) 85
 ABSOLUTE (293)
-MODULO (294) 79
+MODULO (294) 74
 CURLY_OPEN (295) 1 20
 CURLY_CLOSE (296) 1 20
 SQUARE_OPEN (297) 10 38
 SQUARE_CLOSE (298) 10 38
-OPEN (299) 13 14 40 49 50 51 67
-CLOSE (300) 13 14 40 49 50 51 67
-SEMI_COLON (301) 5 24 36 39 44 47 48
-COMMA (302) 8 18 27 43 51 55 58
+OPEN (299) 13 14 39 51 56 57 83
+CLOSE (300) 13 14 39 51 56 57 83
+SEMI_COLON (301) 5 24 36 43 46 47 48
+COMMA (302) 8 18 27 42 55 57 59
 
 
 Nonterminals, with rules where they appear
@@ -234,7 +242,7 @@ non_empty_parameter_declaration (58)
 parameter_declaration (59)
     on left: 19, on right: 17 18
 code_block (60)
-    on left: 20, on right: 13 14 40 42 43
+    on left: 20, on right: 13 14 39 41 42
 block (61)
     on left: 21 22, on right: 20
 var_declarations (62)
@@ -250,58 +258,55 @@ statement (66)
 assign_statement (67)
     on left: 36, on right: 30
 location (68)
-    on left: 37 38, on right: 36 61
-method_call_statment (69)
-    on left: 39, on right: 31
-if_statement (70)
-    on left: 40, on right: 32
-else_statement (71)
-    on left: 41 42, on right: 40
-for_statement (72)
-    on left: 43, on right: 33
-return_statement (73)
-    on left: 44, on right: 34
-return_value (74)
-    on left: 45 46, on right: 44
-terminal_statement (75)
-    on left: 47 48, on right: 35
+    on left: 37 38, on right: 36 62
+if_statement (69)
+    on left: 39, on right: 32
+else_statement (70)
+    on left: 40 41, on right: 39
+for_statement (71)
+    on left: 42, on right: 33
+return_statement (72)
+    on left: 43, on right: 34
+return_value (73)
+    on left: 44 45, on right: 43
+terminal_statement (74)
+    on left: 46 47, on right: 35
+method_call_statment (75)
+    on left: 48, on right: 31
 method_call (76)
-    on left: 49 50 51, on right: 39 62
-method_call_args (77)
-    on left: 52 53, on right: 49
-non_empty_method_call_args (78)
+    on left: 49 50, on right: 48 63
+normal_call (77)
+    on left: 51, on right: 49
+method_call_args (78)
+    on left: 52 53, on right: 51
+non_empty_method_call_args (79)
     on left: 54 55, on right: 53 55
-method_call_arg (79)
-    on left: 56, on right: 54 55
-non_empty_callout_args (80)
-    on left: 57 58, on right: 51 58
-callout_arg (81)
-    on left: 59 60, on right: 57 58
-expr (82)
-    on left: 61 62 63 64 65 66 67, on right: 36 38 40 43 46 56 59 64
-    65 66 67
-assign_op (83)
-    on left: 68 69 70, on right: 36
-bin_op (84)
-    on left: 71 72 73 74, on right: 64
-arith_op (85)
-    on left: 75 76 77 78 79, on right: 71
-rel_op (86)
-    on left: 80 81 82 83, on right: 72
-eq_op (87)
-    on left: 84 85, on right: 73
-cond_op (88)
-    on left: 86 87, on right: 74
-literal (89)
-    on left: 88 89 90, on right: 63
-char_literal (90)
-    on left: 91, on right: 88
-int_literal (91)
-    on left: 92 93, on right: 10 90
-bool_literal (92)
-    on left: 94 95, on right: 89
-string_literal (93)
-    on left: 96, on right: 50 51 60
+callout_call (80)
+    on left: 56 57, on right: 50
+non_empty_callout_args (81)
+    on left: 58 59, on right: 57 59
+callout_arg (82)
+    on left: 60 61, on right: 58 59
+expr (83)
+    on left: 62 63 64 65 66 67 68 69, on right: 36 38 39 42 45 54 55
+    60 70 71 72 73 74 75 76 77 78 79 80 81 82 83 84 85
+binary_expr (84)
+    on left: 70 71 72 73 74 75 76 77 78 79 80 81 82,
+    on right: 67
+enclosed_expr (85)
+    on left: 83, on right: 69
+unary_expr (86)
+    on left: 84 85, on right: 68
+assign_op (87)
+    on left: 86 87 88, on right: 36
+char_literal (88)
+    on left: 89, on right: 64
+int_literal (89)
+    on left: 90 91, on right: 10 65
+bool_literal (90)
+    on left: 92 93, on right: 66
+string_literal (91)
+    on left: 94, on right: 56 57 61
 
 
 state 0
@@ -509,16 +514,16 @@ state 23
 
 state 24
 
-   92 int_literal: NUM .
+   90 int_literal: NUM .
 
-    $default  reduce using rule 92 (int_literal)
+    $default  reduce using rule 90 (int_literal)
 
 
 state 25
 
-   93 int_literal: HEX_LITERAL .
+   91 int_literal: HEX_LITERAL .
 
-    $default  reduce using rule 93 (int_literal)
+    $default  reduce using rule 91 (int_literal)
 
 
 state 26
@@ -742,12 +747,14 @@ state 49
     statement             go to state 60
     assign_statement      go to state 61
     location              go to state 62
-    method_call_statment  go to state 63
-    if_statement          go to state 64
-    for_statement         go to state 65
-    return_statement      go to state 66
-    terminal_statement    go to state 67
+    if_statement          go to state 63
+    for_statement         go to state 64
+    return_statement      go to state 65
+    terminal_statement    go to state 66
+    method_call_statment  go to state 67
     method_call           go to state 68
+    normal_call           go to state 69
+    callout_call          go to state 70
 
 
 state 50
@@ -762,7 +769,7 @@ state 51
    25 var_declaration: var_type var_names .
    27 var_names: var_names . COMMA ID
 
-    COMMA  shift, and go to state 69
+    COMMA  shift, and go to state 71
 
     $default  reduce using rule 25 (var_declaration)
 
@@ -776,75 +783,79 @@ state 52
 
 state 53
 
-   50 method_call: CALLOUT . OPEN string_literal CLOSE
-   51            | CALLOUT . OPEN string_literal COMMA non_empty_callout_args CLOSE
+   56 callout_call: CALLOUT . OPEN string_literal CLOSE
+   57             | CALLOUT . OPEN string_literal COMMA non_empty_callout_args CLOSE
 
-    OPEN  shift, and go to state 70
+    OPEN  shift, and go to state 72
 
 
 state 54
 
-   47 terminal_statement: BREAK . SEMI_COLON
+   46 terminal_statement: BREAK . SEMI_COLON
 
-    SEMI_COLON  shift, and go to state 71
+    SEMI_COLON  shift, and go to state 73
 
 
 state 55
 
-   48 terminal_statement: CONTINUE . SEMI_COLON
+   47 terminal_statement: CONTINUE . SEMI_COLON
 
-    SEMI_COLON  shift, and go to state 72
+    SEMI_COLON  shift, and go to state 74
 
 
 state 56
 
-   44 return_statement: RETURN . return_value SEMI_COLON
+   43 return_statement: RETURN . return_value SEMI_COLON
 
     CALLOUT       shift, and go to state 53
-    TRUE          shift, and go to state 73
-    FALSE         shift, and go to state 74
+    TRUE          shift, and go to state 75
+    FALSE         shift, and go to state 76
     NUM           shift, and go to state 24
     HEX_LITERAL   shift, and go to state 25
-    CHAR_LITERAL  shift, and go to state 75
+    CHAR_LITERAL  shift, and go to state 77
     ID            shift, and go to state 59
-    SUBTRACT      shift, and go to state 76
-    NOT           shift, and go to state 77
-    OPEN          shift, and go to state 78
+    SUBTRACT      shift, and go to state 78
+    NOT           shift, and go to state 79
+    OPEN          shift, and go to state 80
 
-    $default  reduce using rule 45 (return_value)
+    $default  reduce using rule 44 (return_value)
 
-    location      go to state 79
-    return_value  go to state 80
-    method_call   go to state 81
-    expr          go to state 82
-    literal       go to state 83
-    char_literal  go to state 84
-    int_literal   go to state 85
-    bool_literal  go to state 86
+    location       go to state 81
+    return_value   go to state 82
+    method_call    go to state 83
+    normal_call    go to state 69
+    callout_call   go to state 70
+    expr           go to state 84
+    binary_expr    go to state 85
+    enclosed_expr  go to state 86
+    unary_expr     go to state 87
+    char_literal   go to state 88
+    int_literal    go to state 89
+    bool_literal   go to state 90
 
 
 state 57
 
-   43 for_statement: FOR . ID EQUAL expr COMMA expr code_block
+   42 for_statement: FOR . ID EQUAL expr COMMA expr code_block
 
-    ID  shift, and go to state 87
+    ID  shift, and go to state 91
 
 
 state 58
 
-   40 if_statement: IF . OPEN expr CLOSE code_block else_statement
+   39 if_statement: IF . OPEN expr CLOSE code_block else_statement
 
-    OPEN  shift, and go to state 88
+    OPEN  shift, and go to state 92
 
 
 state 59
 
    37 location: ID .
    38         | ID . SQUARE_OPEN expr SQUARE_CLOSE
-   49 method_call: ID . OPEN method_call_args CLOSE
+   51 normal_call: ID . OPEN method_call_args CLOSE
 
-    SQUARE_OPEN  shift, and go to state 89
-    OPEN         shift, and go to state 90
+    SQUARE_OPEN  shift, and go to state 93
+    OPEN         shift, and go to state 94
 
     $default  reduce using rule 37 (location)
 
@@ -867,1183 +878,2135 @@ state 62
 
    36 assign_statement: location . assign_op expr SEMI_COLON
 
-    EQUAL        shift, and go to state 91
-    PLUS_EQUAL   shift, and go to state 92
-    MINUS_EQUAL  shift, and go to state 93
+    EQUAL        shift, and go to state 95
+    PLUS_EQUAL   shift, and go to state 96
+    MINUS_EQUAL  shift, and go to state 97
 
-    assign_op  go to state 94
+    assign_op  go to state 98
 
 
 state 63
-
-   31 statement: method_call_statment .
-
-    $default  reduce using rule 31 (statement)
-
-
-state 64
 
    32 statement: if_statement .
 
     $default  reduce using rule 32 (statement)
 
 
-state 65
+state 64
 
    33 statement: for_statement .
 
     $default  reduce using rule 33 (statement)
 
 
-state 66
+state 65
 
    34 statement: return_statement .
 
     $default  reduce using rule 34 (statement)
 
 
-state 67
+state 66
 
    35 statement: terminal_statement .
 
     $default  reduce using rule 35 (statement)
 
 
+state 67
+
+   31 statement: method_call_statment .
+
+    $default  reduce using rule 31 (statement)
+
+
 state 68
 
-   39 method_call_statment: method_call . SEMI_COLON
+   48 method_call_statment: method_call . SEMI_COLON
 
-    SEMI_COLON  shift, and go to state 95
+    SEMI_COLON  shift, and go to state 99
 
 
 state 69
 
-   27 var_names: var_names COMMA . ID
+   49 method_call: normal_call .
 
-    ID  shift, and go to state 96
+    $default  reduce using rule 49 (method_call)
 
 
 state 70
 
-   50 method_call: CALLOUT OPEN . string_literal CLOSE
-   51            | CALLOUT OPEN . string_literal COMMA non_empty_callout_args CLOSE
+   50 method_call: callout_call .
 
-    STRING  shift, and go to state 97
-
-    string_literal  go to state 98
+    $default  reduce using rule 50 (method_call)
 
 
 state 71
 
-   47 terminal_statement: BREAK SEMI_COLON .
+   27 var_names: var_names COMMA . ID
 
-    $default  reduce using rule 47 (terminal_statement)
+    ID  shift, and go to state 100
 
 
 state 72
 
-   48 terminal_statement: CONTINUE SEMI_COLON .
+   56 callout_call: CALLOUT OPEN . string_literal CLOSE
+   57             | CALLOUT OPEN . string_literal COMMA non_empty_callout_args CLOSE
 
-    $default  reduce using rule 48 (terminal_statement)
+    STRING  shift, and go to state 101
+
+    string_literal  go to state 102
 
 
 state 73
 
-   94 bool_literal: TRUE .
+   46 terminal_statement: BREAK SEMI_COLON .
 
-    $default  reduce using rule 94 (bool_literal)
+    $default  reduce using rule 46 (terminal_statement)
 
 
 state 74
 
-   95 bool_literal: FALSE .
+   47 terminal_statement: CONTINUE SEMI_COLON .
 
-    $default  reduce using rule 95 (bool_literal)
+    $default  reduce using rule 47 (terminal_statement)
 
 
 state 75
 
-   91 char_literal: CHAR_LITERAL .
+   92 bool_literal: TRUE .
 
-    $default  reduce using rule 91 (char_literal)
+    $default  reduce using rule 92 (bool_literal)
 
 
 state 76
 
-   65 expr: SUBTRACT . expr
+   93 bool_literal: FALSE .
 
-    CALLOUT       shift, and go to state 53
-    TRUE          shift, and go to state 73
-    FALSE         shift, and go to state 74
-    NUM           shift, and go to state 24
-    HEX_LITERAL   shift, and go to state 25
-    CHAR_LITERAL  shift, and go to state 75
-    ID            shift, and go to state 59
-    SUBTRACT      shift, and go to state 76
-    NOT           shift, and go to state 77
-    OPEN          shift, and go to state 78
-
-    location      go to state 79
-    method_call   go to state 81
-    expr          go to state 99
-    literal       go to state 83
-    char_literal  go to state 84
-    int_literal   go to state 85
-    bool_literal  go to state 86
+    $default  reduce using rule 93 (bool_literal)
 
 
 state 77
 
-   66 expr: NOT . expr
+   89 char_literal: CHAR_LITERAL .
 
-    CALLOUT       shift, and go to state 53
-    TRUE          shift, and go to state 73
-    FALSE         shift, and go to state 74
-    NUM           shift, and go to state 24
-    HEX_LITERAL   shift, and go to state 25
-    CHAR_LITERAL  shift, and go to state 75
-    ID            shift, and go to state 59
-    SUBTRACT      shift, and go to state 76
-    NOT           shift, and go to state 77
-    OPEN          shift, and go to state 78
-
-    location      go to state 79
-    method_call   go to state 81
-    expr          go to state 100
-    literal       go to state 83
-    char_literal  go to state 84
-    int_literal   go to state 85
-    bool_literal  go to state 86
+    $default  reduce using rule 89 (char_literal)
 
 
 state 78
 
-   67 expr: OPEN . expr CLOSE
+   84 unary_expr: SUBTRACT . expr
 
     CALLOUT       shift, and go to state 53
-    TRUE          shift, and go to state 73
-    FALSE         shift, and go to state 74
+    TRUE          shift, and go to state 75
+    FALSE         shift, and go to state 76
     NUM           shift, and go to state 24
     HEX_LITERAL   shift, and go to state 25
-    CHAR_LITERAL  shift, and go to state 75
+    CHAR_LITERAL  shift, and go to state 77
     ID            shift, and go to state 59
-    SUBTRACT      shift, and go to state 76
-    NOT           shift, and go to state 77
-    OPEN          shift, and go to state 78
+    SUBTRACT      shift, and go to state 78
+    NOT           shift, and go to state 79
+    OPEN          shift, and go to state 80
 
-    location      go to state 79
-    method_call   go to state 81
-    expr          go to state 101
-    literal       go to state 83
-    char_literal  go to state 84
-    int_literal   go to state 85
-    bool_literal  go to state 86
+    location       go to state 81
+    method_call    go to state 83
+    normal_call    go to state 69
+    callout_call   go to state 70
+    expr           go to state 103
+    binary_expr    go to state 85
+    enclosed_expr  go to state 86
+    unary_expr     go to state 87
+    char_literal   go to state 88
+    int_literal    go to state 89
+    bool_literal   go to state 90
 
 
 state 79
 
-   61 expr: location .
+   85 unary_expr: NOT . expr
 
-    $default  reduce using rule 61 (expr)
+    CALLOUT       shift, and go to state 53
+    TRUE          shift, and go to state 75
+    FALSE         shift, and go to state 76
+    NUM           shift, and go to state 24
+    HEX_LITERAL   shift, and go to state 25
+    CHAR_LITERAL  shift, and go to state 77
+    ID            shift, and go to state 59
+    SUBTRACT      shift, and go to state 78
+    NOT           shift, and go to state 79
+    OPEN          shift, and go to state 80
+
+    location       go to state 81
+    method_call    go to state 83
+    normal_call    go to state 69
+    callout_call   go to state 70
+    expr           go to state 104
+    binary_expr    go to state 85
+    enclosed_expr  go to state 86
+    unary_expr     go to state 87
+    char_literal   go to state 88
+    int_literal    go to state 89
+    bool_literal   go to state 90
 
 
 state 80
 
-   44 return_statement: RETURN return_value . SEMI_COLON
+   83 enclosed_expr: OPEN . expr CLOSE
 
-    SEMI_COLON  shift, and go to state 102
+    CALLOUT       shift, and go to state 53
+    TRUE          shift, and go to state 75
+    FALSE         shift, and go to state 76
+    NUM           shift, and go to state 24
+    HEX_LITERAL   shift, and go to state 25
+    CHAR_LITERAL  shift, and go to state 77
+    ID            shift, and go to state 59
+    SUBTRACT      shift, and go to state 78
+    NOT           shift, and go to state 79
+    OPEN          shift, and go to state 80
+
+    location       go to state 81
+    method_call    go to state 83
+    normal_call    go to state 69
+    callout_call   go to state 70
+    expr           go to state 105
+    binary_expr    go to state 85
+    enclosed_expr  go to state 86
+    unary_expr     go to state 87
+    char_literal   go to state 88
+    int_literal    go to state 89
+    bool_literal   go to state 90
 
 
 state 81
 
-   62 expr: method_call .
+   62 expr: location .
 
     $default  reduce using rule 62 (expr)
 
 
 state 82
 
-   46 return_value: expr .
-   64 expr: expr . bin_op expr
+   43 return_statement: RETURN return_value . SEMI_COLON
 
-    ADD              shift, and go to state 103
-    SUBTRACT         shift, and go to state 104
-    MULTIPLY         shift, and go to state 105
-    DIVIDE           shift, and go to state 106
-    EQUALITY         shift, and go to state 107
-    NOT_EQUAL        shift, and go to state 108
-    GREATER_EQUAL    shift, and go to state 109
-    LESS_EQUAL       shift, and go to state 110
-    GREATER          shift, and go to state 111
-    LESS             shift, and go to state 112
-    CONDITIONAL_AND  shift, and go to state 113
-    CONDITIONAL_OR   shift, and go to state 114
-    MODULO           shift, and go to state 115
-
-    $default  reduce using rule 46 (return_value)
-
-    bin_op    go to state 116
-    arith_op  go to state 117
-    rel_op    go to state 118
-    eq_op     go to state 119
-    cond_op   go to state 120
+    SEMI_COLON  shift, and go to state 106
 
 
 state 83
 
-   63 expr: literal .
+   63 expr: method_call .
 
     $default  reduce using rule 63 (expr)
 
 
 state 84
 
-   88 literal: char_literal .
+   45 return_value: expr .
+   70 binary_expr: expr . ADD expr
+   71            | expr . SUBTRACT expr
+   72            | expr . MULTIPLY expr
+   73            | expr . DIVIDE expr
+   74            | expr . MODULO expr
+   75            | expr . GREATER expr
+   76            | expr . LESS expr
+   77            | expr . GREATER_EQUAL expr
+   78            | expr . LESS_EQUAL expr
+   79            | expr . EQUALITY expr
+   80            | expr . NOT_EQUAL expr
+   81            | expr . CONDITIONAL_AND expr
+   82            | expr . CONDITIONAL_OR expr
 
-    $default  reduce using rule 88 (literal)
+    ADD              shift, and go to state 107
+    SUBTRACT         shift, and go to state 108
+    MULTIPLY         shift, and go to state 109
+    DIVIDE           shift, and go to state 110
+    EQUALITY         shift, and go to state 111
+    NOT_EQUAL        shift, and go to state 112
+    GREATER_EQUAL    shift, and go to state 113
+    LESS_EQUAL       shift, and go to state 114
+    GREATER          shift, and go to state 115
+    LESS             shift, and go to state 116
+    CONDITIONAL_AND  shift, and go to state 117
+    CONDITIONAL_OR   shift, and go to state 118
+    MODULO           shift, and go to state 119
+
+    $default  reduce using rule 45 (return_value)
 
 
 state 85
 
-   90 literal: int_literal .
+   67 expr: binary_expr .
 
-    $default  reduce using rule 90 (literal)
+    $default  reduce using rule 67 (expr)
 
 
 state 86
 
-   89 literal: bool_literal .
+   69 expr: enclosed_expr .
 
-    $default  reduce using rule 89 (literal)
+    $default  reduce using rule 69 (expr)
 
 
 state 87
 
-   43 for_statement: FOR ID . EQUAL expr COMMA expr code_block
+   68 expr: unary_expr .
 
-    EQUAL  shift, and go to state 121
+    $default  reduce using rule 68 (expr)
 
 
 state 88
 
-   40 if_statement: IF OPEN . expr CLOSE code_block else_statement
+   64 expr: char_literal .
 
-    CALLOUT       shift, and go to state 53
-    TRUE          shift, and go to state 73
-    FALSE         shift, and go to state 74
-    NUM           shift, and go to state 24
-    HEX_LITERAL   shift, and go to state 25
-    CHAR_LITERAL  shift, and go to state 75
-    ID            shift, and go to state 59
-    SUBTRACT      shift, and go to state 76
-    NOT           shift, and go to state 77
-    OPEN          shift, and go to state 78
-
-    location      go to state 79
-    method_call   go to state 81
-    expr          go to state 122
-    literal       go to state 83
-    char_literal  go to state 84
-    int_literal   go to state 85
-    bool_literal  go to state 86
+    $default  reduce using rule 64 (expr)
 
 
 state 89
 
-   38 location: ID SQUARE_OPEN . expr SQUARE_CLOSE
+   65 expr: int_literal .
 
-    CALLOUT       shift, and go to state 53
-    TRUE          shift, and go to state 73
-    FALSE         shift, and go to state 74
-    NUM           shift, and go to state 24
-    HEX_LITERAL   shift, and go to state 25
-    CHAR_LITERAL  shift, and go to state 75
-    ID            shift, and go to state 59
-    SUBTRACT      shift, and go to state 76
-    NOT           shift, and go to state 77
-    OPEN          shift, and go to state 78
-
-    location      go to state 79
-    method_call   go to state 81
-    expr          go to state 123
-    literal       go to state 83
-    char_literal  go to state 84
-    int_literal   go to state 85
-    bool_literal  go to state 86
+    $default  reduce using rule 65 (expr)
 
 
 state 90
 
-   49 method_call: ID OPEN . method_call_args CLOSE
+   66 expr: bool_literal .
 
-    CALLOUT       shift, and go to state 53
-    TRUE          shift, and go to state 73
-    FALSE         shift, and go to state 74
-    NUM           shift, and go to state 24
-    HEX_LITERAL   shift, and go to state 25
-    CHAR_LITERAL  shift, and go to state 75
-    ID            shift, and go to state 59
-    SUBTRACT      shift, and go to state 76
-    NOT           shift, and go to state 77
-    OPEN          shift, and go to state 78
-
-    $default  reduce using rule 52 (method_call_args)
-
-    location                    go to state 79
-    method_call                 go to state 81
-    method_call_args            go to state 124
-    non_empty_method_call_args  go to state 125
-    method_call_arg             go to state 126
-    expr                        go to state 127
-    literal                     go to state 83
-    char_literal                go to state 84
-    int_literal                 go to state 85
-    bool_literal                go to state 86
+    $default  reduce using rule 66 (expr)
 
 
 state 91
 
-   68 assign_op: EQUAL .
+   42 for_statement: FOR ID . EQUAL expr COMMA expr code_block
 
-    $default  reduce using rule 68 (assign_op)
+    EQUAL  shift, and go to state 120
 
 
 state 92
 
-   69 assign_op: PLUS_EQUAL .
+   39 if_statement: IF OPEN . expr CLOSE code_block else_statement
 
-    $default  reduce using rule 69 (assign_op)
+    CALLOUT       shift, and go to state 53
+    TRUE          shift, and go to state 75
+    FALSE         shift, and go to state 76
+    NUM           shift, and go to state 24
+    HEX_LITERAL   shift, and go to state 25
+    CHAR_LITERAL  shift, and go to state 77
+    ID            shift, and go to state 59
+    SUBTRACT      shift, and go to state 78
+    NOT           shift, and go to state 79
+    OPEN          shift, and go to state 80
+
+    location       go to state 81
+    method_call    go to state 83
+    normal_call    go to state 69
+    callout_call   go to state 70
+    expr           go to state 121
+    binary_expr    go to state 85
+    enclosed_expr  go to state 86
+    unary_expr     go to state 87
+    char_literal   go to state 88
+    int_literal    go to state 89
+    bool_literal   go to state 90
 
 
 state 93
 
-   70 assign_op: MINUS_EQUAL .
+   38 location: ID SQUARE_OPEN . expr SQUARE_CLOSE
 
-    $default  reduce using rule 70 (assign_op)
+    CALLOUT       shift, and go to state 53
+    TRUE          shift, and go to state 75
+    FALSE         shift, and go to state 76
+    NUM           shift, and go to state 24
+    HEX_LITERAL   shift, and go to state 25
+    CHAR_LITERAL  shift, and go to state 77
+    ID            shift, and go to state 59
+    SUBTRACT      shift, and go to state 78
+    NOT           shift, and go to state 79
+    OPEN          shift, and go to state 80
+
+    location       go to state 81
+    method_call    go to state 83
+    normal_call    go to state 69
+    callout_call   go to state 70
+    expr           go to state 122
+    binary_expr    go to state 85
+    enclosed_expr  go to state 86
+    unary_expr     go to state 87
+    char_literal   go to state 88
+    int_literal    go to state 89
+    bool_literal   go to state 90
 
 
 state 94
 
-   36 assign_statement: location assign_op . expr SEMI_COLON
+   51 normal_call: ID OPEN . method_call_args CLOSE
 
     CALLOUT       shift, and go to state 53
-    TRUE          shift, and go to state 73
-    FALSE         shift, and go to state 74
+    TRUE          shift, and go to state 75
+    FALSE         shift, and go to state 76
     NUM           shift, and go to state 24
     HEX_LITERAL   shift, and go to state 25
-    CHAR_LITERAL  shift, and go to state 75
+    CHAR_LITERAL  shift, and go to state 77
     ID            shift, and go to state 59
-    SUBTRACT      shift, and go to state 76
-    NOT           shift, and go to state 77
-    OPEN          shift, and go to state 78
+    SUBTRACT      shift, and go to state 78
+    NOT           shift, and go to state 79
+    OPEN          shift, and go to state 80
 
-    location      go to state 79
-    method_call   go to state 81
-    expr          go to state 128
-    literal       go to state 83
-    char_literal  go to state 84
-    int_literal   go to state 85
-    bool_literal  go to state 86
+    $default  reduce using rule 52 (method_call_args)
+
+    location                    go to state 81
+    method_call                 go to state 83
+    normal_call                 go to state 69
+    method_call_args            go to state 123
+    non_empty_method_call_args  go to state 124
+    callout_call                go to state 70
+    expr                        go to state 125
+    binary_expr                 go to state 85
+    enclosed_expr               go to state 86
+    unary_expr                  go to state 87
+    char_literal                go to state 88
+    int_literal                 go to state 89
+    bool_literal                go to state 90
 
 
 state 95
 
-   39 method_call_statment: method_call SEMI_COLON .
+   86 assign_op: EQUAL .
 
-    $default  reduce using rule 39 (method_call_statment)
+    $default  reduce using rule 86 (assign_op)
 
 
 state 96
+
+   87 assign_op: PLUS_EQUAL .
+
+    $default  reduce using rule 87 (assign_op)
+
+
+state 97
+
+   88 assign_op: MINUS_EQUAL .
+
+    $default  reduce using rule 88 (assign_op)
+
+
+state 98
+
+   36 assign_statement: location assign_op . expr SEMI_COLON
+
+    CALLOUT       shift, and go to state 53
+    TRUE          shift, and go to state 75
+    FALSE         shift, and go to state 76
+    NUM           shift, and go to state 24
+    HEX_LITERAL   shift, and go to state 25
+    CHAR_LITERAL  shift, and go to state 77
+    ID            shift, and go to state 59
+    SUBTRACT      shift, and go to state 78
+    NOT           shift, and go to state 79
+    OPEN          shift, and go to state 80
+
+    location       go to state 81
+    method_call    go to state 83
+    normal_call    go to state 69
+    callout_call   go to state 70
+    expr           go to state 126
+    binary_expr    go to state 85
+    enclosed_expr  go to state 86
+    unary_expr     go to state 87
+    char_literal   go to state 88
+    int_literal    go to state 89
+    bool_literal   go to state 90
+
+
+state 99
+
+   48 method_call_statment: method_call SEMI_COLON .
+
+    $default  reduce using rule 48 (method_call_statment)
+
+
+state 100
 
    27 var_names: var_names COMMA ID .
 
     $default  reduce using rule 27 (var_names)
 
 
-state 97
-
-   96 string_literal: STRING .
-
-    $default  reduce using rule 96 (string_literal)
-
-
-state 98
-
-   50 method_call: CALLOUT OPEN string_literal . CLOSE
-   51            | CALLOUT OPEN string_literal . COMMA non_empty_callout_args CLOSE
-
-    CLOSE  shift, and go to state 129
-    COMMA  shift, and go to state 130
-
-
-state 99
-
-   64 expr: expr . bin_op expr
-   65     | SUBTRACT expr .
-
-    ADD              shift, and go to state 103
-    SUBTRACT         shift, and go to state 104
-    MULTIPLY         shift, and go to state 105
-    DIVIDE           shift, and go to state 106
-    EQUALITY         shift, and go to state 107
-    NOT_EQUAL        shift, and go to state 108
-    GREATER_EQUAL    shift, and go to state 109
-    LESS_EQUAL       shift, and go to state 110
-    GREATER          shift, and go to state 111
-    LESS             shift, and go to state 112
-    CONDITIONAL_AND  shift, and go to state 113
-    CONDITIONAL_OR   shift, and go to state 114
-    MODULO           shift, and go to state 115
-
-    ADD              [reduce using rule 65 (expr)]
-    SUBTRACT         [reduce using rule 65 (expr)]
-    MULTIPLY         [reduce using rule 65 (expr)]
-    DIVIDE           [reduce using rule 65 (expr)]
-    EQUALITY         [reduce using rule 65 (expr)]
-    NOT_EQUAL        [reduce using rule 65 (expr)]
-    GREATER_EQUAL    [reduce using rule 65 (expr)]
-    LESS_EQUAL       [reduce using rule 65 (expr)]
-    GREATER          [reduce using rule 65 (expr)]
-    LESS             [reduce using rule 65 (expr)]
-    CONDITIONAL_AND  [reduce using rule 65 (expr)]
-    CONDITIONAL_OR   [reduce using rule 65 (expr)]
-    MODULO           [reduce using rule 65 (expr)]
-    $default         reduce using rule 65 (expr)
-
-    bin_op    go to state 116
-    arith_op  go to state 117
-    rel_op    go to state 118
-    eq_op     go to state 119
-    cond_op   go to state 120
-
-
-state 100
-
-   64 expr: expr . bin_op expr
-   66     | NOT expr .
-
-    ADD              shift, and go to state 103
-    SUBTRACT         shift, and go to state 104
-    MULTIPLY         shift, and go to state 105
-    DIVIDE           shift, and go to state 106
-    EQUALITY         shift, and go to state 107
-    NOT_EQUAL        shift, and go to state 108
-    GREATER_EQUAL    shift, and go to state 109
-    LESS_EQUAL       shift, and go to state 110
-    GREATER          shift, and go to state 111
-    LESS             shift, and go to state 112
-    CONDITIONAL_AND  shift, and go to state 113
-    CONDITIONAL_OR   shift, and go to state 114
-    MODULO           shift, and go to state 115
-
-    ADD              [reduce using rule 66 (expr)]
-    SUBTRACT         [reduce using rule 66 (expr)]
-    MULTIPLY         [reduce using rule 66 (expr)]
-    DIVIDE           [reduce using rule 66 (expr)]
-    EQUALITY         [reduce using rule 66 (expr)]
-    NOT_EQUAL        [reduce using rule 66 (expr)]
-    GREATER_EQUAL    [reduce using rule 66 (expr)]
-    LESS_EQUAL       [reduce using rule 66 (expr)]
-    GREATER          [reduce using rule 66 (expr)]
-    LESS             [reduce using rule 66 (expr)]
-    CONDITIONAL_AND  [reduce using rule 66 (expr)]
-    CONDITIONAL_OR   [reduce using rule 66 (expr)]
-    MODULO           [reduce using rule 66 (expr)]
-    $default         reduce using rule 66 (expr)
-
-    bin_op    go to state 116
-    arith_op  go to state 117
-    rel_op    go to state 118
-    eq_op     go to state 119
-    cond_op   go to state 120
-
-
 state 101
 
-   64 expr: expr . bin_op expr
-   67     | OPEN expr . CLOSE
+   94 string_literal: STRING .
 
-    ADD              shift, and go to state 103
-    SUBTRACT         shift, and go to state 104
-    MULTIPLY         shift, and go to state 105
-    DIVIDE           shift, and go to state 106
-    EQUALITY         shift, and go to state 107
-    NOT_EQUAL        shift, and go to state 108
-    GREATER_EQUAL    shift, and go to state 109
-    LESS_EQUAL       shift, and go to state 110
-    GREATER          shift, and go to state 111
-    LESS             shift, and go to state 112
-    CONDITIONAL_AND  shift, and go to state 113
-    CONDITIONAL_OR   shift, and go to state 114
-    MODULO           shift, and go to state 115
-    CLOSE            shift, and go to state 131
-
-    bin_op    go to state 116
-    arith_op  go to state 117
-    rel_op    go to state 118
-    eq_op     go to state 119
-    cond_op   go to state 120
+    $default  reduce using rule 94 (string_literal)
 
 
 state 102
 
-   44 return_statement: RETURN return_value SEMI_COLON .
+   56 callout_call: CALLOUT OPEN string_literal . CLOSE
+   57             | CALLOUT OPEN string_literal . COMMA non_empty_callout_args CLOSE
 
-    $default  reduce using rule 44 (return_statement)
+    CLOSE  shift, and go to state 127
+    COMMA  shift, and go to state 128
 
 
 state 103
 
-   75 arith_op: ADD .
+   70 binary_expr: expr . ADD expr
+   71            | expr . SUBTRACT expr
+   72            | expr . MULTIPLY expr
+   73            | expr . DIVIDE expr
+   74            | expr . MODULO expr
+   75            | expr . GREATER expr
+   76            | expr . LESS expr
+   77            | expr . GREATER_EQUAL expr
+   78            | expr . LESS_EQUAL expr
+   79            | expr . EQUALITY expr
+   80            | expr . NOT_EQUAL expr
+   81            | expr . CONDITIONAL_AND expr
+   82            | expr . CONDITIONAL_OR expr
+   84 unary_expr: SUBTRACT expr .
 
-    $default  reduce using rule 75 (arith_op)
+    ADD              shift, and go to state 107
+    SUBTRACT         shift, and go to state 108
+    MULTIPLY         shift, and go to state 109
+    DIVIDE           shift, and go to state 110
+    EQUALITY         shift, and go to state 111
+    NOT_EQUAL        shift, and go to state 112
+    GREATER_EQUAL    shift, and go to state 113
+    LESS_EQUAL       shift, and go to state 114
+    GREATER          shift, and go to state 115
+    LESS             shift, and go to state 116
+    CONDITIONAL_AND  shift, and go to state 117
+    CONDITIONAL_OR   shift, and go to state 118
+    MODULO           shift, and go to state 119
+
+    ADD              [reduce using rule 84 (unary_expr)]
+    SUBTRACT         [reduce using rule 84 (unary_expr)]
+    MULTIPLY         [reduce using rule 84 (unary_expr)]
+    DIVIDE           [reduce using rule 84 (unary_expr)]
+    EQUALITY         [reduce using rule 84 (unary_expr)]
+    NOT_EQUAL        [reduce using rule 84 (unary_expr)]
+    GREATER_EQUAL    [reduce using rule 84 (unary_expr)]
+    LESS_EQUAL       [reduce using rule 84 (unary_expr)]
+    GREATER          [reduce using rule 84 (unary_expr)]
+    LESS             [reduce using rule 84 (unary_expr)]
+    CONDITIONAL_AND  [reduce using rule 84 (unary_expr)]
+    CONDITIONAL_OR   [reduce using rule 84 (unary_expr)]
+    MODULO           [reduce using rule 84 (unary_expr)]
+    $default         reduce using rule 84 (unary_expr)
 
 
 state 104
 
-   76 arith_op: SUBTRACT .
+   70 binary_expr: expr . ADD expr
+   71            | expr . SUBTRACT expr
+   72            | expr . MULTIPLY expr
+   73            | expr . DIVIDE expr
+   74            | expr . MODULO expr
+   75            | expr . GREATER expr
+   76            | expr . LESS expr
+   77            | expr . GREATER_EQUAL expr
+   78            | expr . LESS_EQUAL expr
+   79            | expr . EQUALITY expr
+   80            | expr . NOT_EQUAL expr
+   81            | expr . CONDITIONAL_AND expr
+   82            | expr . CONDITIONAL_OR expr
+   85 unary_expr: NOT expr .
 
-    $default  reduce using rule 76 (arith_op)
+    ADD              shift, and go to state 107
+    SUBTRACT         shift, and go to state 108
+    MULTIPLY         shift, and go to state 109
+    DIVIDE           shift, and go to state 110
+    EQUALITY         shift, and go to state 111
+    NOT_EQUAL        shift, and go to state 112
+    GREATER_EQUAL    shift, and go to state 113
+    LESS_EQUAL       shift, and go to state 114
+    GREATER          shift, and go to state 115
+    LESS             shift, and go to state 116
+    CONDITIONAL_AND  shift, and go to state 117
+    CONDITIONAL_OR   shift, and go to state 118
+    MODULO           shift, and go to state 119
+
+    ADD              [reduce using rule 85 (unary_expr)]
+    SUBTRACT         [reduce using rule 85 (unary_expr)]
+    MULTIPLY         [reduce using rule 85 (unary_expr)]
+    DIVIDE           [reduce using rule 85 (unary_expr)]
+    EQUALITY         [reduce using rule 85 (unary_expr)]
+    NOT_EQUAL        [reduce using rule 85 (unary_expr)]
+    GREATER_EQUAL    [reduce using rule 85 (unary_expr)]
+    LESS_EQUAL       [reduce using rule 85 (unary_expr)]
+    GREATER          [reduce using rule 85 (unary_expr)]
+    LESS             [reduce using rule 85 (unary_expr)]
+    CONDITIONAL_AND  [reduce using rule 85 (unary_expr)]
+    CONDITIONAL_OR   [reduce using rule 85 (unary_expr)]
+    MODULO           [reduce using rule 85 (unary_expr)]
+    $default         reduce using rule 85 (unary_expr)
 
 
 state 105
 
-   77 arith_op: MULTIPLY .
+   70 binary_expr: expr . ADD expr
+   71            | expr . SUBTRACT expr
+   72            | expr . MULTIPLY expr
+   73            | expr . DIVIDE expr
+   74            | expr . MODULO expr
+   75            | expr . GREATER expr
+   76            | expr . LESS expr
+   77            | expr . GREATER_EQUAL expr
+   78            | expr . LESS_EQUAL expr
+   79            | expr . EQUALITY expr
+   80            | expr . NOT_EQUAL expr
+   81            | expr . CONDITIONAL_AND expr
+   82            | expr . CONDITIONAL_OR expr
+   83 enclosed_expr: OPEN expr . CLOSE
 
-    $default  reduce using rule 77 (arith_op)
+    ADD              shift, and go to state 107
+    SUBTRACT         shift, and go to state 108
+    MULTIPLY         shift, and go to state 109
+    DIVIDE           shift, and go to state 110
+    EQUALITY         shift, and go to state 111
+    NOT_EQUAL        shift, and go to state 112
+    GREATER_EQUAL    shift, and go to state 113
+    LESS_EQUAL       shift, and go to state 114
+    GREATER          shift, and go to state 115
+    LESS             shift, and go to state 116
+    CONDITIONAL_AND  shift, and go to state 117
+    CONDITIONAL_OR   shift, and go to state 118
+    MODULO           shift, and go to state 119
+    CLOSE            shift, and go to state 129
 
 
 state 106
 
-   78 arith_op: DIVIDE .
+   43 return_statement: RETURN return_value SEMI_COLON .
 
-    $default  reduce using rule 78 (arith_op)
+    $default  reduce using rule 43 (return_statement)
 
 
 state 107
 
-   84 eq_op: EQUALITY .
+   70 binary_expr: expr ADD . expr
 
-    $default  reduce using rule 84 (eq_op)
+    CALLOUT       shift, and go to state 53
+    TRUE          shift, and go to state 75
+    FALSE         shift, and go to state 76
+    NUM           shift, and go to state 24
+    HEX_LITERAL   shift, and go to state 25
+    CHAR_LITERAL  shift, and go to state 77
+    ID            shift, and go to state 59
+    SUBTRACT      shift, and go to state 78
+    NOT           shift, and go to state 79
+    OPEN          shift, and go to state 80
+
+    location       go to state 81
+    method_call    go to state 83
+    normal_call    go to state 69
+    callout_call   go to state 70
+    expr           go to state 130
+    binary_expr    go to state 85
+    enclosed_expr  go to state 86
+    unary_expr     go to state 87
+    char_literal   go to state 88
+    int_literal    go to state 89
+    bool_literal   go to state 90
 
 
 state 108
 
-   85 eq_op: NOT_EQUAL .
+   71 binary_expr: expr SUBTRACT . expr
 
-    $default  reduce using rule 85 (eq_op)
+    CALLOUT       shift, and go to state 53
+    TRUE          shift, and go to state 75
+    FALSE         shift, and go to state 76
+    NUM           shift, and go to state 24
+    HEX_LITERAL   shift, and go to state 25
+    CHAR_LITERAL  shift, and go to state 77
+    ID            shift, and go to state 59
+    SUBTRACT      shift, and go to state 78
+    NOT           shift, and go to state 79
+    OPEN          shift, and go to state 80
+
+    location       go to state 81
+    method_call    go to state 83
+    normal_call    go to state 69
+    callout_call   go to state 70
+    expr           go to state 131
+    binary_expr    go to state 85
+    enclosed_expr  go to state 86
+    unary_expr     go to state 87
+    char_literal   go to state 88
+    int_literal    go to state 89
+    bool_literal   go to state 90
 
 
 state 109
 
-   82 rel_op: GREATER_EQUAL .
+   72 binary_expr: expr MULTIPLY . expr
 
-    $default  reduce using rule 82 (rel_op)
+    CALLOUT       shift, and go to state 53
+    TRUE          shift, and go to state 75
+    FALSE         shift, and go to state 76
+    NUM           shift, and go to state 24
+    HEX_LITERAL   shift, and go to state 25
+    CHAR_LITERAL  shift, and go to state 77
+    ID            shift, and go to state 59
+    SUBTRACT      shift, and go to state 78
+    NOT           shift, and go to state 79
+    OPEN          shift, and go to state 80
+
+    location       go to state 81
+    method_call    go to state 83
+    normal_call    go to state 69
+    callout_call   go to state 70
+    expr           go to state 132
+    binary_expr    go to state 85
+    enclosed_expr  go to state 86
+    unary_expr     go to state 87
+    char_literal   go to state 88
+    int_literal    go to state 89
+    bool_literal   go to state 90
 
 
 state 110
 
-   83 rel_op: LESS_EQUAL .
+   73 binary_expr: expr DIVIDE . expr
 
-    $default  reduce using rule 83 (rel_op)
+    CALLOUT       shift, and go to state 53
+    TRUE          shift, and go to state 75
+    FALSE         shift, and go to state 76
+    NUM           shift, and go to state 24
+    HEX_LITERAL   shift, and go to state 25
+    CHAR_LITERAL  shift, and go to state 77
+    ID            shift, and go to state 59
+    SUBTRACT      shift, and go to state 78
+    NOT           shift, and go to state 79
+    OPEN          shift, and go to state 80
+
+    location       go to state 81
+    method_call    go to state 83
+    normal_call    go to state 69
+    callout_call   go to state 70
+    expr           go to state 133
+    binary_expr    go to state 85
+    enclosed_expr  go to state 86
+    unary_expr     go to state 87
+    char_literal   go to state 88
+    int_literal    go to state 89
+    bool_literal   go to state 90
 
 
 state 111
 
-   80 rel_op: GREATER .
+   79 binary_expr: expr EQUALITY . expr
 
-    $default  reduce using rule 80 (rel_op)
+    CALLOUT       shift, and go to state 53
+    TRUE          shift, and go to state 75
+    FALSE         shift, and go to state 76
+    NUM           shift, and go to state 24
+    HEX_LITERAL   shift, and go to state 25
+    CHAR_LITERAL  shift, and go to state 77
+    ID            shift, and go to state 59
+    SUBTRACT      shift, and go to state 78
+    NOT           shift, and go to state 79
+    OPEN          shift, and go to state 80
+
+    location       go to state 81
+    method_call    go to state 83
+    normal_call    go to state 69
+    callout_call   go to state 70
+    expr           go to state 134
+    binary_expr    go to state 85
+    enclosed_expr  go to state 86
+    unary_expr     go to state 87
+    char_literal   go to state 88
+    int_literal    go to state 89
+    bool_literal   go to state 90
 
 
 state 112
 
-   81 rel_op: LESS .
+   80 binary_expr: expr NOT_EQUAL . expr
 
-    $default  reduce using rule 81 (rel_op)
+    CALLOUT       shift, and go to state 53
+    TRUE          shift, and go to state 75
+    FALSE         shift, and go to state 76
+    NUM           shift, and go to state 24
+    HEX_LITERAL   shift, and go to state 25
+    CHAR_LITERAL  shift, and go to state 77
+    ID            shift, and go to state 59
+    SUBTRACT      shift, and go to state 78
+    NOT           shift, and go to state 79
+    OPEN          shift, and go to state 80
+
+    location       go to state 81
+    method_call    go to state 83
+    normal_call    go to state 69
+    callout_call   go to state 70
+    expr           go to state 135
+    binary_expr    go to state 85
+    enclosed_expr  go to state 86
+    unary_expr     go to state 87
+    char_literal   go to state 88
+    int_literal    go to state 89
+    bool_literal   go to state 90
 
 
 state 113
 
-   86 cond_op: CONDITIONAL_AND .
+   77 binary_expr: expr GREATER_EQUAL . expr
 
-    $default  reduce using rule 86 (cond_op)
+    CALLOUT       shift, and go to state 53
+    TRUE          shift, and go to state 75
+    FALSE         shift, and go to state 76
+    NUM           shift, and go to state 24
+    HEX_LITERAL   shift, and go to state 25
+    CHAR_LITERAL  shift, and go to state 77
+    ID            shift, and go to state 59
+    SUBTRACT      shift, and go to state 78
+    NOT           shift, and go to state 79
+    OPEN          shift, and go to state 80
+
+    location       go to state 81
+    method_call    go to state 83
+    normal_call    go to state 69
+    callout_call   go to state 70
+    expr           go to state 136
+    binary_expr    go to state 85
+    enclosed_expr  go to state 86
+    unary_expr     go to state 87
+    char_literal   go to state 88
+    int_literal    go to state 89
+    bool_literal   go to state 90
 
 
 state 114
 
-   87 cond_op: CONDITIONAL_OR .
+   78 binary_expr: expr LESS_EQUAL . expr
 
-    $default  reduce using rule 87 (cond_op)
+    CALLOUT       shift, and go to state 53
+    TRUE          shift, and go to state 75
+    FALSE         shift, and go to state 76
+    NUM           shift, and go to state 24
+    HEX_LITERAL   shift, and go to state 25
+    CHAR_LITERAL  shift, and go to state 77
+    ID            shift, and go to state 59
+    SUBTRACT      shift, and go to state 78
+    NOT           shift, and go to state 79
+    OPEN          shift, and go to state 80
+
+    location       go to state 81
+    method_call    go to state 83
+    normal_call    go to state 69
+    callout_call   go to state 70
+    expr           go to state 137
+    binary_expr    go to state 85
+    enclosed_expr  go to state 86
+    unary_expr     go to state 87
+    char_literal   go to state 88
+    int_literal    go to state 89
+    bool_literal   go to state 90
 
 
 state 115
 
-   79 arith_op: MODULO .
+   75 binary_expr: expr GREATER . expr
 
-    $default  reduce using rule 79 (arith_op)
+    CALLOUT       shift, and go to state 53
+    TRUE          shift, and go to state 75
+    FALSE         shift, and go to state 76
+    NUM           shift, and go to state 24
+    HEX_LITERAL   shift, and go to state 25
+    CHAR_LITERAL  shift, and go to state 77
+    ID            shift, and go to state 59
+    SUBTRACT      shift, and go to state 78
+    NOT           shift, and go to state 79
+    OPEN          shift, and go to state 80
+
+    location       go to state 81
+    method_call    go to state 83
+    normal_call    go to state 69
+    callout_call   go to state 70
+    expr           go to state 138
+    binary_expr    go to state 85
+    enclosed_expr  go to state 86
+    unary_expr     go to state 87
+    char_literal   go to state 88
+    int_literal    go to state 89
+    bool_literal   go to state 90
 
 
 state 116
 
-   64 expr: expr bin_op . expr
+   76 binary_expr: expr LESS . expr
 
     CALLOUT       shift, and go to state 53
-    TRUE          shift, and go to state 73
-    FALSE         shift, and go to state 74
+    TRUE          shift, and go to state 75
+    FALSE         shift, and go to state 76
     NUM           shift, and go to state 24
     HEX_LITERAL   shift, and go to state 25
-    CHAR_LITERAL  shift, and go to state 75
+    CHAR_LITERAL  shift, and go to state 77
     ID            shift, and go to state 59
-    SUBTRACT      shift, and go to state 76
-    NOT           shift, and go to state 77
-    OPEN          shift, and go to state 78
+    SUBTRACT      shift, and go to state 78
+    NOT           shift, and go to state 79
+    OPEN          shift, and go to state 80
 
-    location      go to state 79
-    method_call   go to state 81
-    expr          go to state 132
-    literal       go to state 83
-    char_literal  go to state 84
-    int_literal   go to state 85
-    bool_literal  go to state 86
+    location       go to state 81
+    method_call    go to state 83
+    normal_call    go to state 69
+    callout_call   go to state 70
+    expr           go to state 139
+    binary_expr    go to state 85
+    enclosed_expr  go to state 86
+    unary_expr     go to state 87
+    char_literal   go to state 88
+    int_literal    go to state 89
+    bool_literal   go to state 90
 
 
 state 117
 
-   71 bin_op: arith_op .
+   81 binary_expr: expr CONDITIONAL_AND . expr
 
-    $default  reduce using rule 71 (bin_op)
+    CALLOUT       shift, and go to state 53
+    TRUE          shift, and go to state 75
+    FALSE         shift, and go to state 76
+    NUM           shift, and go to state 24
+    HEX_LITERAL   shift, and go to state 25
+    CHAR_LITERAL  shift, and go to state 77
+    ID            shift, and go to state 59
+    SUBTRACT      shift, and go to state 78
+    NOT           shift, and go to state 79
+    OPEN          shift, and go to state 80
+
+    location       go to state 81
+    method_call    go to state 83
+    normal_call    go to state 69
+    callout_call   go to state 70
+    expr           go to state 140
+    binary_expr    go to state 85
+    enclosed_expr  go to state 86
+    unary_expr     go to state 87
+    char_literal   go to state 88
+    int_literal    go to state 89
+    bool_literal   go to state 90
 
 
 state 118
 
-   72 bin_op: rel_op .
+   82 binary_expr: expr CONDITIONAL_OR . expr
 
-    $default  reduce using rule 72 (bin_op)
+    CALLOUT       shift, and go to state 53
+    TRUE          shift, and go to state 75
+    FALSE         shift, and go to state 76
+    NUM           shift, and go to state 24
+    HEX_LITERAL   shift, and go to state 25
+    CHAR_LITERAL  shift, and go to state 77
+    ID            shift, and go to state 59
+    SUBTRACT      shift, and go to state 78
+    NOT           shift, and go to state 79
+    OPEN          shift, and go to state 80
+
+    location       go to state 81
+    method_call    go to state 83
+    normal_call    go to state 69
+    callout_call   go to state 70
+    expr           go to state 141
+    binary_expr    go to state 85
+    enclosed_expr  go to state 86
+    unary_expr     go to state 87
+    char_literal   go to state 88
+    int_literal    go to state 89
+    bool_literal   go to state 90
 
 
 state 119
 
-   73 bin_op: eq_op .
+   74 binary_expr: expr MODULO . expr
 
-    $default  reduce using rule 73 (bin_op)
+    CALLOUT       shift, and go to state 53
+    TRUE          shift, and go to state 75
+    FALSE         shift, and go to state 76
+    NUM           shift, and go to state 24
+    HEX_LITERAL   shift, and go to state 25
+    CHAR_LITERAL  shift, and go to state 77
+    ID            shift, and go to state 59
+    SUBTRACT      shift, and go to state 78
+    NOT           shift, and go to state 79
+    OPEN          shift, and go to state 80
+
+    location       go to state 81
+    method_call    go to state 83
+    normal_call    go to state 69
+    callout_call   go to state 70
+    expr           go to state 142
+    binary_expr    go to state 85
+    enclosed_expr  go to state 86
+    unary_expr     go to state 87
+    char_literal   go to state 88
+    int_literal    go to state 89
+    bool_literal   go to state 90
 
 
 state 120
 
-   74 bin_op: cond_op .
+   42 for_statement: FOR ID EQUAL . expr COMMA expr code_block
 
-    $default  reduce using rule 74 (bin_op)
+    CALLOUT       shift, and go to state 53
+    TRUE          shift, and go to state 75
+    FALSE         shift, and go to state 76
+    NUM           shift, and go to state 24
+    HEX_LITERAL   shift, and go to state 25
+    CHAR_LITERAL  shift, and go to state 77
+    ID            shift, and go to state 59
+    SUBTRACT      shift, and go to state 78
+    NOT           shift, and go to state 79
+    OPEN          shift, and go to state 80
+
+    location       go to state 81
+    method_call    go to state 83
+    normal_call    go to state 69
+    callout_call   go to state 70
+    expr           go to state 143
+    binary_expr    go to state 85
+    enclosed_expr  go to state 86
+    unary_expr     go to state 87
+    char_literal   go to state 88
+    int_literal    go to state 89
+    bool_literal   go to state 90
 
 
 state 121
 
-   43 for_statement: FOR ID EQUAL . expr COMMA expr code_block
+   39 if_statement: IF OPEN expr . CLOSE code_block else_statement
+   70 binary_expr: expr . ADD expr
+   71            | expr . SUBTRACT expr
+   72            | expr . MULTIPLY expr
+   73            | expr . DIVIDE expr
+   74            | expr . MODULO expr
+   75            | expr . GREATER expr
+   76            | expr . LESS expr
+   77            | expr . GREATER_EQUAL expr
+   78            | expr . LESS_EQUAL expr
+   79            | expr . EQUALITY expr
+   80            | expr . NOT_EQUAL expr
+   81            | expr . CONDITIONAL_AND expr
+   82            | expr . CONDITIONAL_OR expr
 
-    CALLOUT       shift, and go to state 53
-    TRUE          shift, and go to state 73
-    FALSE         shift, and go to state 74
-    NUM           shift, and go to state 24
-    HEX_LITERAL   shift, and go to state 25
-    CHAR_LITERAL  shift, and go to state 75
-    ID            shift, and go to state 59
-    SUBTRACT      shift, and go to state 76
-    NOT           shift, and go to state 77
-    OPEN          shift, and go to state 78
-
-    location      go to state 79
-    method_call   go to state 81
-    expr          go to state 133
-    literal       go to state 83
-    char_literal  go to state 84
-    int_literal   go to state 85
-    bool_literal  go to state 86
+    ADD              shift, and go to state 107
+    SUBTRACT         shift, and go to state 108
+    MULTIPLY         shift, and go to state 109
+    DIVIDE           shift, and go to state 110
+    EQUALITY         shift, and go to state 111
+    NOT_EQUAL        shift, and go to state 112
+    GREATER_EQUAL    shift, and go to state 113
+    LESS_EQUAL       shift, and go to state 114
+    GREATER          shift, and go to state 115
+    LESS             shift, and go to state 116
+    CONDITIONAL_AND  shift, and go to state 117
+    CONDITIONAL_OR   shift, and go to state 118
+    MODULO           shift, and go to state 119
+    CLOSE            shift, and go to state 144
 
 
 state 122
 
-   40 if_statement: IF OPEN expr . CLOSE code_block else_statement
-   64 expr: expr . bin_op expr
+   38 location: ID SQUARE_OPEN expr . SQUARE_CLOSE
+   70 binary_expr: expr . ADD expr
+   71            | expr . SUBTRACT expr
+   72            | expr . MULTIPLY expr
+   73            | expr . DIVIDE expr
+   74            | expr . MODULO expr
+   75            | expr . GREATER expr
+   76            | expr . LESS expr
+   77            | expr . GREATER_EQUAL expr
+   78            | expr . LESS_EQUAL expr
+   79            | expr . EQUALITY expr
+   80            | expr . NOT_EQUAL expr
+   81            | expr . CONDITIONAL_AND expr
+   82            | expr . CONDITIONAL_OR expr
 
-    ADD              shift, and go to state 103
-    SUBTRACT         shift, and go to state 104
-    MULTIPLY         shift, and go to state 105
-    DIVIDE           shift, and go to state 106
-    EQUALITY         shift, and go to state 107
-    NOT_EQUAL        shift, and go to state 108
-    GREATER_EQUAL    shift, and go to state 109
-    LESS_EQUAL       shift, and go to state 110
-    GREATER          shift, and go to state 111
-    LESS             shift, and go to state 112
-    CONDITIONAL_AND  shift, and go to state 113
-    CONDITIONAL_OR   shift, and go to state 114
-    MODULO           shift, and go to state 115
-    CLOSE            shift, and go to state 134
-
-    bin_op    go to state 116
-    arith_op  go to state 117
-    rel_op    go to state 118
-    eq_op     go to state 119
-    cond_op   go to state 120
+    ADD              shift, and go to state 107
+    SUBTRACT         shift, and go to state 108
+    MULTIPLY         shift, and go to state 109
+    DIVIDE           shift, and go to state 110
+    EQUALITY         shift, and go to state 111
+    NOT_EQUAL        shift, and go to state 112
+    GREATER_EQUAL    shift, and go to state 113
+    LESS_EQUAL       shift, and go to state 114
+    GREATER          shift, and go to state 115
+    LESS             shift, and go to state 116
+    CONDITIONAL_AND  shift, and go to state 117
+    CONDITIONAL_OR   shift, and go to state 118
+    MODULO           shift, and go to state 119
+    SQUARE_CLOSE     shift, and go to state 145
 
 
 state 123
 
-   38 location: ID SQUARE_OPEN expr . SQUARE_CLOSE
-   64 expr: expr . bin_op expr
+   51 normal_call: ID OPEN method_call_args . CLOSE
 
-    ADD              shift, and go to state 103
-    SUBTRACT         shift, and go to state 104
-    MULTIPLY         shift, and go to state 105
-    DIVIDE           shift, and go to state 106
-    EQUALITY         shift, and go to state 107
-    NOT_EQUAL        shift, and go to state 108
-    GREATER_EQUAL    shift, and go to state 109
-    LESS_EQUAL       shift, and go to state 110
-    GREATER          shift, and go to state 111
-    LESS             shift, and go to state 112
-    CONDITIONAL_AND  shift, and go to state 113
-    CONDITIONAL_OR   shift, and go to state 114
-    MODULO           shift, and go to state 115
-    SQUARE_CLOSE     shift, and go to state 135
-
-    bin_op    go to state 116
-    arith_op  go to state 117
-    rel_op    go to state 118
-    eq_op     go to state 119
-    cond_op   go to state 120
+    CLOSE  shift, and go to state 146
 
 
 state 124
 
-   49 method_call: ID OPEN method_call_args . CLOSE
-
-    CLOSE  shift, and go to state 136
-
-
-state 125
-
    53 method_call_args: non_empty_method_call_args .
-   55 non_empty_method_call_args: non_empty_method_call_args . COMMA method_call_arg
+   55 non_empty_method_call_args: non_empty_method_call_args . COMMA expr
 
-    COMMA  shift, and go to state 137
+    COMMA  shift, and go to state 147
 
     $default  reduce using rule 53 (method_call_args)
 
 
-state 126
+state 125
 
-   54 non_empty_method_call_args: method_call_arg .
+   54 non_empty_method_call_args: expr .
+   70 binary_expr: expr . ADD expr
+   71            | expr . SUBTRACT expr
+   72            | expr . MULTIPLY expr
+   73            | expr . DIVIDE expr
+   74            | expr . MODULO expr
+   75            | expr . GREATER expr
+   76            | expr . LESS expr
+   77            | expr . GREATER_EQUAL expr
+   78            | expr . LESS_EQUAL expr
+   79            | expr . EQUALITY expr
+   80            | expr . NOT_EQUAL expr
+   81            | expr . CONDITIONAL_AND expr
+   82            | expr . CONDITIONAL_OR expr
+
+    ADD              shift, and go to state 107
+    SUBTRACT         shift, and go to state 108
+    MULTIPLY         shift, and go to state 109
+    DIVIDE           shift, and go to state 110
+    EQUALITY         shift, and go to state 111
+    NOT_EQUAL        shift, and go to state 112
+    GREATER_EQUAL    shift, and go to state 113
+    LESS_EQUAL       shift, and go to state 114
+    GREATER          shift, and go to state 115
+    LESS             shift, and go to state 116
+    CONDITIONAL_AND  shift, and go to state 117
+    CONDITIONAL_OR   shift, and go to state 118
+    MODULO           shift, and go to state 119
 
     $default  reduce using rule 54 (non_empty_method_call_args)
 
 
+state 126
+
+   36 assign_statement: location assign_op expr . SEMI_COLON
+   70 binary_expr: expr . ADD expr
+   71            | expr . SUBTRACT expr
+   72            | expr . MULTIPLY expr
+   73            | expr . DIVIDE expr
+   74            | expr . MODULO expr
+   75            | expr . GREATER expr
+   76            | expr . LESS expr
+   77            | expr . GREATER_EQUAL expr
+   78            | expr . LESS_EQUAL expr
+   79            | expr . EQUALITY expr
+   80            | expr . NOT_EQUAL expr
+   81            | expr . CONDITIONAL_AND expr
+   82            | expr . CONDITIONAL_OR expr
+
+    ADD              shift, and go to state 107
+    SUBTRACT         shift, and go to state 108
+    MULTIPLY         shift, and go to state 109
+    DIVIDE           shift, and go to state 110
+    EQUALITY         shift, and go to state 111
+    NOT_EQUAL        shift, and go to state 112
+    GREATER_EQUAL    shift, and go to state 113
+    LESS_EQUAL       shift, and go to state 114
+    GREATER          shift, and go to state 115
+    LESS             shift, and go to state 116
+    CONDITIONAL_AND  shift, and go to state 117
+    CONDITIONAL_OR   shift, and go to state 118
+    MODULO           shift, and go to state 119
+    SEMI_COLON       shift, and go to state 148
+
+
 state 127
 
-   56 method_call_arg: expr .
-   64 expr: expr . bin_op expr
+   56 callout_call: CALLOUT OPEN string_literal CLOSE .
 
-    ADD              shift, and go to state 103
-    SUBTRACT         shift, and go to state 104
-    MULTIPLY         shift, and go to state 105
-    DIVIDE           shift, and go to state 106
-    EQUALITY         shift, and go to state 107
-    NOT_EQUAL        shift, and go to state 108
-    GREATER_EQUAL    shift, and go to state 109
-    LESS_EQUAL       shift, and go to state 110
-    GREATER          shift, and go to state 111
-    LESS             shift, and go to state 112
-    CONDITIONAL_AND  shift, and go to state 113
-    CONDITIONAL_OR   shift, and go to state 114
-    MODULO           shift, and go to state 115
-
-    $default  reduce using rule 56 (method_call_arg)
-
-    bin_op    go to state 116
-    arith_op  go to state 117
-    rel_op    go to state 118
-    eq_op     go to state 119
-    cond_op   go to state 120
+    $default  reduce using rule 56 (callout_call)
 
 
 state 128
 
-   36 assign_statement: location assign_op expr . SEMI_COLON
-   64 expr: expr . bin_op expr
+   57 callout_call: CALLOUT OPEN string_literal COMMA . non_empty_callout_args CLOSE
 
-    ADD              shift, and go to state 103
-    SUBTRACT         shift, and go to state 104
-    MULTIPLY         shift, and go to state 105
-    DIVIDE           shift, and go to state 106
-    EQUALITY         shift, and go to state 107
-    NOT_EQUAL        shift, and go to state 108
-    GREATER_EQUAL    shift, and go to state 109
-    LESS_EQUAL       shift, and go to state 110
-    GREATER          shift, and go to state 111
-    LESS             shift, and go to state 112
-    CONDITIONAL_AND  shift, and go to state 113
-    CONDITIONAL_OR   shift, and go to state 114
-    MODULO           shift, and go to state 115
-    SEMI_COLON       shift, and go to state 138
+    CALLOUT       shift, and go to state 53
+    TRUE          shift, and go to state 75
+    FALSE         shift, and go to state 76
+    NUM           shift, and go to state 24
+    HEX_LITERAL   shift, and go to state 25
+    CHAR_LITERAL  shift, and go to state 77
+    STRING        shift, and go to state 101
+    ID            shift, and go to state 59
+    SUBTRACT      shift, and go to state 78
+    NOT           shift, and go to state 79
+    OPEN          shift, and go to state 80
 
-    bin_op    go to state 116
-    arith_op  go to state 117
-    rel_op    go to state 118
-    eq_op     go to state 119
-    cond_op   go to state 120
+    location                go to state 81
+    method_call             go to state 83
+    normal_call             go to state 69
+    callout_call            go to state 70
+    non_empty_callout_args  go to state 149
+    callout_arg             go to state 150
+    expr                    go to state 151
+    binary_expr             go to state 85
+    enclosed_expr           go to state 86
+    unary_expr              go to state 87
+    char_literal            go to state 88
+    int_literal             go to state 89
+    bool_literal            go to state 90
+    string_literal          go to state 152
 
 
 state 129
 
-   50 method_call: CALLOUT OPEN string_literal CLOSE .
+   83 enclosed_expr: OPEN expr CLOSE .
 
-    $default  reduce using rule 50 (method_call)
+    $default  reduce using rule 83 (enclosed_expr)
 
 
 state 130
 
-   51 method_call: CALLOUT OPEN string_literal COMMA . non_empty_callout_args CLOSE
+   70 binary_expr: expr . ADD expr
+   70            | expr ADD expr .
+   71            | expr . SUBTRACT expr
+   72            | expr . MULTIPLY expr
+   73            | expr . DIVIDE expr
+   74            | expr . MODULO expr
+   75            | expr . GREATER expr
+   76            | expr . LESS expr
+   77            | expr . GREATER_EQUAL expr
+   78            | expr . LESS_EQUAL expr
+   79            | expr . EQUALITY expr
+   80            | expr . NOT_EQUAL expr
+   81            | expr . CONDITIONAL_AND expr
+   82            | expr . CONDITIONAL_OR expr
 
-    CALLOUT       shift, and go to state 53
-    TRUE          shift, and go to state 73
-    FALSE         shift, and go to state 74
-    NUM           shift, and go to state 24
-    HEX_LITERAL   shift, and go to state 25
-    CHAR_LITERAL  shift, and go to state 75
-    STRING        shift, and go to state 97
-    ID            shift, and go to state 59
-    SUBTRACT      shift, and go to state 76
-    NOT           shift, and go to state 77
-    OPEN          shift, and go to state 78
+    ADD              shift, and go to state 107
+    SUBTRACT         shift, and go to state 108
+    MULTIPLY         shift, and go to state 109
+    DIVIDE           shift, and go to state 110
+    EQUALITY         shift, and go to state 111
+    NOT_EQUAL        shift, and go to state 112
+    GREATER_EQUAL    shift, and go to state 113
+    LESS_EQUAL       shift, and go to state 114
+    GREATER          shift, and go to state 115
+    LESS             shift, and go to state 116
+    CONDITIONAL_AND  shift, and go to state 117
+    CONDITIONAL_OR   shift, and go to state 118
+    MODULO           shift, and go to state 119
 
-    location                go to state 79
-    method_call             go to state 81
-    non_empty_callout_args  go to state 139
-    callout_arg             go to state 140
-    expr                    go to state 141
-    literal                 go to state 83
-    char_literal            go to state 84
-    int_literal             go to state 85
-    bool_literal            go to state 86
-    string_literal          go to state 142
+    ADD              [reduce using rule 70 (binary_expr)]
+    SUBTRACT         [reduce using rule 70 (binary_expr)]
+    MULTIPLY         [reduce using rule 70 (binary_expr)]
+    DIVIDE           [reduce using rule 70 (binary_expr)]
+    EQUALITY         [reduce using rule 70 (binary_expr)]
+    NOT_EQUAL        [reduce using rule 70 (binary_expr)]
+    GREATER_EQUAL    [reduce using rule 70 (binary_expr)]
+    LESS_EQUAL       [reduce using rule 70 (binary_expr)]
+    GREATER          [reduce using rule 70 (binary_expr)]
+    LESS             [reduce using rule 70 (binary_expr)]
+    CONDITIONAL_AND  [reduce using rule 70 (binary_expr)]
+    CONDITIONAL_OR   [reduce using rule 70 (binary_expr)]
+    MODULO           [reduce using rule 70 (binary_expr)]
+    $default         reduce using rule 70 (binary_expr)
 
 
 state 131
 
-   67 expr: OPEN expr CLOSE .
+   70 binary_expr: expr . ADD expr
+   71            | expr . SUBTRACT expr
+   71            | expr SUBTRACT expr .
+   72            | expr . MULTIPLY expr
+   73            | expr . DIVIDE expr
+   74            | expr . MODULO expr
+   75            | expr . GREATER expr
+   76            | expr . LESS expr
+   77            | expr . GREATER_EQUAL expr
+   78            | expr . LESS_EQUAL expr
+   79            | expr . EQUALITY expr
+   80            | expr . NOT_EQUAL expr
+   81            | expr . CONDITIONAL_AND expr
+   82            | expr . CONDITIONAL_OR expr
 
-    $default  reduce using rule 67 (expr)
+    ADD              shift, and go to state 107
+    SUBTRACT         shift, and go to state 108
+    MULTIPLY         shift, and go to state 109
+    DIVIDE           shift, and go to state 110
+    EQUALITY         shift, and go to state 111
+    NOT_EQUAL        shift, and go to state 112
+    GREATER_EQUAL    shift, and go to state 113
+    LESS_EQUAL       shift, and go to state 114
+    GREATER          shift, and go to state 115
+    LESS             shift, and go to state 116
+    CONDITIONAL_AND  shift, and go to state 117
+    CONDITIONAL_OR   shift, and go to state 118
+    MODULO           shift, and go to state 119
+
+    ADD              [reduce using rule 71 (binary_expr)]
+    SUBTRACT         [reduce using rule 71 (binary_expr)]
+    MULTIPLY         [reduce using rule 71 (binary_expr)]
+    DIVIDE           [reduce using rule 71 (binary_expr)]
+    EQUALITY         [reduce using rule 71 (binary_expr)]
+    NOT_EQUAL        [reduce using rule 71 (binary_expr)]
+    GREATER_EQUAL    [reduce using rule 71 (binary_expr)]
+    LESS_EQUAL       [reduce using rule 71 (binary_expr)]
+    GREATER          [reduce using rule 71 (binary_expr)]
+    LESS             [reduce using rule 71 (binary_expr)]
+    CONDITIONAL_AND  [reduce using rule 71 (binary_expr)]
+    CONDITIONAL_OR   [reduce using rule 71 (binary_expr)]
+    MODULO           [reduce using rule 71 (binary_expr)]
+    $default         reduce using rule 71 (binary_expr)
 
 
 state 132
 
-   64 expr: expr . bin_op expr
-   64     | expr bin_op expr .
+   70 binary_expr: expr . ADD expr
+   71            | expr . SUBTRACT expr
+   72            | expr . MULTIPLY expr
+   72            | expr MULTIPLY expr .
+   73            | expr . DIVIDE expr
+   74            | expr . MODULO expr
+   75            | expr . GREATER expr
+   76            | expr . LESS expr
+   77            | expr . GREATER_EQUAL expr
+   78            | expr . LESS_EQUAL expr
+   79            | expr . EQUALITY expr
+   80            | expr . NOT_EQUAL expr
+   81            | expr . CONDITIONAL_AND expr
+   82            | expr . CONDITIONAL_OR expr
 
-    ADD              shift, and go to state 103
-    SUBTRACT         shift, and go to state 104
-    MULTIPLY         shift, and go to state 105
-    DIVIDE           shift, and go to state 106
-    EQUALITY         shift, and go to state 107
-    NOT_EQUAL        shift, and go to state 108
-    GREATER_EQUAL    shift, and go to state 109
-    LESS_EQUAL       shift, and go to state 110
-    GREATER          shift, and go to state 111
-    LESS             shift, and go to state 112
-    CONDITIONAL_AND  shift, and go to state 113
-    CONDITIONAL_OR   shift, and go to state 114
-    MODULO           shift, and go to state 115
+    ADD              shift, and go to state 107
+    SUBTRACT         shift, and go to state 108
+    MULTIPLY         shift, and go to state 109
+    DIVIDE           shift, and go to state 110
+    EQUALITY         shift, and go to state 111
+    NOT_EQUAL        shift, and go to state 112
+    GREATER_EQUAL    shift, and go to state 113
+    LESS_EQUAL       shift, and go to state 114
+    GREATER          shift, and go to state 115
+    LESS             shift, and go to state 116
+    CONDITIONAL_AND  shift, and go to state 117
+    CONDITIONAL_OR   shift, and go to state 118
+    MODULO           shift, and go to state 119
 
-    ADD              [reduce using rule 64 (expr)]
-    SUBTRACT         [reduce using rule 64 (expr)]
-    MULTIPLY         [reduce using rule 64 (expr)]
-    DIVIDE           [reduce using rule 64 (expr)]
-    EQUALITY         [reduce using rule 64 (expr)]
-    NOT_EQUAL        [reduce using rule 64 (expr)]
-    GREATER_EQUAL    [reduce using rule 64 (expr)]
-    LESS_EQUAL       [reduce using rule 64 (expr)]
-    GREATER          [reduce using rule 64 (expr)]
-    LESS             [reduce using rule 64 (expr)]
-    CONDITIONAL_AND  [reduce using rule 64 (expr)]
-    CONDITIONAL_OR   [reduce using rule 64 (expr)]
-    MODULO           [reduce using rule 64 (expr)]
-    $default         reduce using rule 64 (expr)
-
-    bin_op    go to state 116
-    arith_op  go to state 117
-    rel_op    go to state 118
-    eq_op     go to state 119
-    cond_op   go to state 120
+    ADD              [reduce using rule 72 (binary_expr)]
+    SUBTRACT         [reduce using rule 72 (binary_expr)]
+    MULTIPLY         [reduce using rule 72 (binary_expr)]
+    DIVIDE           [reduce using rule 72 (binary_expr)]
+    EQUALITY         [reduce using rule 72 (binary_expr)]
+    NOT_EQUAL        [reduce using rule 72 (binary_expr)]
+    GREATER_EQUAL    [reduce using rule 72 (binary_expr)]
+    LESS_EQUAL       [reduce using rule 72 (binary_expr)]
+    GREATER          [reduce using rule 72 (binary_expr)]
+    LESS             [reduce using rule 72 (binary_expr)]
+    CONDITIONAL_AND  [reduce using rule 72 (binary_expr)]
+    CONDITIONAL_OR   [reduce using rule 72 (binary_expr)]
+    MODULO           [reduce using rule 72 (binary_expr)]
+    $default         reduce using rule 72 (binary_expr)
 
 
 state 133
 
-   43 for_statement: FOR ID EQUAL expr . COMMA expr code_block
-   64 expr: expr . bin_op expr
+   70 binary_expr: expr . ADD expr
+   71            | expr . SUBTRACT expr
+   72            | expr . MULTIPLY expr
+   73            | expr . DIVIDE expr
+   73            | expr DIVIDE expr .
+   74            | expr . MODULO expr
+   75            | expr . GREATER expr
+   76            | expr . LESS expr
+   77            | expr . GREATER_EQUAL expr
+   78            | expr . LESS_EQUAL expr
+   79            | expr . EQUALITY expr
+   80            | expr . NOT_EQUAL expr
+   81            | expr . CONDITIONAL_AND expr
+   82            | expr . CONDITIONAL_OR expr
 
-    ADD              shift, and go to state 103
-    SUBTRACT         shift, and go to state 104
-    MULTIPLY         shift, and go to state 105
-    DIVIDE           shift, and go to state 106
-    EQUALITY         shift, and go to state 107
-    NOT_EQUAL        shift, and go to state 108
-    GREATER_EQUAL    shift, and go to state 109
-    LESS_EQUAL       shift, and go to state 110
-    GREATER          shift, and go to state 111
-    LESS             shift, and go to state 112
-    CONDITIONAL_AND  shift, and go to state 113
-    CONDITIONAL_OR   shift, and go to state 114
-    MODULO           shift, and go to state 115
-    COMMA            shift, and go to state 143
+    ADD              shift, and go to state 107
+    SUBTRACT         shift, and go to state 108
+    MULTIPLY         shift, and go to state 109
+    DIVIDE           shift, and go to state 110
+    EQUALITY         shift, and go to state 111
+    NOT_EQUAL        shift, and go to state 112
+    GREATER_EQUAL    shift, and go to state 113
+    LESS_EQUAL       shift, and go to state 114
+    GREATER          shift, and go to state 115
+    LESS             shift, and go to state 116
+    CONDITIONAL_AND  shift, and go to state 117
+    CONDITIONAL_OR   shift, and go to state 118
+    MODULO           shift, and go to state 119
 
-    bin_op    go to state 116
-    arith_op  go to state 117
-    rel_op    go to state 118
-    eq_op     go to state 119
-    cond_op   go to state 120
+    ADD              [reduce using rule 73 (binary_expr)]
+    SUBTRACT         [reduce using rule 73 (binary_expr)]
+    MULTIPLY         [reduce using rule 73 (binary_expr)]
+    DIVIDE           [reduce using rule 73 (binary_expr)]
+    EQUALITY         [reduce using rule 73 (binary_expr)]
+    NOT_EQUAL        [reduce using rule 73 (binary_expr)]
+    GREATER_EQUAL    [reduce using rule 73 (binary_expr)]
+    LESS_EQUAL       [reduce using rule 73 (binary_expr)]
+    GREATER          [reduce using rule 73 (binary_expr)]
+    LESS             [reduce using rule 73 (binary_expr)]
+    CONDITIONAL_AND  [reduce using rule 73 (binary_expr)]
+    CONDITIONAL_OR   [reduce using rule 73 (binary_expr)]
+    MODULO           [reduce using rule 73 (binary_expr)]
+    $default         reduce using rule 73 (binary_expr)
 
 
 state 134
 
-   40 if_statement: IF OPEN expr CLOSE . code_block else_statement
+   70 binary_expr: expr . ADD expr
+   71            | expr . SUBTRACT expr
+   72            | expr . MULTIPLY expr
+   73            | expr . DIVIDE expr
+   74            | expr . MODULO expr
+   75            | expr . GREATER expr
+   76            | expr . LESS expr
+   77            | expr . GREATER_EQUAL expr
+   78            | expr . LESS_EQUAL expr
+   79            | expr . EQUALITY expr
+   79            | expr EQUALITY expr .
+   80            | expr . NOT_EQUAL expr
+   81            | expr . CONDITIONAL_AND expr
+   82            | expr . CONDITIONAL_OR expr
 
-    CURLY_OPEN  shift, and go to state 40
+    ADD              shift, and go to state 107
+    SUBTRACT         shift, and go to state 108
+    MULTIPLY         shift, and go to state 109
+    DIVIDE           shift, and go to state 110
+    EQUALITY         shift, and go to state 111
+    NOT_EQUAL        shift, and go to state 112
+    GREATER_EQUAL    shift, and go to state 113
+    LESS_EQUAL       shift, and go to state 114
+    GREATER          shift, and go to state 115
+    LESS             shift, and go to state 116
+    CONDITIONAL_AND  shift, and go to state 117
+    CONDITIONAL_OR   shift, and go to state 118
+    MODULO           shift, and go to state 119
 
-    code_block  go to state 144
+    ADD              [reduce using rule 79 (binary_expr)]
+    SUBTRACT         [reduce using rule 79 (binary_expr)]
+    MULTIPLY         [reduce using rule 79 (binary_expr)]
+    DIVIDE           [reduce using rule 79 (binary_expr)]
+    EQUALITY         [reduce using rule 79 (binary_expr)]
+    NOT_EQUAL        [reduce using rule 79 (binary_expr)]
+    GREATER_EQUAL    [reduce using rule 79 (binary_expr)]
+    LESS_EQUAL       [reduce using rule 79 (binary_expr)]
+    GREATER          [reduce using rule 79 (binary_expr)]
+    LESS             [reduce using rule 79 (binary_expr)]
+    CONDITIONAL_AND  [reduce using rule 79 (binary_expr)]
+    CONDITIONAL_OR   [reduce using rule 79 (binary_expr)]
+    MODULO           [reduce using rule 79 (binary_expr)]
+    $default         reduce using rule 79 (binary_expr)
 
 
 state 135
+
+   70 binary_expr: expr . ADD expr
+   71            | expr . SUBTRACT expr
+   72            | expr . MULTIPLY expr
+   73            | expr . DIVIDE expr
+   74            | expr . MODULO expr
+   75            | expr . GREATER expr
+   76            | expr . LESS expr
+   77            | expr . GREATER_EQUAL expr
+   78            | expr . LESS_EQUAL expr
+   79            | expr . EQUALITY expr
+   80            | expr . NOT_EQUAL expr
+   80            | expr NOT_EQUAL expr .
+   81            | expr . CONDITIONAL_AND expr
+   82            | expr . CONDITIONAL_OR expr
+
+    ADD              shift, and go to state 107
+    SUBTRACT         shift, and go to state 108
+    MULTIPLY         shift, and go to state 109
+    DIVIDE           shift, and go to state 110
+    EQUALITY         shift, and go to state 111
+    NOT_EQUAL        shift, and go to state 112
+    GREATER_EQUAL    shift, and go to state 113
+    LESS_EQUAL       shift, and go to state 114
+    GREATER          shift, and go to state 115
+    LESS             shift, and go to state 116
+    CONDITIONAL_AND  shift, and go to state 117
+    CONDITIONAL_OR   shift, and go to state 118
+    MODULO           shift, and go to state 119
+
+    ADD              [reduce using rule 80 (binary_expr)]
+    SUBTRACT         [reduce using rule 80 (binary_expr)]
+    MULTIPLY         [reduce using rule 80 (binary_expr)]
+    DIVIDE           [reduce using rule 80 (binary_expr)]
+    EQUALITY         [reduce using rule 80 (binary_expr)]
+    NOT_EQUAL        [reduce using rule 80 (binary_expr)]
+    GREATER_EQUAL    [reduce using rule 80 (binary_expr)]
+    LESS_EQUAL       [reduce using rule 80 (binary_expr)]
+    GREATER          [reduce using rule 80 (binary_expr)]
+    LESS             [reduce using rule 80 (binary_expr)]
+    CONDITIONAL_AND  [reduce using rule 80 (binary_expr)]
+    CONDITIONAL_OR   [reduce using rule 80 (binary_expr)]
+    MODULO           [reduce using rule 80 (binary_expr)]
+    $default         reduce using rule 80 (binary_expr)
+
+
+state 136
+
+   70 binary_expr: expr . ADD expr
+   71            | expr . SUBTRACT expr
+   72            | expr . MULTIPLY expr
+   73            | expr . DIVIDE expr
+   74            | expr . MODULO expr
+   75            | expr . GREATER expr
+   76            | expr . LESS expr
+   77            | expr . GREATER_EQUAL expr
+   77            | expr GREATER_EQUAL expr .
+   78            | expr . LESS_EQUAL expr
+   79            | expr . EQUALITY expr
+   80            | expr . NOT_EQUAL expr
+   81            | expr . CONDITIONAL_AND expr
+   82            | expr . CONDITIONAL_OR expr
+
+    ADD              shift, and go to state 107
+    SUBTRACT         shift, and go to state 108
+    MULTIPLY         shift, and go to state 109
+    DIVIDE           shift, and go to state 110
+    EQUALITY         shift, and go to state 111
+    NOT_EQUAL        shift, and go to state 112
+    GREATER_EQUAL    shift, and go to state 113
+    LESS_EQUAL       shift, and go to state 114
+    GREATER          shift, and go to state 115
+    LESS             shift, and go to state 116
+    CONDITIONAL_AND  shift, and go to state 117
+    CONDITIONAL_OR   shift, and go to state 118
+    MODULO           shift, and go to state 119
+
+    ADD              [reduce using rule 77 (binary_expr)]
+    SUBTRACT         [reduce using rule 77 (binary_expr)]
+    MULTIPLY         [reduce using rule 77 (binary_expr)]
+    DIVIDE           [reduce using rule 77 (binary_expr)]
+    EQUALITY         [reduce using rule 77 (binary_expr)]
+    NOT_EQUAL        [reduce using rule 77 (binary_expr)]
+    GREATER_EQUAL    [reduce using rule 77 (binary_expr)]
+    LESS_EQUAL       [reduce using rule 77 (binary_expr)]
+    GREATER          [reduce using rule 77 (binary_expr)]
+    LESS             [reduce using rule 77 (binary_expr)]
+    CONDITIONAL_AND  [reduce using rule 77 (binary_expr)]
+    CONDITIONAL_OR   [reduce using rule 77 (binary_expr)]
+    MODULO           [reduce using rule 77 (binary_expr)]
+    $default         reduce using rule 77 (binary_expr)
+
+
+state 137
+
+   70 binary_expr: expr . ADD expr
+   71            | expr . SUBTRACT expr
+   72            | expr . MULTIPLY expr
+   73            | expr . DIVIDE expr
+   74            | expr . MODULO expr
+   75            | expr . GREATER expr
+   76            | expr . LESS expr
+   77            | expr . GREATER_EQUAL expr
+   78            | expr . LESS_EQUAL expr
+   78            | expr LESS_EQUAL expr .
+   79            | expr . EQUALITY expr
+   80            | expr . NOT_EQUAL expr
+   81            | expr . CONDITIONAL_AND expr
+   82            | expr . CONDITIONAL_OR expr
+
+    ADD              shift, and go to state 107
+    SUBTRACT         shift, and go to state 108
+    MULTIPLY         shift, and go to state 109
+    DIVIDE           shift, and go to state 110
+    EQUALITY         shift, and go to state 111
+    NOT_EQUAL        shift, and go to state 112
+    GREATER_EQUAL    shift, and go to state 113
+    LESS_EQUAL       shift, and go to state 114
+    GREATER          shift, and go to state 115
+    LESS             shift, and go to state 116
+    CONDITIONAL_AND  shift, and go to state 117
+    CONDITIONAL_OR   shift, and go to state 118
+    MODULO           shift, and go to state 119
+
+    ADD              [reduce using rule 78 (binary_expr)]
+    SUBTRACT         [reduce using rule 78 (binary_expr)]
+    MULTIPLY         [reduce using rule 78 (binary_expr)]
+    DIVIDE           [reduce using rule 78 (binary_expr)]
+    EQUALITY         [reduce using rule 78 (binary_expr)]
+    NOT_EQUAL        [reduce using rule 78 (binary_expr)]
+    GREATER_EQUAL    [reduce using rule 78 (binary_expr)]
+    LESS_EQUAL       [reduce using rule 78 (binary_expr)]
+    GREATER          [reduce using rule 78 (binary_expr)]
+    LESS             [reduce using rule 78 (binary_expr)]
+    CONDITIONAL_AND  [reduce using rule 78 (binary_expr)]
+    CONDITIONAL_OR   [reduce using rule 78 (binary_expr)]
+    MODULO           [reduce using rule 78 (binary_expr)]
+    $default         reduce using rule 78 (binary_expr)
+
+
+state 138
+
+   70 binary_expr: expr . ADD expr
+   71            | expr . SUBTRACT expr
+   72            | expr . MULTIPLY expr
+   73            | expr . DIVIDE expr
+   74            | expr . MODULO expr
+   75            | expr . GREATER expr
+   75            | expr GREATER expr .
+   76            | expr . LESS expr
+   77            | expr . GREATER_EQUAL expr
+   78            | expr . LESS_EQUAL expr
+   79            | expr . EQUALITY expr
+   80            | expr . NOT_EQUAL expr
+   81            | expr . CONDITIONAL_AND expr
+   82            | expr . CONDITIONAL_OR expr
+
+    ADD              shift, and go to state 107
+    SUBTRACT         shift, and go to state 108
+    MULTIPLY         shift, and go to state 109
+    DIVIDE           shift, and go to state 110
+    EQUALITY         shift, and go to state 111
+    NOT_EQUAL        shift, and go to state 112
+    GREATER_EQUAL    shift, and go to state 113
+    LESS_EQUAL       shift, and go to state 114
+    GREATER          shift, and go to state 115
+    LESS             shift, and go to state 116
+    CONDITIONAL_AND  shift, and go to state 117
+    CONDITIONAL_OR   shift, and go to state 118
+    MODULO           shift, and go to state 119
+
+    ADD              [reduce using rule 75 (binary_expr)]
+    SUBTRACT         [reduce using rule 75 (binary_expr)]
+    MULTIPLY         [reduce using rule 75 (binary_expr)]
+    DIVIDE           [reduce using rule 75 (binary_expr)]
+    EQUALITY         [reduce using rule 75 (binary_expr)]
+    NOT_EQUAL        [reduce using rule 75 (binary_expr)]
+    GREATER_EQUAL    [reduce using rule 75 (binary_expr)]
+    LESS_EQUAL       [reduce using rule 75 (binary_expr)]
+    GREATER          [reduce using rule 75 (binary_expr)]
+    LESS             [reduce using rule 75 (binary_expr)]
+    CONDITIONAL_AND  [reduce using rule 75 (binary_expr)]
+    CONDITIONAL_OR   [reduce using rule 75 (binary_expr)]
+    MODULO           [reduce using rule 75 (binary_expr)]
+    $default         reduce using rule 75 (binary_expr)
+
+
+state 139
+
+   70 binary_expr: expr . ADD expr
+   71            | expr . SUBTRACT expr
+   72            | expr . MULTIPLY expr
+   73            | expr . DIVIDE expr
+   74            | expr . MODULO expr
+   75            | expr . GREATER expr
+   76            | expr . LESS expr
+   76            | expr LESS expr .
+   77            | expr . GREATER_EQUAL expr
+   78            | expr . LESS_EQUAL expr
+   79            | expr . EQUALITY expr
+   80            | expr . NOT_EQUAL expr
+   81            | expr . CONDITIONAL_AND expr
+   82            | expr . CONDITIONAL_OR expr
+
+    ADD              shift, and go to state 107
+    SUBTRACT         shift, and go to state 108
+    MULTIPLY         shift, and go to state 109
+    DIVIDE           shift, and go to state 110
+    EQUALITY         shift, and go to state 111
+    NOT_EQUAL        shift, and go to state 112
+    GREATER_EQUAL    shift, and go to state 113
+    LESS_EQUAL       shift, and go to state 114
+    GREATER          shift, and go to state 115
+    LESS             shift, and go to state 116
+    CONDITIONAL_AND  shift, and go to state 117
+    CONDITIONAL_OR   shift, and go to state 118
+    MODULO           shift, and go to state 119
+
+    ADD              [reduce using rule 76 (binary_expr)]
+    SUBTRACT         [reduce using rule 76 (binary_expr)]
+    MULTIPLY         [reduce using rule 76 (binary_expr)]
+    DIVIDE           [reduce using rule 76 (binary_expr)]
+    EQUALITY         [reduce using rule 76 (binary_expr)]
+    NOT_EQUAL        [reduce using rule 76 (binary_expr)]
+    GREATER_EQUAL    [reduce using rule 76 (binary_expr)]
+    LESS_EQUAL       [reduce using rule 76 (binary_expr)]
+    GREATER          [reduce using rule 76 (binary_expr)]
+    LESS             [reduce using rule 76 (binary_expr)]
+    CONDITIONAL_AND  [reduce using rule 76 (binary_expr)]
+    CONDITIONAL_OR   [reduce using rule 76 (binary_expr)]
+    MODULO           [reduce using rule 76 (binary_expr)]
+    $default         reduce using rule 76 (binary_expr)
+
+
+state 140
+
+   70 binary_expr: expr . ADD expr
+   71            | expr . SUBTRACT expr
+   72            | expr . MULTIPLY expr
+   73            | expr . DIVIDE expr
+   74            | expr . MODULO expr
+   75            | expr . GREATER expr
+   76            | expr . LESS expr
+   77            | expr . GREATER_EQUAL expr
+   78            | expr . LESS_EQUAL expr
+   79            | expr . EQUALITY expr
+   80            | expr . NOT_EQUAL expr
+   81            | expr . CONDITIONAL_AND expr
+   81            | expr CONDITIONAL_AND expr .
+   82            | expr . CONDITIONAL_OR expr
+
+    ADD              shift, and go to state 107
+    SUBTRACT         shift, and go to state 108
+    MULTIPLY         shift, and go to state 109
+    DIVIDE           shift, and go to state 110
+    EQUALITY         shift, and go to state 111
+    NOT_EQUAL        shift, and go to state 112
+    GREATER_EQUAL    shift, and go to state 113
+    LESS_EQUAL       shift, and go to state 114
+    GREATER          shift, and go to state 115
+    LESS             shift, and go to state 116
+    CONDITIONAL_AND  shift, and go to state 117
+    CONDITIONAL_OR   shift, and go to state 118
+    MODULO           shift, and go to state 119
+
+    ADD              [reduce using rule 81 (binary_expr)]
+    SUBTRACT         [reduce using rule 81 (binary_expr)]
+    MULTIPLY         [reduce using rule 81 (binary_expr)]
+    DIVIDE           [reduce using rule 81 (binary_expr)]
+    EQUALITY         [reduce using rule 81 (binary_expr)]
+    NOT_EQUAL        [reduce using rule 81 (binary_expr)]
+    GREATER_EQUAL    [reduce using rule 81 (binary_expr)]
+    LESS_EQUAL       [reduce using rule 81 (binary_expr)]
+    GREATER          [reduce using rule 81 (binary_expr)]
+    LESS             [reduce using rule 81 (binary_expr)]
+    CONDITIONAL_AND  [reduce using rule 81 (binary_expr)]
+    CONDITIONAL_OR   [reduce using rule 81 (binary_expr)]
+    MODULO           [reduce using rule 81 (binary_expr)]
+    $default         reduce using rule 81 (binary_expr)
+
+
+state 141
+
+   70 binary_expr: expr . ADD expr
+   71            | expr . SUBTRACT expr
+   72            | expr . MULTIPLY expr
+   73            | expr . DIVIDE expr
+   74            | expr . MODULO expr
+   75            | expr . GREATER expr
+   76            | expr . LESS expr
+   77            | expr . GREATER_EQUAL expr
+   78            | expr . LESS_EQUAL expr
+   79            | expr . EQUALITY expr
+   80            | expr . NOT_EQUAL expr
+   81            | expr . CONDITIONAL_AND expr
+   82            | expr . CONDITIONAL_OR expr
+   82            | expr CONDITIONAL_OR expr .
+
+    ADD              shift, and go to state 107
+    SUBTRACT         shift, and go to state 108
+    MULTIPLY         shift, and go to state 109
+    DIVIDE           shift, and go to state 110
+    EQUALITY         shift, and go to state 111
+    NOT_EQUAL        shift, and go to state 112
+    GREATER_EQUAL    shift, and go to state 113
+    LESS_EQUAL       shift, and go to state 114
+    GREATER          shift, and go to state 115
+    LESS             shift, and go to state 116
+    CONDITIONAL_AND  shift, and go to state 117
+    CONDITIONAL_OR   shift, and go to state 118
+    MODULO           shift, and go to state 119
+
+    ADD              [reduce using rule 82 (binary_expr)]
+    SUBTRACT         [reduce using rule 82 (binary_expr)]
+    MULTIPLY         [reduce using rule 82 (binary_expr)]
+    DIVIDE           [reduce using rule 82 (binary_expr)]
+    EQUALITY         [reduce using rule 82 (binary_expr)]
+    NOT_EQUAL        [reduce using rule 82 (binary_expr)]
+    GREATER_EQUAL    [reduce using rule 82 (binary_expr)]
+    LESS_EQUAL       [reduce using rule 82 (binary_expr)]
+    GREATER          [reduce using rule 82 (binary_expr)]
+    LESS             [reduce using rule 82 (binary_expr)]
+    CONDITIONAL_AND  [reduce using rule 82 (binary_expr)]
+    CONDITIONAL_OR   [reduce using rule 82 (binary_expr)]
+    MODULO           [reduce using rule 82 (binary_expr)]
+    $default         reduce using rule 82 (binary_expr)
+
+
+state 142
+
+   70 binary_expr: expr . ADD expr
+   71            | expr . SUBTRACT expr
+   72            | expr . MULTIPLY expr
+   73            | expr . DIVIDE expr
+   74            | expr . MODULO expr
+   74            | expr MODULO expr .
+   75            | expr . GREATER expr
+   76            | expr . LESS expr
+   77            | expr . GREATER_EQUAL expr
+   78            | expr . LESS_EQUAL expr
+   79            | expr . EQUALITY expr
+   80            | expr . NOT_EQUAL expr
+   81            | expr . CONDITIONAL_AND expr
+   82            | expr . CONDITIONAL_OR expr
+
+    ADD              shift, and go to state 107
+    SUBTRACT         shift, and go to state 108
+    MULTIPLY         shift, and go to state 109
+    DIVIDE           shift, and go to state 110
+    EQUALITY         shift, and go to state 111
+    NOT_EQUAL        shift, and go to state 112
+    GREATER_EQUAL    shift, and go to state 113
+    LESS_EQUAL       shift, and go to state 114
+    GREATER          shift, and go to state 115
+    LESS             shift, and go to state 116
+    CONDITIONAL_AND  shift, and go to state 117
+    CONDITIONAL_OR   shift, and go to state 118
+    MODULO           shift, and go to state 119
+
+    ADD              [reduce using rule 74 (binary_expr)]
+    SUBTRACT         [reduce using rule 74 (binary_expr)]
+    MULTIPLY         [reduce using rule 74 (binary_expr)]
+    DIVIDE           [reduce using rule 74 (binary_expr)]
+    EQUALITY         [reduce using rule 74 (binary_expr)]
+    NOT_EQUAL        [reduce using rule 74 (binary_expr)]
+    GREATER_EQUAL    [reduce using rule 74 (binary_expr)]
+    LESS_EQUAL       [reduce using rule 74 (binary_expr)]
+    GREATER          [reduce using rule 74 (binary_expr)]
+    LESS             [reduce using rule 74 (binary_expr)]
+    CONDITIONAL_AND  [reduce using rule 74 (binary_expr)]
+    CONDITIONAL_OR   [reduce using rule 74 (binary_expr)]
+    MODULO           [reduce using rule 74 (binary_expr)]
+    $default         reduce using rule 74 (binary_expr)
+
+
+state 143
+
+   42 for_statement: FOR ID EQUAL expr . COMMA expr code_block
+   70 binary_expr: expr . ADD expr
+   71            | expr . SUBTRACT expr
+   72            | expr . MULTIPLY expr
+   73            | expr . DIVIDE expr
+   74            | expr . MODULO expr
+   75            | expr . GREATER expr
+   76            | expr . LESS expr
+   77            | expr . GREATER_EQUAL expr
+   78            | expr . LESS_EQUAL expr
+   79            | expr . EQUALITY expr
+   80            | expr . NOT_EQUAL expr
+   81            | expr . CONDITIONAL_AND expr
+   82            | expr . CONDITIONAL_OR expr
+
+    ADD              shift, and go to state 107
+    SUBTRACT         shift, and go to state 108
+    MULTIPLY         shift, and go to state 109
+    DIVIDE           shift, and go to state 110
+    EQUALITY         shift, and go to state 111
+    NOT_EQUAL        shift, and go to state 112
+    GREATER_EQUAL    shift, and go to state 113
+    LESS_EQUAL       shift, and go to state 114
+    GREATER          shift, and go to state 115
+    LESS             shift, and go to state 116
+    CONDITIONAL_AND  shift, and go to state 117
+    CONDITIONAL_OR   shift, and go to state 118
+    MODULO           shift, and go to state 119
+    COMMA            shift, and go to state 153
+
+
+state 144
+
+   39 if_statement: IF OPEN expr CLOSE . code_block else_statement
+
+    CURLY_OPEN  shift, and go to state 40
+
+    code_block  go to state 154
+
+
+state 145
 
    38 location: ID SQUARE_OPEN expr SQUARE_CLOSE .
 
     $default  reduce using rule 38 (location)
 
 
-state 136
+state 146
 
-   49 method_call: ID OPEN method_call_args CLOSE .
+   51 normal_call: ID OPEN method_call_args CLOSE .
 
-    $default  reduce using rule 49 (method_call)
+    $default  reduce using rule 51 (normal_call)
 
 
-state 137
+state 147
 
-   55 non_empty_method_call_args: non_empty_method_call_args COMMA . method_call_arg
+   55 non_empty_method_call_args: non_empty_method_call_args COMMA . expr
 
     CALLOUT       shift, and go to state 53
-    TRUE          shift, and go to state 73
-    FALSE         shift, and go to state 74
+    TRUE          shift, and go to state 75
+    FALSE         shift, and go to state 76
     NUM           shift, and go to state 24
     HEX_LITERAL   shift, and go to state 25
-    CHAR_LITERAL  shift, and go to state 75
+    CHAR_LITERAL  shift, and go to state 77
     ID            shift, and go to state 59
-    SUBTRACT      shift, and go to state 76
-    NOT           shift, and go to state 77
-    OPEN          shift, and go to state 78
+    SUBTRACT      shift, and go to state 78
+    NOT           shift, and go to state 79
+    OPEN          shift, and go to state 80
 
-    location         go to state 79
-    method_call      go to state 81
-    method_call_arg  go to state 145
-    expr             go to state 127
-    literal          go to state 83
-    char_literal     go to state 84
-    int_literal      go to state 85
-    bool_literal     go to state 86
+    location       go to state 81
+    method_call    go to state 83
+    normal_call    go to state 69
+    callout_call   go to state 70
+    expr           go to state 155
+    binary_expr    go to state 85
+    enclosed_expr  go to state 86
+    unary_expr     go to state 87
+    char_literal   go to state 88
+    int_literal    go to state 89
+    bool_literal   go to state 90
 
 
-state 138
+state 148
 
    36 assign_statement: location assign_op expr SEMI_COLON .
 
     $default  reduce using rule 36 (assign_statement)
 
 
-state 139
-
-   51 method_call: CALLOUT OPEN string_literal COMMA non_empty_callout_args . CLOSE
-   58 non_empty_callout_args: non_empty_callout_args . COMMA callout_arg
-
-    CLOSE  shift, and go to state 146
-    COMMA  shift, and go to state 147
-
-
-state 140
-
-   57 non_empty_callout_args: callout_arg .
-
-    $default  reduce using rule 57 (non_empty_callout_args)
-
-
-state 141
-
-   59 callout_arg: expr .
-   64 expr: expr . bin_op expr
-
-    ADD              shift, and go to state 103
-    SUBTRACT         shift, and go to state 104
-    MULTIPLY         shift, and go to state 105
-    DIVIDE           shift, and go to state 106
-    EQUALITY         shift, and go to state 107
-    NOT_EQUAL        shift, and go to state 108
-    GREATER_EQUAL    shift, and go to state 109
-    LESS_EQUAL       shift, and go to state 110
-    GREATER          shift, and go to state 111
-    LESS             shift, and go to state 112
-    CONDITIONAL_AND  shift, and go to state 113
-    CONDITIONAL_OR   shift, and go to state 114
-    MODULO           shift, and go to state 115
-
-    $default  reduce using rule 59 (callout_arg)
-
-    bin_op    go to state 116
-    arith_op  go to state 117
-    rel_op    go to state 118
-    eq_op     go to state 119
-    cond_op   go to state 120
-
-
-state 142
-
-   60 callout_arg: string_literal .
-
-    $default  reduce using rule 60 (callout_arg)
-
-
-state 143
-
-   43 for_statement: FOR ID EQUAL expr COMMA . expr code_block
-
-    CALLOUT       shift, and go to state 53
-    TRUE          shift, and go to state 73
-    FALSE         shift, and go to state 74
-    NUM           shift, and go to state 24
-    HEX_LITERAL   shift, and go to state 25
-    CHAR_LITERAL  shift, and go to state 75
-    ID            shift, and go to state 59
-    SUBTRACT      shift, and go to state 76
-    NOT           shift, and go to state 77
-    OPEN          shift, and go to state 78
-
-    location      go to state 79
-    method_call   go to state 81
-    expr          go to state 148
-    literal       go to state 83
-    char_literal  go to state 84
-    int_literal   go to state 85
-    bool_literal  go to state 86
-
-
-state 144
-
-   40 if_statement: IF OPEN expr CLOSE code_block . else_statement
-
-    ELSE  shift, and go to state 149
-
-    $default  reduce using rule 41 (else_statement)
-
-    else_statement  go to state 150
-
-
-state 145
-
-   55 non_empty_method_call_args: non_empty_method_call_args COMMA method_call_arg .
-
-    $default  reduce using rule 55 (non_empty_method_call_args)
-
-
-state 146
-
-   51 method_call: CALLOUT OPEN string_literal COMMA non_empty_callout_args CLOSE .
-
-    $default  reduce using rule 51 (method_call)
-
-
-state 147
-
-   58 non_empty_callout_args: non_empty_callout_args COMMA . callout_arg
-
-    CALLOUT       shift, and go to state 53
-    TRUE          shift, and go to state 73
-    FALSE         shift, and go to state 74
-    NUM           shift, and go to state 24
-    HEX_LITERAL   shift, and go to state 25
-    CHAR_LITERAL  shift, and go to state 75
-    STRING        shift, and go to state 97
-    ID            shift, and go to state 59
-    SUBTRACT      shift, and go to state 76
-    NOT           shift, and go to state 77
-    OPEN          shift, and go to state 78
-
-    location        go to state 79
-    method_call     go to state 81
-    callout_arg     go to state 151
-    expr            go to state 141
-    literal         go to state 83
-    char_literal    go to state 84
-    int_literal     go to state 85
-    bool_literal    go to state 86
-    string_literal  go to state 142
-
-
-state 148
-
-   43 for_statement: FOR ID EQUAL expr COMMA expr . code_block
-   64 expr: expr . bin_op expr
-
-    ADD              shift, and go to state 103
-    SUBTRACT         shift, and go to state 104
-    MULTIPLY         shift, and go to state 105
-    DIVIDE           shift, and go to state 106
-    EQUALITY         shift, and go to state 107
-    NOT_EQUAL        shift, and go to state 108
-    GREATER_EQUAL    shift, and go to state 109
-    LESS_EQUAL       shift, and go to state 110
-    GREATER          shift, and go to state 111
-    LESS             shift, and go to state 112
-    CONDITIONAL_AND  shift, and go to state 113
-    CONDITIONAL_OR   shift, and go to state 114
-    MODULO           shift, and go to state 115
-    CURLY_OPEN       shift, and go to state 40
-
-    code_block  go to state 152
-    bin_op      go to state 116
-    arith_op    go to state 117
-    rel_op      go to state 118
-    eq_op       go to state 119
-    cond_op     go to state 120
-
-
 state 149
 
-   42 else_statement: ELSE . code_block
+   57 callout_call: CALLOUT OPEN string_literal COMMA non_empty_callout_args . CLOSE
+   59 non_empty_callout_args: non_empty_callout_args . COMMA callout_arg
 
-    CURLY_OPEN  shift, and go to state 40
-
-    code_block  go to state 153
+    CLOSE  shift, and go to state 156
+    COMMA  shift, and go to state 157
 
 
 state 150
 
-   40 if_statement: IF OPEN expr CLOSE code_block else_statement .
-
-    $default  reduce using rule 40 (if_statement)
-
-
-state 151
-
-   58 non_empty_callout_args: non_empty_callout_args COMMA callout_arg .
+   58 non_empty_callout_args: callout_arg .
 
     $default  reduce using rule 58 (non_empty_callout_args)
 
 
+state 151
+
+   60 callout_arg: expr .
+   70 binary_expr: expr . ADD expr
+   71            | expr . SUBTRACT expr
+   72            | expr . MULTIPLY expr
+   73            | expr . DIVIDE expr
+   74            | expr . MODULO expr
+   75            | expr . GREATER expr
+   76            | expr . LESS expr
+   77            | expr . GREATER_EQUAL expr
+   78            | expr . LESS_EQUAL expr
+   79            | expr . EQUALITY expr
+   80            | expr . NOT_EQUAL expr
+   81            | expr . CONDITIONAL_AND expr
+   82            | expr . CONDITIONAL_OR expr
+
+    ADD              shift, and go to state 107
+    SUBTRACT         shift, and go to state 108
+    MULTIPLY         shift, and go to state 109
+    DIVIDE           shift, and go to state 110
+    EQUALITY         shift, and go to state 111
+    NOT_EQUAL        shift, and go to state 112
+    GREATER_EQUAL    shift, and go to state 113
+    LESS_EQUAL       shift, and go to state 114
+    GREATER          shift, and go to state 115
+    LESS             shift, and go to state 116
+    CONDITIONAL_AND  shift, and go to state 117
+    CONDITIONAL_OR   shift, and go to state 118
+    MODULO           shift, and go to state 119
+
+    $default  reduce using rule 60 (callout_arg)
+
+
 state 152
 
-   43 for_statement: FOR ID EQUAL expr COMMA expr code_block .
+   61 callout_arg: string_literal .
 
-    $default  reduce using rule 43 (for_statement)
+    $default  reduce using rule 61 (callout_arg)
 
 
 state 153
 
-   42 else_statement: ELSE code_block .
+   42 for_statement: FOR ID EQUAL expr COMMA . expr code_block
 
-    $default  reduce using rule 42 (else_statement)
+    CALLOUT       shift, and go to state 53
+    TRUE          shift, and go to state 75
+    FALSE         shift, and go to state 76
+    NUM           shift, and go to state 24
+    HEX_LITERAL   shift, and go to state 25
+    CHAR_LITERAL  shift, and go to state 77
+    ID            shift, and go to state 59
+    SUBTRACT      shift, and go to state 78
+    NOT           shift, and go to state 79
+    OPEN          shift, and go to state 80
+
+    location       go to state 81
+    method_call    go to state 83
+    normal_call    go to state 69
+    callout_call   go to state 70
+    expr           go to state 158
+    binary_expr    go to state 85
+    enclosed_expr  go to state 86
+    unary_expr     go to state 87
+    char_literal   go to state 88
+    int_literal    go to state 89
+    bool_literal   go to state 90
+
+
+state 154
+
+   39 if_statement: IF OPEN expr CLOSE code_block . else_statement
+
+    ELSE  shift, and go to state 159
+
+    $default  reduce using rule 40 (else_statement)
+
+    else_statement  go to state 160
+
+
+state 155
+
+   55 non_empty_method_call_args: non_empty_method_call_args COMMA expr .
+   70 binary_expr: expr . ADD expr
+   71            | expr . SUBTRACT expr
+   72            | expr . MULTIPLY expr
+   73            | expr . DIVIDE expr
+   74            | expr . MODULO expr
+   75            | expr . GREATER expr
+   76            | expr . LESS expr
+   77            | expr . GREATER_EQUAL expr
+   78            | expr . LESS_EQUAL expr
+   79            | expr . EQUALITY expr
+   80            | expr . NOT_EQUAL expr
+   81            | expr . CONDITIONAL_AND expr
+   82            | expr . CONDITIONAL_OR expr
+
+    ADD              shift, and go to state 107
+    SUBTRACT         shift, and go to state 108
+    MULTIPLY         shift, and go to state 109
+    DIVIDE           shift, and go to state 110
+    EQUALITY         shift, and go to state 111
+    NOT_EQUAL        shift, and go to state 112
+    GREATER_EQUAL    shift, and go to state 113
+    LESS_EQUAL       shift, and go to state 114
+    GREATER          shift, and go to state 115
+    LESS             shift, and go to state 116
+    CONDITIONAL_AND  shift, and go to state 117
+    CONDITIONAL_OR   shift, and go to state 118
+    MODULO           shift, and go to state 119
+
+    $default  reduce using rule 55 (non_empty_method_call_args)
+
+
+state 156
+
+   57 callout_call: CALLOUT OPEN string_literal COMMA non_empty_callout_args CLOSE .
+
+    $default  reduce using rule 57 (callout_call)
+
+
+state 157
+
+   59 non_empty_callout_args: non_empty_callout_args COMMA . callout_arg
+
+    CALLOUT       shift, and go to state 53
+    TRUE          shift, and go to state 75
+    FALSE         shift, and go to state 76
+    NUM           shift, and go to state 24
+    HEX_LITERAL   shift, and go to state 25
+    CHAR_LITERAL  shift, and go to state 77
+    STRING        shift, and go to state 101
+    ID            shift, and go to state 59
+    SUBTRACT      shift, and go to state 78
+    NOT           shift, and go to state 79
+    OPEN          shift, and go to state 80
+
+    location        go to state 81
+    method_call     go to state 83
+    normal_call     go to state 69
+    callout_call    go to state 70
+    callout_arg     go to state 161
+    expr            go to state 151
+    binary_expr     go to state 85
+    enclosed_expr   go to state 86
+    unary_expr      go to state 87
+    char_literal    go to state 88
+    int_literal     go to state 89
+    bool_literal    go to state 90
+    string_literal  go to state 152
+
+
+state 158
+
+   42 for_statement: FOR ID EQUAL expr COMMA expr . code_block
+   70 binary_expr: expr . ADD expr
+   71            | expr . SUBTRACT expr
+   72            | expr . MULTIPLY expr
+   73            | expr . DIVIDE expr
+   74            | expr . MODULO expr
+   75            | expr . GREATER expr
+   76            | expr . LESS expr
+   77            | expr . GREATER_EQUAL expr
+   78            | expr . LESS_EQUAL expr
+   79            | expr . EQUALITY expr
+   80            | expr . NOT_EQUAL expr
+   81            | expr . CONDITIONAL_AND expr
+   82            | expr . CONDITIONAL_OR expr
+
+    ADD              shift, and go to state 107
+    SUBTRACT         shift, and go to state 108
+    MULTIPLY         shift, and go to state 109
+    DIVIDE           shift, and go to state 110
+    EQUALITY         shift, and go to state 111
+    NOT_EQUAL        shift, and go to state 112
+    GREATER_EQUAL    shift, and go to state 113
+    LESS_EQUAL       shift, and go to state 114
+    GREATER          shift, and go to state 115
+    LESS             shift, and go to state 116
+    CONDITIONAL_AND  shift, and go to state 117
+    CONDITIONAL_OR   shift, and go to state 118
+    MODULO           shift, and go to state 119
+    CURLY_OPEN       shift, and go to state 40
+
+    code_block  go to state 162
+
+
+state 159
+
+   41 else_statement: ELSE . code_block
+
+    CURLY_OPEN  shift, and go to state 40
+
+    code_block  go to state 163
+
+
+state 160
+
+   39 if_statement: IF OPEN expr CLOSE code_block else_statement .
+
+    $default  reduce using rule 39 (if_statement)
+
+
+state 161
+
+   59 non_empty_callout_args: non_empty_callout_args COMMA callout_arg .
+
+    $default  reduce using rule 59 (non_empty_callout_args)
+
+
+state 162
+
+   42 for_statement: FOR ID EQUAL expr COMMA expr code_block .
+
+    $default  reduce using rule 42 (for_statement)
+
+
+state 163
+
+   41 else_statement: ELSE code_block .
+
+    $default  reduce using rule 41 (else_statement)

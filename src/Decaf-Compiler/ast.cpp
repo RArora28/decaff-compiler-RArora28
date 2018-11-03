@@ -94,17 +94,25 @@ void statements::add(class statement* st_) {
 	list.push_back(st_);
 }
 
-location::location(const string& name_) {
+location::location(const string& name_,
+				   class Expr* exp_) {
 	name = name_;
+	exp = exp_;
 }
  
-assignSt::assignSt(class location* loc_) {
+assignSt::assignSt(class location* loc_,
+				   class assignOp* asOp_,
+				   class Expr* exp_) {
 	loc = loc_;
+	asOp = asOp_; 
+	exp = exp_;
 }
  
-ifSt::ifSt(	class codeBlock* bl_, 
+ifSt::ifSt(	class Expr* condition_, 
+		 	class codeBlock* code_, 
 		 	class elseSt* eSt_) {
-	bl = bl_; 
+	condition = condition_;
+	code = code_; 
 	eSt = eSt_;
 }
 
@@ -113,17 +121,80 @@ elseSt::elseSt(class codeBlock* bl_) {
 }
 
 forSt::forSt(const string& var_,
-		  class codeBlock* bl_) {
+			 class Expr* start_,
+			 class Expr* end_,
+		 	 class codeBlock* bl_) {
 	var = var_; 
+	start = start_; 
+	end = end_;
 	bl = bl_;
 }
  
 returnSt::returnSt(class returnVal* ret_) {
 	ret = ret_; 
 }
+returnVal::returnVal(class Expr* ret_) {
+	ret = ret_;
+}
 
 terminalSt::terminalSt(const string& name_) {
 	name = name_;
+}
+
+
+methodCallSt::methodCallSt(class methodCall* call_) {
+	call = call_; 
+} 
+
+normalCall::normalCall(class methodCallArgs* args_) {
+	args = args_; 
+}
+
+
+methodCallArgs::methodCallArgs(class nonEmptyCallArgs* args_) {
+	args = args_;
+}
+nonEmptyCallArgs::nonEmptyCallArgs() {}
+void nonEmptyCallArgs::add(class Expr* exp) {
+	list.push_back(exp);
+}
+
+calloutCall::calloutCall(class stringLiteral* callName_,
+				class nonEmptyCalloutArgs* args_) {
+	callName = callName_; 
+	args = args_;
+}
+
+nonEmptyCalloutArgs::nonEmptyCalloutArgs() {}
+void nonEmptyCalloutArgs::add(class calloutArg* arg_) {
+	list.push_back(arg_);
+}
+ 
+calloutArg::calloutArg (class stringLiteral* argName_,
+			   			class Expr* exp_) {
+	argName = argName_; 
+	exp = exp_;
+}
+
+unaryExpr::unaryExpr (const string& op_, 
+					  class Expr* exp_) {
+	op = op_; 
+	exp = exp_; 
+}
+
+binExpr::binExpr (class Expr* exp1_,
+				  const string& op_,
+				  class Expr* exp2_) {
+	exp1 = exp1_; 
+	op = op_;
+	exp2 = exp2_; 
+}
+enclosedExpr::enclosedExpr(class Expr* exp_) {
+	exp = exp_; 
+}
+
+assignOp::assignOp(const string& op_) {
+	op = op_;
 }
 
 intLiteral::intLiteral(int value_) {

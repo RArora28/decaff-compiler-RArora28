@@ -64,6 +64,23 @@
 %type <retVal> return_value; 
 %type <ter> terminal_statement; 
 %type <loc> location; 
+
+%type <mCSt> method_call_statment; 
+%type <mC> method_call; 
+%type <nC> normal_call; 
+%type <mCArgs> method_call_args; 
+%type <nECArgs> non_empty_method_call_args; 
+
+%type <cC> callout_call; 
+%type <nECalloutArgs> non_empty_callout_args; 
+%type <cArgs> callout_arg; 
+
+%type <Exp> expr; 
+%type <binExp> binary_expr; 
+%type <unExp> unary_expr; 
+%type <enExp> enclosed_expr; 
+
+%type <asOp> assign_op; 
 %type <integerLit> 		int_literal;	
 %type <booleanLit> 		bool_literal;
 %type <characterLit> 	char_literal;		
@@ -198,7 +215,7 @@ statements				: 	/* Epsilon */
 						; 
 
 statement 				: 	assign_statement 		{ $$ = $1; }	
-						| 	method_call_statment 
+						| 	method_call_statment 	{ $$ = $1; }
 						| 	if_statement 			{ $$ = $1; }
 						|   for_statement 			{ $$ = $1; } 
 						| 	return_statement  		{ $$ = $1; } 
@@ -207,125 +224,159 @@ statement 				: 	assign_statement 		{ $$ = $1; }
 						; 
 
 assign_statement		: 	location assign_op expr SEMI_COLON
-							{ $$ = new assignSt($1); } /* Fix 2nd, 3rd arg */ 
+							{ $$ = new assignSt($1, $2, $3); }
 						; 
 
 location				: 	ID 
-							{ $$ = new location($1); }
+							{ $$ = new location($1, NULL); }
 						| 	ID SQUARE_OPEN expr SQUARE_CLOSE 
-							{ $$ = new location($1); } /* Fix 2nd arg */
-						; 
-
-method_call_statment 	: 	method_call SEMI_COLON
+							{ $$ = new location($1, $3); } 
 						; 
 
 if_statement 			: 	IF OPEN expr CLOSE code_block else_statement 
-							{ $$ = new ifSt($5, $6); }
-							/* Fix 1st arg */ 
+							{ $$ = new ifSt($3, $5, $6); }
 						; 
 
-else_statement			:  	/* Epsilon */ 
+else_statement			:  	/* Epsilon */ 	
 							{$$ = new elseSt(NULL); }
 						| 	ELSE code_block
-							{$$ = new elseSt($2); } // confirm this. 
+							{$$ = new elseSt($2); } 
 						;
 
 for_statement 			: 	FOR ID EQUAL expr COMMA expr code_block
-							{ $$ = new forSt($2, $7); } 
+							{ $$ = new forSt($2, $4, $6, $7); 	} 
 						; 
 
 return_statement 		: 	RETURN return_value SEMI_COLON
 							{ $$ = new returnSt($2)}
 						
-						/* fix return val */ 
 return_value			: 	/* Epsilon */ 
-							{ $$ = new returnVal(); }
+							{ $$ = new returnVal(NULL); 	  	}
 						| 	expr
-							{ $$ = new returnVal(); }
+							{ $$ = new returnVal($1); 			}
 						;
 
 terminal_statement	 	: 	BREAK SEMI_COLON
-							{ $$ = new terminalSt("break");}
+							{ $$ = new terminalSt("break"); 	}
 						| 	CONTINUE SEMI_COLON
-							{ $$ = new terminalSt("continue"); }
+							{ $$ = new terminalSt("continue"); 	}
 						; 
 
 
-/* General Method Call */ 
-method_call 			: 	ID OPEN method_call_args CLOSE 
-						| 	CALLOUT OPEN string_literal CLOSE 
-						| 	CALLOUT OPEN string_literal COMMA 						non_empty_callout_args CLOSE
+method_call_statment 	: 	method_call SEMI_COLON
+							{ new methodCallSt($1); }
+						; 
+
+method_call 			: 	normal_call
+							{ $$ = $1; }
+						| 	callout_call
+							{ $$ = $1; } 
+						; 
+
+normal_call 			: 	ID OPEN method_call_args CLOSE
+							{ $$ = new normalCall($3); }
 						; 
 
 method_call_args 		: 	/* Epsilon */ 
+							/* { $$ = methodCallArgs(NULL); } */ 
 						| 	non_empty_method_call_args
+							{ $$ = methodCallArgs($1); 	}
 						;
 
 non_empty_method_call_args
-						: 	method_call_arg 
-						| 	non_empty_method_call_args COMMA method_call_arg
+						: 	expr
+							{ 
+								$$ = new nonEmptyCallArgs(); 
+							  	$$->add($1); 
+							}
+						| 	non_empty_method_call_args COMMA expr
+							{
+								$$->add($3); 
+							}
 						;
-
-method_call_arg 		: 	expr
+						
+/* General Method Call */ 
+callout_call			: 	CALLOUT OPEN string_literal CLOSE 
+							{ $$ = new calloutCall($3, NULL); }
+						| 	CALLOUT OPEN string_literal COMMA 						non_empty_callout_args CLOSE
+							{ $$ = new calloutCall($3, $5); }
 						; 
+
 
 non_empty_callout_args 	: 	callout_arg 
+							{
+								$$ = nonEmptyCalloutArgs(); 
+								$$->add($1); 
+							}
 						| 	non_empty_callout_args COMMA callout_arg
+							{
+								$$->add($3); 
+							}
 						;
 
-callout_arg 			: 	expr 
+callout_arg 			: 	expr
+							{ $$ = new calloutArg(NULL, $1); }
 						| 	string_literal
+							{ $$ = new calloutArg($1, NULL); }
 						;
 
-expr					: 	location  
-						| 	method_call 
-						| 	literal 
-						| 	expr bin_op expr 
-						| 	SUBTRACT expr 
-						| 	NOT expr 
-						| 	OPEN expr CLOSE 
+expr					: 	location				{ $$ = $1; }
+						| 	method_call 			{ $$ = $1; }
+						| 	char_literal 			{ $$ = $1; }
+						|	int_literal				{ $$ = $1; }
+						| 	bool_literal			{ $$ = $1; }
+						| 	binary_expr				{ $$ = $1; }
+						|	unary_expr 				{ $$ = $1; }
+						| 	enclosed_expr 			{ $$ = $1; }
 						; 
 
+binary_expr				: 	expr ADD expr 		
+							{ $$ = new binExpr($1, "+", $3);}
+						| 	expr SUBTRACT expr
+							{ $$ = new binExpr($1, "-", $3);}
+						| 	expr MULTIPLY expr
+							{ $$ = new binExpr($1, "*", $3);}
+						| 	expr DIVIDE expr
+							{ $$ = new binExpr($1, "/", $3);}
+						| 	expr MODULO expr
+							{ $$ = new binExpr($1, "%", $3);}
+						| 	expr GREATER expr
+							{ $$ = new binExpr($1, ">", $3);}
+						|	expr LESS expr
+							{ $$ = new binExpr($1, "<", $3);}
+						| 	expr GREATER_EQUAL expr
+							{ $$ = new binExpr($1, ">=", $3);}
+						| 	expr LESS_EQUAL expr
+							{ $$ = new binExpr($1, "<=", $3);}
+						|	expr EQUALITY expr
+							{ $$ = new binExpr($1, "==", $3);}
+						| 	expr NOT_EQUAL expr
+							{ $$ = new binExpr($1, "!=", $3);}
+						| 	expr CONDITIONAL_AND expr
+							{ $$ = new binExpr($1, "&&", $3);}
+						| 	expr CONDITIONAL_OR expr
+							{ $$ = new binExpr($1, "||", $3);}
+						; 
+
+enclosed_expr 			: 	OPEN expr CLOSE
+							{ $$ = new enclosedExpr($2); }
+						; 
+
+unary_expr 				: 	SUBTRACT expr
+							{ $$ = new unaryExpr("-", $2); }
+						| 	NOT expr 
+							{ $$ = new unaryExpr("!", $2); }
+						; 
 
 /* All operations in the grammar */ 
-assign_op				:	EQUAL 
+assign_op				:	EQUAL
+							{ $$ = new assignOp("="); } 
 						| 	PLUS_EQUAL 
+							{ $$ = new assignOp("+="); }
 						|	MINUS_EQUAL
+							{ $$ = new assignOp("-="); }
 						;
 
-bin_op					: 	arith_op 
-						| 	rel_op 
-						| 	eq_op 
-						| 	cond_op
-						;
-
-arith_op 				: 	ADD 
-						| 	SUBTRACT 
-						| 	MULTIPLY 
-						| 	DIVIDE 
-						| 	MODULO
-						;
-
-rel_op 					: 	GREATER 
-						| 	LESS 
-						| 	GREATER_EQUAL
-						| 	LESS_EQUAL
-						;
-
-eq_op					: 	EQUALITY 
-						| 	NOT_EQUAL
-						; 
-
-cond_op					: 	CONDITIONAL_AND 
-						| 	CONDITIONAL_OR
-						; 
-
-
-/* All literals in the grammar */ 
-literal 				: 	char_literal 
-						| 	bool_literal 
-						| 	int_literal
-						;
 
 char_literal 			: 	CHAR_LITERAL
 							{ $$ = new charLiteral($1); }
