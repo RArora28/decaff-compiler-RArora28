@@ -2,7 +2,7 @@ class Program {
       int t, y[10], x;
       int k,x;
       boolean c;
-      int justgone(int x) {
+      void justgone(int x) {
       
       int x,y;
       boolean dsadsadsa;

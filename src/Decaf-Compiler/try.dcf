@@ -23,5 +23,8 @@ class Program {
 				a += d; 	
 			}
 		}
+		tabahi();
+      	tabahi(a,-k/true+(!(y+5*k+3))%4,tabahi2());
+     
 	}
 }

@@ -220,7 +220,7 @@ statement 				: 	assign_statement 		{ $$ = $1; }
 						|   for_statement 			{ $$ = $1; } 
 						| 	return_statement  		{ $$ = $1; } 
 						| 	terminal_statement 		{ $$ = $1; } 
-						/* | 	code_block				{ $$ = $1; } */ 
+						| 	code_block				{ $$ = $1; }  
 						; 
 
 assign_statement		: 	location assign_op expr SEMI_COLON
@@ -268,9 +268,9 @@ method_call_statment 	: 	method_call SEMI_COLON
 						; 
 
 method_call 			: 	normal_call
-							{ $$ = $1; }
+							{ $$ = $1; }  
 						| 	callout_call
-							{ $$ = $1; } 
+							{ $$ = $1; }  
 						; 
 
 normal_call 			: 	ID OPEN method_call_args CLOSE
@@ -278,9 +278,9 @@ normal_call 			: 	ID OPEN method_call_args CLOSE
 						; 
 
 method_call_args 		: 	/* Epsilon */ 
-							/* { $$ = methodCallArgs(NULL); } */ 
+							{ $$ = NULL }  
 						| 	non_empty_method_call_args
-							{ $$ = methodCallArgs($1); 	}
+							{ $$ = $1; 	}
 						;
 
 non_empty_method_call_args
@@ -305,7 +305,7 @@ callout_call			: 	CALLOUT OPEN string_literal CLOSE
 
 non_empty_callout_args 	: 	callout_arg 
 							{
-								$$ = nonEmptyCalloutArgs(); 
+								$$ = new nonEmptyCalloutArgs(); 
 								$$->add($1); 
 							}
 						| 	non_empty_callout_args COMMA callout_arg

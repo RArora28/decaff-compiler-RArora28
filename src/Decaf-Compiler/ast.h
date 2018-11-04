@@ -152,7 +152,7 @@ public:
 			  const string& name_);
 }; 
 
-class codeBlock: public baseAstNode {
+class codeBlock: public statement {
 public: 
 	class block* bl; 
 	codeBlock(class block* bl_); 
@@ -278,12 +278,10 @@ public:
 	class methodCallArgs* args; 
 	normalCall(class methodCallArgs* args_); 
 }; 
+
 class methodCallArgs: public baseAstNode {
-public:
-	class nonEmptyCallArgs* args;
-	methodCallArgs(class nonEmptyCallArgs* args_); 
 };
-class nonEmptyCallArgs: public baseAstNode {
+class nonEmptyCallArgs: public methodCallArgs {
 public:
 	vector < class Expr* > list; 
 	nonEmptyCallArgs();
@@ -297,6 +295,7 @@ public:
 	calloutCall(class stringLiteral* callName_,
 				class nonEmptyCalloutArgs* args_); 
 }; 
+
 class nonEmptyCalloutArgs: public baseAstNode {
 public:
 	vector < class calloutArg* > list;  

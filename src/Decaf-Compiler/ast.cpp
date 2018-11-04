@@ -150,10 +150,6 @@ normalCall::normalCall(class methodCallArgs* args_) {
 	args = args_; 
 }
 
-
-methodCallArgs::methodCallArgs(class nonEmptyCallArgs* args_) {
-	args = args_;
-}
 nonEmptyCallArgs::nonEmptyCallArgs() {}
 void nonEmptyCallArgs::add(class Expr* exp) {
 	list.push_back(exp);
