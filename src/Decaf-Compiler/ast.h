@@ -152,11 +152,6 @@ public:
 			  const string& name_);
 }; 
 
-class codeBlock: public statement {
-public: 
-	class block* bl; 
-	codeBlock(class block* bl_); 
-}; 
 class block: public baseAstNode {
 public:
 	class varDeclarations* varDecls; 
@@ -198,6 +193,11 @@ public:
 	string label; 
 }; 
 
+class codeBlock: public statement {
+public: 
+	class block* bl; 
+	codeBlock(class block* bl_); 
+}; 
 
 class Expr: public baseAstNode {	
 }; 
