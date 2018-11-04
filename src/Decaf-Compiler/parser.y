@@ -90,26 +90,26 @@
 
 /* Outermost Match */ 
 program_declaration		: 	CLASS PROGRAM CURLY_OPEN field_declarations 									method_declarations CURLY_CLOSE
-							{ $$ = new program($4, $5); }
+							{ 	$$ = new program($4, $5); }
 
 						; 
 /* Data types in grammar */ 
 var_type				: 	INT  	
-							{ $$ = new varType("int"); }
+							{ 	$$ = new varType("int"); }
 						| 	BOOLEAN
-							{ $$ = new varType("boolean"); }
+							{ 	$$ = new varType("boolean"); }
 						; 
 
 
 /* Field Declaration */ 
 field_declarations		: 	/* Epsilon */ 	
-							{ $$ = new fieldDeclarations(); }
+							{ 	$$ = new fieldDeclarations(); }
 						| 	field_declarations field_declaration SEMI_COLON
-							{ $$->add($2); }
+							{	$$->add($2); }
 						;
 
 field_declaration 		: 	var_type field_names
-							{ $$ = new fieldDeclaration($1, $2); }
+							{ 	$$ = new fieldDeclaration($1, $2); }
 						;
 
 field_names				: 	field_name 
@@ -118,23 +118,20 @@ field_names				: 	field_name
 								$$->add($1); 
 							}
 						| 	field_names COMMA field_name
-							{ $$->add($3); }
+							{ 	$$->add($3); }
 						;
 
 field_name 				: 	ID 
-						  	{
-						  		class intLiteral* temp = new intLiteral(int(-1));  
-						  		$$ = new field($1, temp); 
-						  	}
+						  	{ 	$$ = new field($1, NULL); }
 						| 	ID SQUARE_OPEN int_literal SQUARE_CLOSE
-							{ $$ = new field($1, $3); }
+							{ 	$$ = new field($1, $3); }
 						; 
 
 /* Declaration for a method */ 
 method_declarations		: 	/* Epsilon */
-							{ $$ = new methodDeclarations(); }
+							{ 	$$ = new methodDeclarations(); }
 						| 	method_declarations method_declaration
-							{ $$->add($2); }
+							{ 	$$->add($2); }
 						; 
 
 method_declaration 		: 	VOID ID OPEN parameter_declarations CLOSE code_block 
@@ -149,9 +146,9 @@ method_declaration 		: 	VOID ID OPEN parameter_declarations CLOSE code_block
 						; 
 
 parameter_declarations	: 	/* Epsilon */ 
-							{ $$ = new parameterDeclarations(NULL); }
+							{ 	$$ = new parameterDeclarations(NULL); }
 						| 	non_empty_parameter_declaration
-							{ $$ = new parameterDeclarations($1); }
+							{ 	$$ = new parameterDeclarations($1); }
 						;
 
 non_empty_parameter_declaration
@@ -176,25 +173,25 @@ parameter_declaration 	: 	var_type ID
 
 /* Block of code inside a method */ 
 code_block				: 	CURLY_OPEN block CURLY_CLOSE
-							{ $$ = new codeBlock($2); }
+							{ 	$$ = new codeBlock($2); }
 						; 
 
 block 					: 	/* Epsilon */ 
-							{ $$ = new block(NULL, NULL); }
+							{ 	$$ = new block(NULL, NULL); }
 						| 	var_declarations statements
-							{ $$ = new block($1, NULL); }
+							{ 	$$ = new block($1, NULL); }
 						; 
 
 
 /* Variable Declarations inside a code block */ 
 var_declarations		:  	/* Epsilon */ 
-							{ $$ = new varDeclarations(); }
+							{ 	$$ = new varDeclarations(); }
 						| 	var_declarations var_declaration SEMI_COLON 
-							{ $$->add($2); }
+							{ 	$$->add($2); }
 						;
 
 var_declaration 		: 	var_type var_names 
-							{ $$ = new varDeclaration($1, $2); }
+							{ 	$$ = new varDeclaration($1, $2); }
 						;
 
 var_names				: 	ID 
@@ -203,15 +200,15 @@ var_names				: 	ID
 								$$->add($1); 
 							}
 						| 	var_names COMMA ID 
-							{ $$->add($3); }
+							{ 	$$->add($3); }
 						; 
 
 
 /* Set of statements in a code block */ 
 statements				: 	/* Epsilon */
-							{ $$ = new statements() }
+							{ 	$$ = new statements() }
 						| 	statements statement
-							{ $$->add($2); }
+							{ 	$$->add($2); }
 						; 
 
 statement 				: 	assign_statement 		{ $$ = $1; }	
@@ -224,63 +221,63 @@ statement 				: 	assign_statement 		{ $$ = $1; }
 						; 
 
 assign_statement		: 	location assign_op expr SEMI_COLON
-							{ $$ = new assignSt($1, $2, $3); }
+							{ 	$$ = new assignSt($1, $2, $3); }
 						; 
 
 location				: 	ID 
-							{ $$ = new location($1, NULL); }
+							{ 	$$ = new location($1, NULL); }
 						| 	ID SQUARE_OPEN expr SQUARE_CLOSE 
-							{ $$ = new location($1, $3); } 
+							{ 	$$ = new location($1, $3); } 
 						; 
 
 if_statement 			: 	IF OPEN expr CLOSE code_block else_statement 
-							{ $$ = new ifSt($3, $5, $6); }
+							{ 	$$ = new ifSt($3, $5, $6); }
 						; 
 
 else_statement			:  	/* Epsilon */ 	
-							{$$ = new elseSt(NULL); }
+							{	$$ = new elseSt(NULL); }
 						| 	ELSE code_block
-							{$$ = new elseSt($2); } 
+							{	$$ = new elseSt($2); } 
 						;
 
 for_statement 			: 	FOR ID EQUAL expr COMMA expr code_block
-							{ $$ = new forSt($2, $4, $6, $7); 	} 
+							{ 	$$ = new forSt($2, $4, $6, $7); 	} 
 						; 
 
 return_statement 		: 	RETURN return_value SEMI_COLON
-							{ $$ = new returnSt($2)}
+							{ 	$$ = new returnSt($2); 	}
 						
 return_value			: 	/* Epsilon */ 
-							{ $$ = new returnVal(NULL); 	  	}
+							{ 	$$ = new returnVal(NULL); 	  	}
 						| 	expr
-							{ $$ = new returnVal($1); 			}
+							{ 	$$ = new returnVal($1); 			}
 						;
 
 terminal_statement	 	: 	BREAK SEMI_COLON
-							{ $$ = new terminalSt("break"); 	}
+							{	$$ = new terminalSt("break"); 	}
 						| 	CONTINUE SEMI_COLON
-							{ $$ = new terminalSt("continue"); 	}
+							{ 	$$ = new terminalSt("continue"); 	}
 						; 
 
 
 method_call_statment 	: 	method_call SEMI_COLON
-							{ new methodCallSt($1); }
+							{ $$ = new methodCallSt($1); 	}
 						; 
 
 method_call 			: 	normal_call
-							{ $$ = $1; }  
+							{ 	$$ = $1; }  
 						| 	callout_call
-							{ $$ = $1; }  
+							{ 	$$ = $1; }  
 						; 
 
 normal_call 			: 	ID OPEN method_call_args CLOSE
-							{ $$ = new normalCall($3); }
+							{ 	$$ = new normalCall($3); }
 						; 
 
 method_call_args 		: 	/* Epsilon */ 
-							{ $$ = NULL }  
+							{ 	$$ = NULL }  
 						| 	non_empty_method_call_args
-							{ $$ = $1; 	}
+							{ 	$$ = $1; 	}
 						;
 
 non_empty_method_call_args
@@ -297,9 +294,9 @@ non_empty_method_call_args
 						
 /* General Method Call */ 
 callout_call			: 	CALLOUT OPEN string_literal CLOSE 
-							{ $$ = new calloutCall($3, NULL); }
+							{ 	$$ = new calloutCall($3, NULL); }
 						| 	CALLOUT OPEN string_literal COMMA 						non_empty_callout_args CLOSE
-							{ $$ = new calloutCall($3, $5); }
+							{ 	$$ = new calloutCall($3, $5); }
 						; 
 
 
@@ -315,9 +312,9 @@ non_empty_callout_args 	: 	callout_arg
 						;
 
 callout_arg 			: 	expr
-							{ $$ = new calloutArg(NULL, $1); }
+							{ 	$$ = new calloutArg(NULL, $1); }
 						| 	string_literal
-							{ $$ = new calloutArg($1, NULL); }
+							{ 	$$ = new calloutArg($1, NULL); }
 						;
 
 expr					: 	location				{ $$ = $1; }
@@ -399,7 +396,6 @@ string_literal 			: 	STRING
 						; 
 
 %%
-
 int main(int argc, char **argv) {
  	yyparse();
  	return 0; 

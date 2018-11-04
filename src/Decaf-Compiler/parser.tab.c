@@ -529,15 +529,15 @@ static const yytype_int8 yyrhs[] =
 static const yytype_uint16 yyrline[] =
 {
        0,    92,    92,    97,    99,   106,   107,   111,   115,   120,
-     124,   129,   135,   136,   140,   145,   152,   153,   158,   163,
-     170,   178,   183,   184,   191,   192,   196,   200,   205,   212,
-     213,   217,   218,   219,   220,   221,   222,   223,   226,   230,
-     232,   236,   241,   242,   246,   250,   254,   255,   259,   261,
-     266,   270,   272,   276,   281,   282,   287,   292,   299,   301,
-     306,   311,   317,   319,   323,   324,   325,   326,   327,   328,
-     329,   330,   333,   335,   337,   339,   341,   343,   345,   347,
-     349,   351,   353,   355,   357,   361,   365,   367,   372,   374,
-     376,   381,   385,   387,   391,   393,   397
+     124,   126,   132,   133,   137,   142,   149,   150,   155,   160,
+     167,   175,   180,   181,   188,   189,   193,   197,   202,   209,
+     210,   214,   215,   216,   217,   218,   219,   220,   223,   227,
+     229,   233,   238,   239,   243,   247,   251,   252,   256,   258,
+     263,   267,   269,   273,   278,   279,   284,   289,   296,   298,
+     303,   308,   314,   316,   320,   321,   322,   323,   324,   325,
+     326,   327,   330,   332,   334,   336,   338,   340,   342,   344,
+     346,   348,   350,   352,   354,   358,   362,   364,   369,   371,
+     373,   378,   382,   384,   388,   390,   394
 };
 #endif
 
@@ -1580,32 +1580,32 @@ yyreduce:
     {
         case 2:
 #line 93 "parser.y"
-    { (yyval.prog) = new program((yyvsp[(4) - (6)].fieldDecls), (yyvsp[(5) - (6)].meDecls)); ;}
+    { 	(yyval.prog) = new program((yyvsp[(4) - (6)].fieldDecls), (yyvsp[(5) - (6)].meDecls)); ;}
     break;
 
   case 3:
 #line 98 "parser.y"
-    { (yyval.vType) = new varType("int"); ;}
+    { 	(yyval.vType) = new varType("int"); ;}
     break;
 
   case 4:
 #line 100 "parser.y"
-    { (yyval.vType) = new varType("boolean"); ;}
+    { 	(yyval.vType) = new varType("boolean"); ;}
     break;
 
   case 5:
 #line 106 "parser.y"
-    { (yyval.fieldDecls) = new fieldDeclarations(); ;}
+    { 	(yyval.fieldDecls) = new fieldDeclarations(); ;}
     break;
 
   case 6:
 #line 108 "parser.y"
-    { (yyval.fieldDecls)->add((yyvsp[(2) - (3)].fieldDecl)); ;}
+    {	(yyval.fieldDecls)->add((yyvsp[(2) - (3)].fieldDecl)); ;}
     break;
 
   case 7:
 #line 112 "parser.y"
-    { (yyval.fieldDecl) = new fieldDeclaration((yyvsp[(1) - (2)].vType), (yyvsp[(2) - (2)].fieldN)); ;}
+    { 	(yyval.fieldDecl) = new fieldDeclaration((yyvsp[(1) - (2)].vType), (yyvsp[(2) - (2)].fieldN)); ;}
     break;
 
   case 8:
@@ -1618,34 +1618,31 @@ yyreduce:
 
   case 9:
 #line 121 "parser.y"
-    { (yyval.fieldN)->add((yyvsp[(3) - (3)].singleField)); ;}
+    { 	(yyval.fieldN)->add((yyvsp[(3) - (3)].singleField)); ;}
     break;
 
   case 10:
 #line 125 "parser.y"
-    {
-						  		class intLiteral* temp = new intLiteral(int(-1));  
-						  		(yyval.singleField) = new field((yyvsp[(1) - (1)].keyword), temp); 
-						  	;}
+    { 	(yyval.singleField) = new field((yyvsp[(1) - (1)].keyword), NULL); ;}
     break;
 
   case 11:
-#line 130 "parser.y"
-    { (yyval.singleField) = new field((yyvsp[(1) - (4)].keyword), (yyvsp[(3) - (4)].integerLit)); ;}
+#line 127 "parser.y"
+    { 	(yyval.singleField) = new field((yyvsp[(1) - (4)].keyword), (yyvsp[(3) - (4)].integerLit)); ;}
     break;
 
   case 12:
-#line 135 "parser.y"
-    { (yyval.meDecls) = new methodDeclarations(); ;}
+#line 132 "parser.y"
+    { 	(yyval.meDecls) = new methodDeclarations(); ;}
     break;
 
   case 13:
-#line 137 "parser.y"
-    { (yyval.meDecls)->add((yyvsp[(2) - (2)].meDecl)); ;}
+#line 134 "parser.y"
+    { 	(yyval.meDecls)->add((yyvsp[(2) - (2)].meDecl)); ;}
     break;
 
   case 14:
-#line 141 "parser.y"
+#line 138 "parser.y"
     {
 								class varType* temp = new varType("void");
 								(yyval.meDecl) = new methodDeclaration(temp, (yyvsp[(2) - (6)].keyword), (yyvsp[(4) - (6)].parDecls), (yyvsp[(6) - (6)].codeBl)); 
@@ -1653,24 +1650,24 @@ yyreduce:
     break;
 
   case 15:
-#line 146 "parser.y"
+#line 143 "parser.y"
     {	
 								(yyval.meDecl) = new methodDeclaration((yyvsp[(1) - (6)].vType), (yyvsp[(2) - (6)].keyword), (yyvsp[(4) - (6)].parDecls), (yyvsp[(6) - (6)].codeBl)); 	
 							;}
     break;
 
   case 16:
-#line 152 "parser.y"
-    { (yyval.parDecls) = new parameterDeclarations(NULL); ;}
+#line 149 "parser.y"
+    { 	(yyval.parDecls) = new parameterDeclarations(NULL); ;}
     break;
 
   case 17:
-#line 154 "parser.y"
-    { (yyval.parDecls) = new parameterDeclarations((yyvsp[(1) - (1)].nonEmpParDecl)); ;}
+#line 151 "parser.y"
+    { 	(yyval.parDecls) = new parameterDeclarations((yyvsp[(1) - (1)].nonEmpParDecl)); ;}
     break;
 
   case 18:
-#line 159 "parser.y"
+#line 156 "parser.y"
     { 
 								(yyval.nonEmpParDecl) = new nonEmptyParDecl(); 
 								(yyval.nonEmpParDecl)->add((yyvsp[(1) - (1)].parDecl)); 
@@ -1678,51 +1675,51 @@ yyreduce:
     break;
 
   case 19:
-#line 165 "parser.y"
+#line 162 "parser.y"
     {
 								(yyval.nonEmpParDecl)->add((yyvsp[(3) - (3)].parDecl));  
 							;}
     break;
 
   case 20:
-#line 171 "parser.y"
+#line 168 "parser.y"
     {	
 								(yyval.parDecl) = new parameterDeclaration((yyvsp[(1) - (2)].vType), (yyvsp[(2) - (2)].keyword)); 
 							;}
     break;
 
   case 21:
-#line 179 "parser.y"
-    { (yyval.codeBl) = new codeBlock((yyvsp[(2) - (3)].Bl)); ;}
+#line 176 "parser.y"
+    { 	(yyval.codeBl) = new codeBlock((yyvsp[(2) - (3)].Bl)); ;}
     break;
 
   case 22:
-#line 183 "parser.y"
-    { (yyval.Bl) = new block(NULL, NULL); ;}
+#line 180 "parser.y"
+    { 	(yyval.Bl) = new block(NULL, NULL); ;}
     break;
 
   case 23:
-#line 185 "parser.y"
-    { (yyval.Bl) = new block((yyvsp[(1) - (2)].varDecls), NULL); ;}
+#line 182 "parser.y"
+    { 	(yyval.Bl) = new block((yyvsp[(1) - (2)].varDecls), NULL); ;}
     break;
 
   case 24:
-#line 191 "parser.y"
-    { (yyval.varDecls) = new varDeclarations(); ;}
+#line 188 "parser.y"
+    { 	(yyval.varDecls) = new varDeclarations(); ;}
     break;
 
   case 25:
-#line 193 "parser.y"
-    { (yyval.varDecls)->add((yyvsp[(2) - (3)].varDecl)); ;}
+#line 190 "parser.y"
+    { 	(yyval.varDecls)->add((yyvsp[(2) - (3)].varDecl)); ;}
     break;
 
   case 26:
-#line 197 "parser.y"
-    { (yyval.varDecl) = new varDeclaration((yyvsp[(1) - (2)].vType), (yyvsp[(2) - (2)].varN)); ;}
+#line 194 "parser.y"
+    { 	(yyval.varDecl) = new varDeclaration((yyvsp[(1) - (2)].vType), (yyvsp[(2) - (2)].varN)); ;}
     break;
 
   case 27:
-#line 201 "parser.y"
+#line 198 "parser.y"
     { 
 								(yyval.varN) = new varNames(); 
 								(yyval.varN)->add((yyvsp[(1) - (1)].keyword)); 
@@ -1730,147 +1727,147 @@ yyreduce:
     break;
 
   case 28:
-#line 206 "parser.y"
-    { (yyval.varN)->add((yyvsp[(3) - (3)].keyword)); ;}
+#line 203 "parser.y"
+    { 	(yyval.varN)->add((yyvsp[(3) - (3)].keyword)); ;}
     break;
 
   case 29:
-#line 212 "parser.y"
-    { (yyval.stmts) = new statements() ;}
+#line 209 "parser.y"
+    { 	(yyval.stmts) = new statements() ;}
     break;
 
   case 30:
-#line 214 "parser.y"
-    { (yyval.stmts)->add((yyvsp[(2) - (2)].stmt)); ;}
+#line 211 "parser.y"
+    { 	(yyval.stmts)->add((yyvsp[(2) - (2)].stmt)); ;}
     break;
 
   case 31:
-#line 217 "parser.y"
+#line 214 "parser.y"
     { (yyval.stmt) = (yyvsp[(1) - (1)].Assign); ;}
     break;
 
   case 32:
-#line 218 "parser.y"
+#line 215 "parser.y"
     { (yyval.stmt) = (yyvsp[(1) - (1)].mCSt); ;}
     break;
 
   case 33:
-#line 219 "parser.y"
+#line 216 "parser.y"
     { (yyval.stmt) = (yyvsp[(1) - (1)].If); ;}
     break;
 
   case 34:
-#line 220 "parser.y"
+#line 217 "parser.y"
     { (yyval.stmt) = (yyvsp[(1) - (1)].For); ;}
     break;
 
   case 35:
-#line 221 "parser.y"
+#line 218 "parser.y"
     { (yyval.stmt) = (yyvsp[(1) - (1)].Return); ;}
     break;
 
   case 36:
-#line 222 "parser.y"
+#line 219 "parser.y"
     { (yyval.stmt) = (yyvsp[(1) - (1)].ter); ;}
     break;
 
   case 37:
-#line 223 "parser.y"
+#line 220 "parser.y"
     { (yyval.stmt) = (yyvsp[(1) - (1)].codeBl); ;}
     break;
 
   case 38:
-#line 227 "parser.y"
-    { (yyval.Assign) = new assignSt((yyvsp[(1) - (4)].loc), (yyvsp[(2) - (4)].asOp), (yyvsp[(3) - (4)].Exp)); ;}
+#line 224 "parser.y"
+    { 	(yyval.Assign) = new assignSt((yyvsp[(1) - (4)].loc), (yyvsp[(2) - (4)].asOp), (yyvsp[(3) - (4)].Exp)); ;}
     break;
 
   case 39:
-#line 231 "parser.y"
-    { (yyval.loc) = new location((yyvsp[(1) - (1)].keyword), NULL); ;}
+#line 228 "parser.y"
+    { 	(yyval.loc) = new location((yyvsp[(1) - (1)].keyword), NULL); ;}
     break;
 
   case 40:
-#line 233 "parser.y"
-    { (yyval.loc) = new location((yyvsp[(1) - (4)].keyword), (yyvsp[(3) - (4)].Exp)); ;}
+#line 230 "parser.y"
+    { 	(yyval.loc) = new location((yyvsp[(1) - (4)].keyword), (yyvsp[(3) - (4)].Exp)); ;}
     break;
 
   case 41:
-#line 237 "parser.y"
-    { (yyval.If) = new ifSt((yyvsp[(3) - (6)].Exp), (yyvsp[(5) - (6)].codeBl), (yyvsp[(6) - (6)].Else)); ;}
+#line 234 "parser.y"
+    { 	(yyval.If) = new ifSt((yyvsp[(3) - (6)].Exp), (yyvsp[(5) - (6)].codeBl), (yyvsp[(6) - (6)].Else)); ;}
     break;
 
   case 42:
-#line 241 "parser.y"
-    {(yyval.Else) = new elseSt(NULL); ;}
+#line 238 "parser.y"
+    {	(yyval.Else) = new elseSt(NULL); ;}
     break;
 
   case 43:
-#line 243 "parser.y"
-    {(yyval.Else) = new elseSt((yyvsp[(2) - (2)].codeBl)); ;}
+#line 240 "parser.y"
+    {	(yyval.Else) = new elseSt((yyvsp[(2) - (2)].codeBl)); ;}
     break;
 
   case 44:
-#line 247 "parser.y"
-    { (yyval.For) = new forSt((yyvsp[(2) - (7)].keyword), (yyvsp[(4) - (7)].Exp), (yyvsp[(6) - (7)].Exp), (yyvsp[(7) - (7)].codeBl)); 	;}
+#line 244 "parser.y"
+    { 	(yyval.For) = new forSt((yyvsp[(2) - (7)].keyword), (yyvsp[(4) - (7)].Exp), (yyvsp[(6) - (7)].Exp), (yyvsp[(7) - (7)].codeBl)); 	;}
     break;
 
   case 45:
-#line 251 "parser.y"
-    { (yyval.Return) = new returnSt((yyvsp[(2) - (3)].retVal));}
+#line 248 "parser.y"
+    { 	(yyval.Return) = new returnSt((yyvsp[(2) - (3)].retVal)); 	;}
     break;
 
   case 46:
-#line 254 "parser.y"
-    { (yyval.retVal) = new returnVal(NULL); 	  	;}
+#line 251 "parser.y"
+    { 	(yyval.retVal) = new returnVal(NULL); 	  	;}
     break;
 
   case 47:
-#line 256 "parser.y"
-    { (yyval.retVal) = new returnVal((yyvsp[(1) - (1)].Exp)); 			;}
+#line 253 "parser.y"
+    { 	(yyval.retVal) = new returnVal((yyvsp[(1) - (1)].Exp)); 			;}
     break;
 
   case 48:
-#line 260 "parser.y"
-    { (yyval.ter) = new terminalSt("break"); 	;}
+#line 257 "parser.y"
+    {	(yyval.ter) = new terminalSt("break"); 	;}
     break;
 
   case 49:
-#line 262 "parser.y"
-    { (yyval.ter) = new terminalSt("continue"); 	;}
+#line 259 "parser.y"
+    { 	(yyval.ter) = new terminalSt("continue"); 	;}
     break;
 
   case 50:
-#line 267 "parser.y"
-    { new methodCallSt((yyvsp[(1) - (2)].mC)); ;}
+#line 264 "parser.y"
+    { (yyval.mCSt) = new methodCallSt((yyvsp[(1) - (2)].mC)); 	;}
     break;
 
   case 51:
-#line 271 "parser.y"
-    { (yyval.mC) = (yyvsp[(1) - (1)].nC); ;}
+#line 268 "parser.y"
+    { 	(yyval.mC) = (yyvsp[(1) - (1)].nC); ;}
     break;
 
   case 52:
-#line 273 "parser.y"
-    { (yyval.mC) = (yyvsp[(1) - (1)].cC); ;}
+#line 270 "parser.y"
+    { 	(yyval.mC) = (yyvsp[(1) - (1)].cC); ;}
     break;
 
   case 53:
-#line 277 "parser.y"
-    { (yyval.nC) = new normalCall((yyvsp[(3) - (4)].mCArgs)); ;}
+#line 274 "parser.y"
+    { 	(yyval.nC) = new normalCall((yyvsp[(3) - (4)].mCArgs)); ;}
     break;
 
   case 54:
-#line 281 "parser.y"
-    { (yyval.mCArgs) = NULL ;}
+#line 278 "parser.y"
+    { 	(yyval.mCArgs) = NULL ;}
     break;
 
   case 55:
-#line 283 "parser.y"
-    { (yyval.mCArgs) = (yyvsp[(1) - (1)].nECArgs); 	;}
+#line 280 "parser.y"
+    { 	(yyval.mCArgs) = (yyvsp[(1) - (1)].nECArgs); 	;}
     break;
 
   case 56:
-#line 288 "parser.y"
+#line 285 "parser.y"
     { 
 								(yyval.nECArgs) = new nonEmptyCallArgs(); 
 							  	(yyval.nECArgs)->add((yyvsp[(1) - (1)].Exp)); 
@@ -1878,24 +1875,24 @@ yyreduce:
     break;
 
   case 57:
-#line 293 "parser.y"
+#line 290 "parser.y"
     {
 								(yyval.nECArgs)->add((yyvsp[(3) - (3)].Exp)); 
 							;}
     break;
 
   case 58:
-#line 300 "parser.y"
-    { (yyval.cC) = new calloutCall((yyvsp[(3) - (4)].stringLit), NULL); ;}
+#line 297 "parser.y"
+    { 	(yyval.cC) = new calloutCall((yyvsp[(3) - (4)].stringLit), NULL); ;}
     break;
 
   case 59:
-#line 302 "parser.y"
-    { (yyval.cC) = new calloutCall((yyvsp[(3) - (6)].stringLit), (yyvsp[(5) - (6)].nECalloutArgs)); ;}
+#line 299 "parser.y"
+    { 	(yyval.cC) = new calloutCall((yyvsp[(3) - (6)].stringLit), (yyvsp[(5) - (6)].nECalloutArgs)); ;}
     break;
 
   case 60:
-#line 307 "parser.y"
+#line 304 "parser.y"
     {
 								(yyval.nECalloutArgs) = new nonEmptyCalloutArgs(); 
 								(yyval.nECalloutArgs)->add((yyvsp[(1) - (1)].cArgs)); 
@@ -1903,190 +1900,190 @@ yyreduce:
     break;
 
   case 61:
-#line 312 "parser.y"
+#line 309 "parser.y"
     {
 								(yyval.nECalloutArgs)->add((yyvsp[(3) - (3)].cArgs)); 
 							;}
     break;
 
   case 62:
-#line 318 "parser.y"
-    { (yyval.cArgs) = new calloutArg(NULL, (yyvsp[(1) - (1)].Exp)); ;}
+#line 315 "parser.y"
+    { 	(yyval.cArgs) = new calloutArg(NULL, (yyvsp[(1) - (1)].Exp)); ;}
     break;
 
   case 63:
-#line 320 "parser.y"
-    { (yyval.cArgs) = new calloutArg((yyvsp[(1) - (1)].stringLit), NULL); ;}
+#line 317 "parser.y"
+    { 	(yyval.cArgs) = new calloutArg((yyvsp[(1) - (1)].stringLit), NULL); ;}
     break;
 
   case 64:
-#line 323 "parser.y"
+#line 320 "parser.y"
     { (yyval.Exp) = (yyvsp[(1) - (1)].loc); ;}
     break;
 
   case 65:
-#line 324 "parser.y"
+#line 321 "parser.y"
     { (yyval.Exp) = (yyvsp[(1) - (1)].mC); ;}
     break;
 
   case 66:
-#line 325 "parser.y"
+#line 322 "parser.y"
     { (yyval.Exp) = (yyvsp[(1) - (1)].characterLit); ;}
     break;
 
   case 67:
-#line 326 "parser.y"
+#line 323 "parser.y"
     { (yyval.Exp) = (yyvsp[(1) - (1)].integerLit); ;}
     break;
 
   case 68:
-#line 327 "parser.y"
+#line 324 "parser.y"
     { (yyval.Exp) = (yyvsp[(1) - (1)].booleanLit); ;}
     break;
 
   case 69:
-#line 328 "parser.y"
+#line 325 "parser.y"
     { (yyval.Exp) = (yyvsp[(1) - (1)].binExp); ;}
     break;
 
   case 70:
-#line 329 "parser.y"
+#line 326 "parser.y"
     { (yyval.Exp) = (yyvsp[(1) - (1)].unExp); ;}
     break;
 
   case 71:
-#line 330 "parser.y"
+#line 327 "parser.y"
     { (yyval.Exp) = (yyvsp[(1) - (1)].enExp); ;}
     break;
 
   case 72:
-#line 334 "parser.y"
+#line 331 "parser.y"
     { (yyval.binExp) = new binExpr((yyvsp[(1) - (3)].Exp), "+", (yyvsp[(3) - (3)].Exp));;}
     break;
 
   case 73:
-#line 336 "parser.y"
+#line 333 "parser.y"
     { (yyval.binExp) = new binExpr((yyvsp[(1) - (3)].Exp), "-", (yyvsp[(3) - (3)].Exp));;}
     break;
 
   case 74:
-#line 338 "parser.y"
+#line 335 "parser.y"
     { (yyval.binExp) = new binExpr((yyvsp[(1) - (3)].Exp), "*", (yyvsp[(3) - (3)].Exp));;}
     break;
 
   case 75:
-#line 340 "parser.y"
+#line 337 "parser.y"
     { (yyval.binExp) = new binExpr((yyvsp[(1) - (3)].Exp), "/", (yyvsp[(3) - (3)].Exp));;}
     break;
 
   case 76:
-#line 342 "parser.y"
+#line 339 "parser.y"
     { (yyval.binExp) = new binExpr((yyvsp[(1) - (3)].Exp), "%", (yyvsp[(3) - (3)].Exp));;}
     break;
 
   case 77:
-#line 344 "parser.y"
+#line 341 "parser.y"
     { (yyval.binExp) = new binExpr((yyvsp[(1) - (3)].Exp), ">", (yyvsp[(3) - (3)].Exp));;}
     break;
 
   case 78:
-#line 346 "parser.y"
+#line 343 "parser.y"
     { (yyval.binExp) = new binExpr((yyvsp[(1) - (3)].Exp), "<", (yyvsp[(3) - (3)].Exp));;}
     break;
 
   case 79:
-#line 348 "parser.y"
+#line 345 "parser.y"
     { (yyval.binExp) = new binExpr((yyvsp[(1) - (3)].Exp), ">=", (yyvsp[(3) - (3)].Exp));;}
     break;
 
   case 80:
-#line 350 "parser.y"
+#line 347 "parser.y"
     { (yyval.binExp) = new binExpr((yyvsp[(1) - (3)].Exp), "<=", (yyvsp[(3) - (3)].Exp));;}
     break;
 
   case 81:
-#line 352 "parser.y"
+#line 349 "parser.y"
     { (yyval.binExp) = new binExpr((yyvsp[(1) - (3)].Exp), "==", (yyvsp[(3) - (3)].Exp));;}
     break;
 
   case 82:
-#line 354 "parser.y"
+#line 351 "parser.y"
     { (yyval.binExp) = new binExpr((yyvsp[(1) - (3)].Exp), "!=", (yyvsp[(3) - (3)].Exp));;}
     break;
 
   case 83:
-#line 356 "parser.y"
+#line 353 "parser.y"
     { (yyval.binExp) = new binExpr((yyvsp[(1) - (3)].Exp), "&&", (yyvsp[(3) - (3)].Exp));;}
     break;
 
   case 84:
-#line 358 "parser.y"
+#line 355 "parser.y"
     { (yyval.binExp) = new binExpr((yyvsp[(1) - (3)].Exp), "||", (yyvsp[(3) - (3)].Exp));;}
     break;
 
   case 85:
-#line 362 "parser.y"
+#line 359 "parser.y"
     { (yyval.enExp) = new enclosedExpr((yyvsp[(2) - (3)].Exp)); ;}
     break;
 
   case 86:
-#line 366 "parser.y"
+#line 363 "parser.y"
     { (yyval.unExp) = new unaryExpr("-", (yyvsp[(2) - (2)].Exp)); ;}
     break;
 
   case 87:
-#line 368 "parser.y"
+#line 365 "parser.y"
     { (yyval.unExp) = new unaryExpr("!", (yyvsp[(2) - (2)].Exp)); ;}
     break;
 
   case 88:
-#line 373 "parser.y"
+#line 370 "parser.y"
     { (yyval.asOp) = new assignOp("="); ;}
     break;
 
   case 89:
-#line 375 "parser.y"
+#line 372 "parser.y"
     { (yyval.asOp) = new assignOp("+="); ;}
     break;
 
   case 90:
-#line 377 "parser.y"
+#line 374 "parser.y"
     { (yyval.asOp) = new assignOp("-="); ;}
     break;
 
   case 91:
-#line 382 "parser.y"
+#line 379 "parser.y"
     { (yyval.characterLit) = new charLiteral((yyvsp[(1) - (1)].strLit)); ;}
     break;
 
   case 92:
-#line 386 "parser.y"
+#line 383 "parser.y"
     { (yyval.integerLit) = new intLiteral((yyvsp[(1) - (1)].intLit)); 	;}
     break;
 
   case 93:
-#line 388 "parser.y"
+#line 385 "parser.y"
     { (yyval.integerLit) = new intLiteral((yyvsp[(1) - (1)].intLit)); 	;}
     break;
 
   case 94:
-#line 392 "parser.y"
+#line 389 "parser.y"
     { (yyval.booleanLit) = new boolLiteral((yyvsp[(1) - (1)].boolLit)); ;}
     break;
 
   case 95:
-#line 394 "parser.y"
+#line 391 "parser.y"
     { (yyval.booleanLit) = new boolLiteral((yyvsp[(1) - (1)].boolLit)); ;}
     break;
 
   case 96:
-#line 398 "parser.y"
+#line 395 "parser.y"
     { (yyval.stringLit) = new stringLiteral((yyvsp[(1) - (1)].strLit)); ;}
     break;
 
 
 /* Line 1267 of yacc.c.  */
-#line 2090 "parser.tab.c"
+#line 2087 "parser.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -2300,8 +2297,7 @@ yyreturn:
 }
 
 
-#line 401 "parser.y"
-
+#line 398 "parser.y"
 
 int main(int argc, char **argv) {
  	yyparse();
