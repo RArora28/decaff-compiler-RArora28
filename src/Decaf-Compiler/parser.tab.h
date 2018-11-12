@@ -39,43 +39,43 @@
    /* Put the tokens into the symbol table, so that GDB and other debuggers
       know about them.  */
    enum yytokentype {
-     PROGRAM = 258,
-     CLASS = 259,
-     CALLOUT = 260,
-     VOID = 261,
-     INT = 262,
-     BOOLEAN = 263,
-     TRUE = 264,
-     FALSE = 265,
-     BREAK = 266,
-     CONTINUE = 267,
-     RETURN = 268,
-     FOR = 269,
-     IF = 270,
-     ELSE = 271,
-     NUM = 272,
-     HEX_LITERAL = 273,
-     CHAR_LITERAL = 274,
-     STRING = 275,
-     ID = 276,
-     ADD = 277,
-     SUBTRACT = 278,
-     MULTIPLY = 279,
-     DIVIDE = 280,
-     EQUAL = 281,
-     PLUS_EQUAL = 282,
-     MINUS_EQUAL = 283,
-     EQUALITY = 284,
-     NOT_EQUAL = 285,
-     GREATER_EQUAL = 286,
-     LESS_EQUAL = 287,
-     GREATER = 288,
-     LESS = 289,
-     CONDITIONAL_AND = 290,
-     CONDITIONAL_OR = 291,
-     NOT = 292,
-     ABSOLUTE = 293,
-     MODULO = 294,
+     ADD = 258,
+     SUBTRACT = 259,
+     MULTIPLY = 260,
+     DIVIDE = 261,
+     MODULO = 262,
+     EQUAL = 263,
+     PLUS_EQUAL = 264,
+     MINUS_EQUAL = 265,
+     EQUALITY = 266,
+     NOT_EQUAL = 267,
+     GREATER_EQUAL = 268,
+     LESS_EQUAL = 269,
+     GREATER = 270,
+     LESS = 271,
+     NOT = 272,
+     CONDITIONAL_AND = 273,
+     CONDITIONAL_OR = 274,
+     PROGRAM = 275,
+     CLASS = 276,
+     CALLOUT = 277,
+     VOID = 278,
+     INT = 279,
+     BOOLEAN = 280,
+     TRUE = 281,
+     FALSE = 282,
+     BREAK = 283,
+     CONTINUE = 284,
+     RETURN = 285,
+     FOR = 286,
+     IF = 287,
+     ELSE = 288,
+     NUM = 289,
+     HEX_LITERAL = 290,
+     CHAR_LITERAL = 291,
+     STRING = 292,
+     ID = 293,
+     ABSOLUTE = 294,
      CURLY_OPEN = 295,
      CURLY_CLOSE = 296,
      SQUARE_OPEN = 297,
@@ -87,43 +87,43 @@
    };
 #endif
 /* Tokens.  */
-#define PROGRAM 258
-#define CLASS 259
-#define CALLOUT 260
-#define VOID 261
-#define INT 262
-#define BOOLEAN 263
-#define TRUE 264
-#define FALSE 265
-#define BREAK 266
-#define CONTINUE 267
-#define RETURN 268
-#define FOR 269
-#define IF 270
-#define ELSE 271
-#define NUM 272
-#define HEX_LITERAL 273
-#define CHAR_LITERAL 274
-#define STRING 275
-#define ID 276
-#define ADD 277
-#define SUBTRACT 278
-#define MULTIPLY 279
-#define DIVIDE 280
-#define EQUAL 281
-#define PLUS_EQUAL 282
-#define MINUS_EQUAL 283
-#define EQUALITY 284
-#define NOT_EQUAL 285
-#define GREATER_EQUAL 286
-#define LESS_EQUAL 287
-#define GREATER 288
-#define LESS 289
-#define CONDITIONAL_AND 290
-#define CONDITIONAL_OR 291
-#define NOT 292
-#define ABSOLUTE 293
-#define MODULO 294
+#define ADD 258
+#define SUBTRACT 259
+#define MULTIPLY 260
+#define DIVIDE 261
+#define MODULO 262
+#define EQUAL 263
+#define PLUS_EQUAL 264
+#define MINUS_EQUAL 265
+#define EQUALITY 266
+#define NOT_EQUAL 267
+#define GREATER_EQUAL 268
+#define LESS_EQUAL 269
+#define GREATER 270
+#define LESS 271
+#define NOT 272
+#define CONDITIONAL_AND 273
+#define CONDITIONAL_OR 274
+#define PROGRAM 275
+#define CLASS 276
+#define CALLOUT 277
+#define VOID 278
+#define INT 279
+#define BOOLEAN 280
+#define TRUE 281
+#define FALSE 282
+#define BREAK 283
+#define CONTINUE 284
+#define RETURN 285
+#define FOR 286
+#define IF 287
+#define ELSE 288
+#define NUM 289
+#define HEX_LITERAL 290
+#define CHAR_LITERAL 291
+#define STRING 292
+#define ID 293
+#define ABSOLUTE 294
 #define CURLY_OPEN 295
 #define CURLY_CLOSE 296
 #define SQUARE_OPEN 297

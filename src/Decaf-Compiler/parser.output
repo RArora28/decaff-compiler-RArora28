@@ -5,21 +5,6 @@ Terminals which are not used
 
 State 6 conflicts: 2 shift/reduce
 State 40 conflicts: 1 reduce/reduce
-State 104 conflicts: 13 shift/reduce
-State 105 conflicts: 13 shift/reduce
-State 131 conflicts: 13 shift/reduce
-State 132 conflicts: 13 shift/reduce
-State 133 conflicts: 13 shift/reduce
-State 134 conflicts: 13 shift/reduce
-State 135 conflicts: 13 shift/reduce
-State 136 conflicts: 13 shift/reduce
-State 137 conflicts: 13 shift/reduce
-State 138 conflicts: 13 shift/reduce
-State 139 conflicts: 13 shift/reduce
-State 140 conflicts: 13 shift/reduce
-State 141 conflicts: 13 shift/reduce
-State 142 conflicts: 13 shift/reduce
-State 143 conflicts: 13 shift/reduce
 
 
 Grammar
@@ -169,43 +154,43 @@ Terminals, with rules where they appear
 
 $end (0) 0
 error (256)
-PROGRAM (258) 1
-CLASS (259) 1
-CALLOUT (260) 57 58
-VOID (261) 13
-INT (262) 2
-BOOLEAN (263) 3
-TRUE (264) 93
-FALSE (265) 94
-BREAK (266) 47
-CONTINUE (267) 48
-RETURN (268) 44
-FOR (269) 43
-IF (270) 40
-ELSE (271) 42
-NUM (272) 91
-HEX_LITERAL (273) 92
-CHAR_LITERAL (274) 90
-STRING (275) 95
-ID (276) 9 10 13 14 19 26 27 38 39 43 52
-ADD (277) 71
-SUBTRACT (278) 72 85
-MULTIPLY (279) 73
-DIVIDE (280) 74
-EQUAL (281) 43 87
-PLUS_EQUAL (282) 88
-MINUS_EQUAL (283) 89
-EQUALITY (284) 80
-NOT_EQUAL (285) 81
-GREATER_EQUAL (286) 78
-LESS_EQUAL (287) 79
-GREATER (288) 76
-LESS (289) 77
-CONDITIONAL_AND (290) 82
-CONDITIONAL_OR (291) 83
-NOT (292) 86
-ABSOLUTE (293)
-MODULO (294) 75
+ADD (258) 71
+SUBTRACT (259) 72 85
+MULTIPLY (260) 73
+DIVIDE (261) 74
+MODULO (262) 75
+EQUAL (263) 43 87
+PLUS_EQUAL (264) 88
+MINUS_EQUAL (265) 89
+EQUALITY (266) 80
+NOT_EQUAL (267) 81
+GREATER_EQUAL (268) 78
+LESS_EQUAL (269) 79
+GREATER (270) 76
+LESS (271) 77
+NOT (272) 86
+CONDITIONAL_AND (273) 82
+CONDITIONAL_OR (274) 83
+PROGRAM (275) 1
+CLASS (276) 1
+CALLOUT (277) 57 58
+VOID (278) 13
+INT (279) 2
+BOOLEAN (280) 3
+TRUE (281) 93
+FALSE (282) 94
+BREAK (283) 47
+CONTINUE (284) 48
+RETURN (285) 44
+FOR (286) 43
+IF (287) 40
+ELSE (288) 42
+NUM (289) 91
+HEX_LITERAL (290) 92
+CHAR_LITERAL (291) 90
+STRING (292) 95
+ID (293) 9 10 13 14 19 26 27 38 39 43 52
+ABSOLUTE (294)
 CURLY_OPEN (295) 1 20
 CURLY_CLOSE (296) 1 20
 SQUARE_OPEN (297) 10 39
@@ -810,15 +795,15 @@ state 56
 
    44 return_statement: RETURN . return_value SEMI_COLON
 
+    SUBTRACT      shift, and go to state 76
+    NOT           shift, and go to state 77
     CALLOUT       shift, and go to state 53
-    TRUE          shift, and go to state 76
-    FALSE         shift, and go to state 77
+    TRUE          shift, and go to state 78
+    FALSE         shift, and go to state 79
     NUM           shift, and go to state 24
     HEX_LITERAL   shift, and go to state 25
-    CHAR_LITERAL  shift, and go to state 78
+    CHAR_LITERAL  shift, and go to state 80
     ID            shift, and go to state 59
-    SUBTRACT      shift, and go to state 79
-    NOT           shift, and go to state 80
     OPEN          shift, and go to state 81
 
     $default  reduce using rule 45 (return_value)
@@ -984,38 +969,17 @@ state 75
 
 state 76
 
-   93 bool_literal: TRUE .
-
-    $default  reduce using rule 93 (bool_literal)
-
-
-state 77
-
-   94 bool_literal: FALSE .
-
-    $default  reduce using rule 94 (bool_literal)
-
-
-state 78
-
-   90 char_literal: CHAR_LITERAL .
-
-    $default  reduce using rule 90 (char_literal)
-
-
-state 79
-
    85 unary_expr: SUBTRACT . expr
 
+    SUBTRACT      shift, and go to state 76
+    NOT           shift, and go to state 77
     CALLOUT       shift, and go to state 53
-    TRUE          shift, and go to state 76
-    FALSE         shift, and go to state 77
+    TRUE          shift, and go to state 78
+    FALSE         shift, and go to state 79
     NUM           shift, and go to state 24
     HEX_LITERAL   shift, and go to state 25
-    CHAR_LITERAL  shift, and go to state 78
+    CHAR_LITERAL  shift, and go to state 80
     ID            shift, and go to state 59
-    SUBTRACT      shift, and go to state 79
-    NOT           shift, and go to state 80
     OPEN          shift, and go to state 81
 
     location       go to state 82
@@ -1031,19 +995,19 @@ state 79
     bool_literal   go to state 91
 
 
-state 80
+state 77
 
    86 unary_expr: NOT . expr
 
+    SUBTRACT      shift, and go to state 76
+    NOT           shift, and go to state 77
     CALLOUT       shift, and go to state 53
-    TRUE          shift, and go to state 76
-    FALSE         shift, and go to state 77
+    TRUE          shift, and go to state 78
+    FALSE         shift, and go to state 79
     NUM           shift, and go to state 24
     HEX_LITERAL   shift, and go to state 25
-    CHAR_LITERAL  shift, and go to state 78
+    CHAR_LITERAL  shift, and go to state 80
     ID            shift, and go to state 59
-    SUBTRACT      shift, and go to state 79
-    NOT           shift, and go to state 80
     OPEN          shift, and go to state 81
 
     location       go to state 82
@@ -1059,19 +1023,40 @@ state 80
     bool_literal   go to state 91
 
 
+state 78
+
+   93 bool_literal: TRUE .
+
+    $default  reduce using rule 93 (bool_literal)
+
+
+state 79
+
+   94 bool_literal: FALSE .
+
+    $default  reduce using rule 94 (bool_literal)
+
+
+state 80
+
+   90 char_literal: CHAR_LITERAL .
+
+    $default  reduce using rule 90 (char_literal)
+
+
 state 81
 
    84 enclosed_expr: OPEN . expr CLOSE
 
+    SUBTRACT      shift, and go to state 76
+    NOT           shift, and go to state 77
     CALLOUT       shift, and go to state 53
-    TRUE          shift, and go to state 76
-    FALSE         shift, and go to state 77
+    TRUE          shift, and go to state 78
+    FALSE         shift, and go to state 79
     NUM           shift, and go to state 24
     HEX_LITERAL   shift, and go to state 25
-    CHAR_LITERAL  shift, and go to state 78
+    CHAR_LITERAL  shift, and go to state 80
     ID            shift, and go to state 59
-    SUBTRACT      shift, and go to state 79
-    NOT           shift, and go to state 80
     OPEN          shift, and go to state 81
 
     location       go to state 82
@@ -1129,15 +1114,15 @@ state 85
     SUBTRACT         shift, and go to state 109
     MULTIPLY         shift, and go to state 110
     DIVIDE           shift, and go to state 111
-    EQUALITY         shift, and go to state 112
-    NOT_EQUAL        shift, and go to state 113
-    GREATER_EQUAL    shift, and go to state 114
-    LESS_EQUAL       shift, and go to state 115
-    GREATER          shift, and go to state 116
-    LESS             shift, and go to state 117
-    CONDITIONAL_AND  shift, and go to state 118
-    CONDITIONAL_OR   shift, and go to state 119
-    MODULO           shift, and go to state 120
+    MODULO           shift, and go to state 112
+    EQUALITY         shift, and go to state 113
+    NOT_EQUAL        shift, and go to state 114
+    GREATER_EQUAL    shift, and go to state 115
+    LESS_EQUAL       shift, and go to state 116
+    GREATER          shift, and go to state 117
+    LESS             shift, and go to state 118
+    CONDITIONAL_AND  shift, and go to state 119
+    CONDITIONAL_OR   shift, and go to state 120
 
     $default  reduce using rule 46 (return_value)
 
@@ -1195,15 +1180,15 @@ state 93
 
    40 if_statement: IF OPEN . expr CLOSE code_block else_statement
 
+    SUBTRACT      shift, and go to state 76
+    NOT           shift, and go to state 77
     CALLOUT       shift, and go to state 53
-    TRUE          shift, and go to state 76
-    FALSE         shift, and go to state 77
+    TRUE          shift, and go to state 78
+    FALSE         shift, and go to state 79
     NUM           shift, and go to state 24
     HEX_LITERAL   shift, and go to state 25
-    CHAR_LITERAL  shift, and go to state 78
+    CHAR_LITERAL  shift, and go to state 80
     ID            shift, and go to state 59
-    SUBTRACT      shift, and go to state 79
-    NOT           shift, and go to state 80
     OPEN          shift, and go to state 81
 
     location       go to state 82
@@ -1223,15 +1208,15 @@ state 94
 
    39 location: ID SQUARE_OPEN . expr SQUARE_CLOSE
 
+    SUBTRACT      shift, and go to state 76
+    NOT           shift, and go to state 77
     CALLOUT       shift, and go to state 53
-    TRUE          shift, and go to state 76
-    FALSE         shift, and go to state 77
+    TRUE          shift, and go to state 78
+    FALSE         shift, and go to state 79
     NUM           shift, and go to state 24
     HEX_LITERAL   shift, and go to state 25
-    CHAR_LITERAL  shift, and go to state 78
+    CHAR_LITERAL  shift, and go to state 80
     ID            shift, and go to state 59
-    SUBTRACT      shift, and go to state 79
-    NOT           shift, and go to state 80
     OPEN          shift, and go to state 81
 
     location       go to state 82
@@ -1251,15 +1236,15 @@ state 95
 
    52 normal_call: ID OPEN . method_call_args CLOSE
 
+    SUBTRACT      shift, and go to state 76
+    NOT           shift, and go to state 77
     CALLOUT       shift, and go to state 53
-    TRUE          shift, and go to state 76
-    FALSE         shift, and go to state 77
+    TRUE          shift, and go to state 78
+    FALSE         shift, and go to state 79
     NUM           shift, and go to state 24
     HEX_LITERAL   shift, and go to state 25
-    CHAR_LITERAL  shift, and go to state 78
+    CHAR_LITERAL  shift, and go to state 80
     ID            shift, and go to state 59
-    SUBTRACT      shift, and go to state 79
-    NOT           shift, and go to state 80
     OPEN          shift, and go to state 81
 
     $default  reduce using rule 53 (method_call_args)
@@ -1304,15 +1289,15 @@ state 99
 
    37 assign_statement: location assign_op . expr SEMI_COLON
 
+    SUBTRACT      shift, and go to state 76
+    NOT           shift, and go to state 77
     CALLOUT       shift, and go to state 53
-    TRUE          shift, and go to state 76
-    FALSE         shift, and go to state 77
+    TRUE          shift, and go to state 78
+    FALSE         shift, and go to state 79
     NUM           shift, and go to state 24
     HEX_LITERAL   shift, and go to state 25
-    CHAR_LITERAL  shift, and go to state 78
+    CHAR_LITERAL  shift, and go to state 80
     ID            shift, and go to state 59
-    SUBTRACT      shift, and go to state 79
-    NOT           shift, and go to state 80
     OPEN          shift, and go to state 81
 
     location       go to state 82
@@ -1375,34 +1360,19 @@ state 104
    83            | expr . CONDITIONAL_OR expr
    85 unary_expr: SUBTRACT expr .
 
-    ADD              shift, and go to state 108
-    SUBTRACT         shift, and go to state 109
     MULTIPLY         shift, and go to state 110
     DIVIDE           shift, and go to state 111
-    EQUALITY         shift, and go to state 112
-    NOT_EQUAL        shift, and go to state 113
-    GREATER_EQUAL    shift, and go to state 114
-    LESS_EQUAL       shift, and go to state 115
-    GREATER          shift, and go to state 116
-    LESS             shift, and go to state 117
-    CONDITIONAL_AND  shift, and go to state 118
-    CONDITIONAL_OR   shift, and go to state 119
-    MODULO           shift, and go to state 120
+    MODULO           shift, and go to state 112
+    EQUALITY         shift, and go to state 113
+    NOT_EQUAL        shift, and go to state 114
+    GREATER_EQUAL    shift, and go to state 115
+    LESS_EQUAL       shift, and go to state 116
+    GREATER          shift, and go to state 117
+    LESS             shift, and go to state 118
+    CONDITIONAL_AND  shift, and go to state 119
+    CONDITIONAL_OR   shift, and go to state 120
 
-    ADD              [reduce using rule 85 (unary_expr)]
-    SUBTRACT         [reduce using rule 85 (unary_expr)]
-    MULTIPLY         [reduce using rule 85 (unary_expr)]
-    DIVIDE           [reduce using rule 85 (unary_expr)]
-    EQUALITY         [reduce using rule 85 (unary_expr)]
-    NOT_EQUAL        [reduce using rule 85 (unary_expr)]
-    GREATER_EQUAL    [reduce using rule 85 (unary_expr)]
-    LESS_EQUAL       [reduce using rule 85 (unary_expr)]
-    GREATER          [reduce using rule 85 (unary_expr)]
-    LESS             [reduce using rule 85 (unary_expr)]
-    CONDITIONAL_AND  [reduce using rule 85 (unary_expr)]
-    CONDITIONAL_OR   [reduce using rule 85 (unary_expr)]
-    MODULO           [reduce using rule 85 (unary_expr)]
-    $default         reduce using rule 85 (unary_expr)
+    $default  reduce using rule 85 (unary_expr)
 
 
 state 105
@@ -1422,34 +1392,10 @@ state 105
    83            | expr . CONDITIONAL_OR expr
    86 unary_expr: NOT expr .
 
-    ADD              shift, and go to state 108
-    SUBTRACT         shift, and go to state 109
-    MULTIPLY         shift, and go to state 110
-    DIVIDE           shift, and go to state 111
-    EQUALITY         shift, and go to state 112
-    NOT_EQUAL        shift, and go to state 113
-    GREATER_EQUAL    shift, and go to state 114
-    LESS_EQUAL       shift, and go to state 115
-    GREATER          shift, and go to state 116
-    LESS             shift, and go to state 117
-    CONDITIONAL_AND  shift, and go to state 118
-    CONDITIONAL_OR   shift, and go to state 119
-    MODULO           shift, and go to state 120
+    CONDITIONAL_AND  shift, and go to state 119
+    CONDITIONAL_OR   shift, and go to state 120
 
-    ADD              [reduce using rule 86 (unary_expr)]
-    SUBTRACT         [reduce using rule 86 (unary_expr)]
-    MULTIPLY         [reduce using rule 86 (unary_expr)]
-    DIVIDE           [reduce using rule 86 (unary_expr)]
-    EQUALITY         [reduce using rule 86 (unary_expr)]
-    NOT_EQUAL        [reduce using rule 86 (unary_expr)]
-    GREATER_EQUAL    [reduce using rule 86 (unary_expr)]
-    LESS_EQUAL       [reduce using rule 86 (unary_expr)]
-    GREATER          [reduce using rule 86 (unary_expr)]
-    LESS             [reduce using rule 86 (unary_expr)]
-    CONDITIONAL_AND  [reduce using rule 86 (unary_expr)]
-    CONDITIONAL_OR   [reduce using rule 86 (unary_expr)]
-    MODULO           [reduce using rule 86 (unary_expr)]
-    $default         reduce using rule 86 (unary_expr)
+    $default  reduce using rule 86 (unary_expr)
 
 
 state 106
@@ -1473,15 +1419,15 @@ state 106
     SUBTRACT         shift, and go to state 109
     MULTIPLY         shift, and go to state 110
     DIVIDE           shift, and go to state 111
-    EQUALITY         shift, and go to state 112
-    NOT_EQUAL        shift, and go to state 113
-    GREATER_EQUAL    shift, and go to state 114
-    LESS_EQUAL       shift, and go to state 115
-    GREATER          shift, and go to state 116
-    LESS             shift, and go to state 117
-    CONDITIONAL_AND  shift, and go to state 118
-    CONDITIONAL_OR   shift, and go to state 119
-    MODULO           shift, and go to state 120
+    MODULO           shift, and go to state 112
+    EQUALITY         shift, and go to state 113
+    NOT_EQUAL        shift, and go to state 114
+    GREATER_EQUAL    shift, and go to state 115
+    LESS_EQUAL       shift, and go to state 116
+    GREATER          shift, and go to state 117
+    LESS             shift, and go to state 118
+    CONDITIONAL_AND  shift, and go to state 119
+    CONDITIONAL_OR   shift, and go to state 120
     CLOSE            shift, and go to state 130
 
 
@@ -1496,15 +1442,15 @@ state 108
 
    71 binary_expr: expr ADD . expr
 
+    SUBTRACT      shift, and go to state 76
+    NOT           shift, and go to state 77
     CALLOUT       shift, and go to state 53
-    TRUE          shift, and go to state 76
-    FALSE         shift, and go to state 77
+    TRUE          shift, and go to state 78
+    FALSE         shift, and go to state 79
     NUM           shift, and go to state 24
     HEX_LITERAL   shift, and go to state 25
-    CHAR_LITERAL  shift, and go to state 78
+    CHAR_LITERAL  shift, and go to state 80
     ID            shift, and go to state 59
-    SUBTRACT      shift, and go to state 79
-    NOT           shift, and go to state 80
     OPEN          shift, and go to state 81
 
     location       go to state 82
@@ -1524,15 +1470,15 @@ state 109
 
    72 binary_expr: expr SUBTRACT . expr
 
+    SUBTRACT      shift, and go to state 76
+    NOT           shift, and go to state 77
     CALLOUT       shift, and go to state 53
-    TRUE          shift, and go to state 76
-    FALSE         shift, and go to state 77
+    TRUE          shift, and go to state 78
+    FALSE         shift, and go to state 79
     NUM           shift, and go to state 24
     HEX_LITERAL   shift, and go to state 25
-    CHAR_LITERAL  shift, and go to state 78
+    CHAR_LITERAL  shift, and go to state 80
     ID            shift, and go to state 59
-    SUBTRACT      shift, and go to state 79
-    NOT           shift, and go to state 80
     OPEN          shift, and go to state 81
 
     location       go to state 82
@@ -1552,15 +1498,15 @@ state 110
 
    73 binary_expr: expr MULTIPLY . expr
 
+    SUBTRACT      shift, and go to state 76
+    NOT           shift, and go to state 77
     CALLOUT       shift, and go to state 53
-    TRUE          shift, and go to state 76
-    FALSE         shift, and go to state 77
+    TRUE          shift, and go to state 78
+    FALSE         shift, and go to state 79
     NUM           shift, and go to state 24
     HEX_LITERAL   shift, and go to state 25
-    CHAR_LITERAL  shift, and go to state 78
+    CHAR_LITERAL  shift, and go to state 80
     ID            shift, and go to state 59
-    SUBTRACT      shift, and go to state 79
-    NOT           shift, and go to state 80
     OPEN          shift, and go to state 81
 
     location       go to state 82
@@ -1580,15 +1526,15 @@ state 111
 
    74 binary_expr: expr DIVIDE . expr
 
+    SUBTRACT      shift, and go to state 76
+    NOT           shift, and go to state 77
     CALLOUT       shift, and go to state 53
-    TRUE          shift, and go to state 76
-    FALSE         shift, and go to state 77
+    TRUE          shift, and go to state 78
+    FALSE         shift, and go to state 79
     NUM           shift, and go to state 24
     HEX_LITERAL   shift, and go to state 25
-    CHAR_LITERAL  shift, and go to state 78
+    CHAR_LITERAL  shift, and go to state 80
     ID            shift, and go to state 59
-    SUBTRACT      shift, and go to state 79
-    NOT           shift, and go to state 80
     OPEN          shift, and go to state 81
 
     location       go to state 82
@@ -1606,17 +1552,17 @@ state 111
 
 state 112
 
-   80 binary_expr: expr EQUALITY . expr
+   75 binary_expr: expr MODULO . expr
 
+    SUBTRACT      shift, and go to state 76
+    NOT           shift, and go to state 77
     CALLOUT       shift, and go to state 53
-    TRUE          shift, and go to state 76
-    FALSE         shift, and go to state 77
+    TRUE          shift, and go to state 78
+    FALSE         shift, and go to state 79
     NUM           shift, and go to state 24
     HEX_LITERAL   shift, and go to state 25
-    CHAR_LITERAL  shift, and go to state 78
+    CHAR_LITERAL  shift, and go to state 80
     ID            shift, and go to state 59
-    SUBTRACT      shift, and go to state 79
-    NOT           shift, and go to state 80
     OPEN          shift, and go to state 81
 
     location       go to state 82
@@ -1634,17 +1580,17 @@ state 112
 
 state 113
 
-   81 binary_expr: expr NOT_EQUAL . expr
+   80 binary_expr: expr EQUALITY . expr
 
+    SUBTRACT      shift, and go to state 76
+    NOT           shift, and go to state 77
     CALLOUT       shift, and go to state 53
-    TRUE          shift, and go to state 76
-    FALSE         shift, and go to state 77
+    TRUE          shift, and go to state 78
+    FALSE         shift, and go to state 79
     NUM           shift, and go to state 24
     HEX_LITERAL   shift, and go to state 25
-    CHAR_LITERAL  shift, and go to state 78
+    CHAR_LITERAL  shift, and go to state 80
     ID            shift, and go to state 59
-    SUBTRACT      shift, and go to state 79
-    NOT           shift, and go to state 80
     OPEN          shift, and go to state 81
 
     location       go to state 82
@@ -1662,17 +1608,17 @@ state 113
 
 state 114
 
-   78 binary_expr: expr GREATER_EQUAL . expr
+   81 binary_expr: expr NOT_EQUAL . expr
 
+    SUBTRACT      shift, and go to state 76
+    NOT           shift, and go to state 77
     CALLOUT       shift, and go to state 53
-    TRUE          shift, and go to state 76
-    FALSE         shift, and go to state 77
+    TRUE          shift, and go to state 78
+    FALSE         shift, and go to state 79
     NUM           shift, and go to state 24
     HEX_LITERAL   shift, and go to state 25
-    CHAR_LITERAL  shift, and go to state 78
+    CHAR_LITERAL  shift, and go to state 80
     ID            shift, and go to state 59
-    SUBTRACT      shift, and go to state 79
-    NOT           shift, and go to state 80
     OPEN          shift, and go to state 81
 
     location       go to state 82
@@ -1690,17 +1636,17 @@ state 114
 
 state 115
 
-   79 binary_expr: expr LESS_EQUAL . expr
+   78 binary_expr: expr GREATER_EQUAL . expr
 
+    SUBTRACT      shift, and go to state 76
+    NOT           shift, and go to state 77
     CALLOUT       shift, and go to state 53
-    TRUE          shift, and go to state 76
-    FALSE         shift, and go to state 77
+    TRUE          shift, and go to state 78
+    FALSE         shift, and go to state 79
     NUM           shift, and go to state 24
     HEX_LITERAL   shift, and go to state 25
-    CHAR_LITERAL  shift, and go to state 78
+    CHAR_LITERAL  shift, and go to state 80
     ID            shift, and go to state 59
-    SUBTRACT      shift, and go to state 79
-    NOT           shift, and go to state 80
     OPEN          shift, and go to state 81
 
     location       go to state 82
@@ -1718,17 +1664,17 @@ state 115
 
 state 116
 
-   76 binary_expr: expr GREATER . expr
+   79 binary_expr: expr LESS_EQUAL . expr
 
+    SUBTRACT      shift, and go to state 76
+    NOT           shift, and go to state 77
     CALLOUT       shift, and go to state 53
-    TRUE          shift, and go to state 76
-    FALSE         shift, and go to state 77
+    TRUE          shift, and go to state 78
+    FALSE         shift, and go to state 79
     NUM           shift, and go to state 24
     HEX_LITERAL   shift, and go to state 25
-    CHAR_LITERAL  shift, and go to state 78
+    CHAR_LITERAL  shift, and go to state 80
     ID            shift, and go to state 59
-    SUBTRACT      shift, and go to state 79
-    NOT           shift, and go to state 80
     OPEN          shift, and go to state 81
 
     location       go to state 82
@@ -1746,17 +1692,17 @@ state 116
 
 state 117
 
-   77 binary_expr: expr LESS . expr
+   76 binary_expr: expr GREATER . expr
 
+    SUBTRACT      shift, and go to state 76
+    NOT           shift, and go to state 77
     CALLOUT       shift, and go to state 53
-    TRUE          shift, and go to state 76
-    FALSE         shift, and go to state 77
+    TRUE          shift, and go to state 78
+    FALSE         shift, and go to state 79
     NUM           shift, and go to state 24
     HEX_LITERAL   shift, and go to state 25
-    CHAR_LITERAL  shift, and go to state 78
+    CHAR_LITERAL  shift, and go to state 80
     ID            shift, and go to state 59
-    SUBTRACT      shift, and go to state 79
-    NOT           shift, and go to state 80
     OPEN          shift, and go to state 81
 
     location       go to state 82
@@ -1774,17 +1720,17 @@ state 117
 
 state 118
 
-   82 binary_expr: expr CONDITIONAL_AND . expr
+   77 binary_expr: expr LESS . expr
 
+    SUBTRACT      shift, and go to state 76
+    NOT           shift, and go to state 77
     CALLOUT       shift, and go to state 53
-    TRUE          shift, and go to state 76
-    FALSE         shift, and go to state 77
+    TRUE          shift, and go to state 78
+    FALSE         shift, and go to state 79
     NUM           shift, and go to state 24
     HEX_LITERAL   shift, and go to state 25
-    CHAR_LITERAL  shift, and go to state 78
+    CHAR_LITERAL  shift, and go to state 80
     ID            shift, and go to state 59
-    SUBTRACT      shift, and go to state 79
-    NOT           shift, and go to state 80
     OPEN          shift, and go to state 81
 
     location       go to state 82
@@ -1802,17 +1748,17 @@ state 118
 
 state 119
 
-   83 binary_expr: expr CONDITIONAL_OR . expr
+   82 binary_expr: expr CONDITIONAL_AND . expr
 
+    SUBTRACT      shift, and go to state 76
+    NOT           shift, and go to state 77
     CALLOUT       shift, and go to state 53
-    TRUE          shift, and go to state 76
-    FALSE         shift, and go to state 77
+    TRUE          shift, and go to state 78
+    FALSE         shift, and go to state 79
     NUM           shift, and go to state 24
     HEX_LITERAL   shift, and go to state 25
-    CHAR_LITERAL  shift, and go to state 78
+    CHAR_LITERAL  shift, and go to state 80
     ID            shift, and go to state 59
-    SUBTRACT      shift, and go to state 79
-    NOT           shift, and go to state 80
     OPEN          shift, and go to state 81
 
     location       go to state 82
@@ -1830,17 +1776,17 @@ state 119
 
 state 120
 
-   75 binary_expr: expr MODULO . expr
+   83 binary_expr: expr CONDITIONAL_OR . expr
 
+    SUBTRACT      shift, and go to state 76
+    NOT           shift, and go to state 77
     CALLOUT       shift, and go to state 53
-    TRUE          shift, and go to state 76
-    FALSE         shift, and go to state 77
+    TRUE          shift, and go to state 78
+    FALSE         shift, and go to state 79
     NUM           shift, and go to state 24
     HEX_LITERAL   shift, and go to state 25
-    CHAR_LITERAL  shift, and go to state 78
+    CHAR_LITERAL  shift, and go to state 80
     ID            shift, and go to state 59
-    SUBTRACT      shift, and go to state 79
-    NOT           shift, and go to state 80
     OPEN          shift, and go to state 81
 
     location       go to state 82
@@ -1860,15 +1806,15 @@ state 121
 
    43 for_statement: FOR ID EQUAL . expr COMMA expr code_block
 
+    SUBTRACT      shift, and go to state 76
+    NOT           shift, and go to state 77
     CALLOUT       shift, and go to state 53
-    TRUE          shift, and go to state 76
-    FALSE         shift, and go to state 77
+    TRUE          shift, and go to state 78
+    FALSE         shift, and go to state 79
     NUM           shift, and go to state 24
     HEX_LITERAL   shift, and go to state 25
-    CHAR_LITERAL  shift, and go to state 78
+    CHAR_LITERAL  shift, and go to state 80
     ID            shift, and go to state 59
-    SUBTRACT      shift, and go to state 79
-    NOT           shift, and go to state 80
     OPEN          shift, and go to state 81
 
     location       go to state 82
@@ -1905,15 +1851,15 @@ state 122
     SUBTRACT         shift, and go to state 109
     MULTIPLY         shift, and go to state 110
     DIVIDE           shift, and go to state 111
-    EQUALITY         shift, and go to state 112
-    NOT_EQUAL        shift, and go to state 113
-    GREATER_EQUAL    shift, and go to state 114
-    LESS_EQUAL       shift, and go to state 115
-    GREATER          shift, and go to state 116
-    LESS             shift, and go to state 117
-    CONDITIONAL_AND  shift, and go to state 118
-    CONDITIONAL_OR   shift, and go to state 119
-    MODULO           shift, and go to state 120
+    MODULO           shift, and go to state 112
+    EQUALITY         shift, and go to state 113
+    NOT_EQUAL        shift, and go to state 114
+    GREATER_EQUAL    shift, and go to state 115
+    LESS_EQUAL       shift, and go to state 116
+    GREATER          shift, and go to state 117
+    LESS             shift, and go to state 118
+    CONDITIONAL_AND  shift, and go to state 119
+    CONDITIONAL_OR   shift, and go to state 120
     CLOSE            shift, and go to state 145
 
 
@@ -1938,15 +1884,15 @@ state 123
     SUBTRACT         shift, and go to state 109
     MULTIPLY         shift, and go to state 110
     DIVIDE           shift, and go to state 111
-    EQUALITY         shift, and go to state 112
-    NOT_EQUAL        shift, and go to state 113
-    GREATER_EQUAL    shift, and go to state 114
-    LESS_EQUAL       shift, and go to state 115
-    GREATER          shift, and go to state 116
-    LESS             shift, and go to state 117
-    CONDITIONAL_AND  shift, and go to state 118
-    CONDITIONAL_OR   shift, and go to state 119
-    MODULO           shift, and go to state 120
+    MODULO           shift, and go to state 112
+    EQUALITY         shift, and go to state 113
+    NOT_EQUAL        shift, and go to state 114
+    GREATER_EQUAL    shift, and go to state 115
+    LESS_EQUAL       shift, and go to state 116
+    GREATER          shift, and go to state 117
+    LESS             shift, and go to state 118
+    CONDITIONAL_AND  shift, and go to state 119
+    CONDITIONAL_OR   shift, and go to state 120
     SQUARE_CLOSE     shift, and go to state 146
 
 
@@ -1988,15 +1934,15 @@ state 126
     SUBTRACT         shift, and go to state 109
     MULTIPLY         shift, and go to state 110
     DIVIDE           shift, and go to state 111
-    EQUALITY         shift, and go to state 112
-    NOT_EQUAL        shift, and go to state 113
-    GREATER_EQUAL    shift, and go to state 114
-    LESS_EQUAL       shift, and go to state 115
-    GREATER          shift, and go to state 116
-    LESS             shift, and go to state 117
-    CONDITIONAL_AND  shift, and go to state 118
-    CONDITIONAL_OR   shift, and go to state 119
-    MODULO           shift, and go to state 120
+    MODULO           shift, and go to state 112
+    EQUALITY         shift, and go to state 113
+    NOT_EQUAL        shift, and go to state 114
+    GREATER_EQUAL    shift, and go to state 115
+    LESS_EQUAL       shift, and go to state 116
+    GREATER          shift, and go to state 117
+    LESS             shift, and go to state 118
+    CONDITIONAL_AND  shift, and go to state 119
+    CONDITIONAL_OR   shift, and go to state 120
 
     $default  reduce using rule 55 (non_empty_method_call_args)
 
@@ -2022,15 +1968,15 @@ state 127
     SUBTRACT         shift, and go to state 109
     MULTIPLY         shift, and go to state 110
     DIVIDE           shift, and go to state 111
-    EQUALITY         shift, and go to state 112
-    NOT_EQUAL        shift, and go to state 113
-    GREATER_EQUAL    shift, and go to state 114
-    LESS_EQUAL       shift, and go to state 115
-    GREATER          shift, and go to state 116
-    LESS             shift, and go to state 117
-    CONDITIONAL_AND  shift, and go to state 118
-    CONDITIONAL_OR   shift, and go to state 119
-    MODULO           shift, and go to state 120
+    MODULO           shift, and go to state 112
+    EQUALITY         shift, and go to state 113
+    NOT_EQUAL        shift, and go to state 114
+    GREATER_EQUAL    shift, and go to state 115
+    LESS_EQUAL       shift, and go to state 116
+    GREATER          shift, and go to state 117
+    LESS             shift, and go to state 118
+    CONDITIONAL_AND  shift, and go to state 119
+    CONDITIONAL_OR   shift, and go to state 120
     SEMI_COLON       shift, and go to state 149
 
 
@@ -2045,16 +1991,16 @@ state 129
 
    58 callout_call: CALLOUT OPEN string_literal COMMA . non_empty_callout_args CLOSE
 
+    SUBTRACT      shift, and go to state 76
+    NOT           shift, and go to state 77
     CALLOUT       shift, and go to state 53
-    TRUE          shift, and go to state 76
-    FALSE         shift, and go to state 77
+    TRUE          shift, and go to state 78
+    FALSE         shift, and go to state 79
     NUM           shift, and go to state 24
     HEX_LITERAL   shift, and go to state 25
-    CHAR_LITERAL  shift, and go to state 78
+    CHAR_LITERAL  shift, and go to state 80
     STRING        shift, and go to state 102
     ID            shift, and go to state 59
-    SUBTRACT      shift, and go to state 79
-    NOT           shift, and go to state 80
     OPEN          shift, and go to state 81
 
     location                go to state 82
@@ -2097,34 +2043,20 @@ state 131
    82            | expr . CONDITIONAL_AND expr
    83            | expr . CONDITIONAL_OR expr
 
-    ADD              shift, and go to state 108
     SUBTRACT         shift, and go to state 109
     MULTIPLY         shift, and go to state 110
     DIVIDE           shift, and go to state 111
-    EQUALITY         shift, and go to state 112
-    NOT_EQUAL        shift, and go to state 113
-    GREATER_EQUAL    shift, and go to state 114
-    LESS_EQUAL       shift, and go to state 115
-    GREATER          shift, and go to state 116
-    LESS             shift, and go to state 117
-    CONDITIONAL_AND  shift, and go to state 118
-    CONDITIONAL_OR   shift, and go to state 119
-    MODULO           shift, and go to state 120
+    MODULO           shift, and go to state 112
+    EQUALITY         shift, and go to state 113
+    NOT_EQUAL        shift, and go to state 114
+    GREATER_EQUAL    shift, and go to state 115
+    LESS_EQUAL       shift, and go to state 116
+    GREATER          shift, and go to state 117
+    LESS             shift, and go to state 118
+    CONDITIONAL_AND  shift, and go to state 119
+    CONDITIONAL_OR   shift, and go to state 120
 
-    ADD              [reduce using rule 71 (binary_expr)]
-    SUBTRACT         [reduce using rule 71 (binary_expr)]
-    MULTIPLY         [reduce using rule 71 (binary_expr)]
-    DIVIDE           [reduce using rule 71 (binary_expr)]
-    EQUALITY         [reduce using rule 71 (binary_expr)]
-    NOT_EQUAL        [reduce using rule 71 (binary_expr)]
-    GREATER_EQUAL    [reduce using rule 71 (binary_expr)]
-    LESS_EQUAL       [reduce using rule 71 (binary_expr)]
-    GREATER          [reduce using rule 71 (binary_expr)]
-    LESS             [reduce using rule 71 (binary_expr)]
-    CONDITIONAL_AND  [reduce using rule 71 (binary_expr)]
-    CONDITIONAL_OR   [reduce using rule 71 (binary_expr)]
-    MODULO           [reduce using rule 71 (binary_expr)]
-    $default         reduce using rule 71 (binary_expr)
+    $default  reduce using rule 71 (binary_expr)
 
 
 state 132
@@ -2144,34 +2076,19 @@ state 132
    82            | expr . CONDITIONAL_AND expr
    83            | expr . CONDITIONAL_OR expr
 
-    ADD              shift, and go to state 108
-    SUBTRACT         shift, and go to state 109
     MULTIPLY         shift, and go to state 110
     DIVIDE           shift, and go to state 111
-    EQUALITY         shift, and go to state 112
-    NOT_EQUAL        shift, and go to state 113
-    GREATER_EQUAL    shift, and go to state 114
-    LESS_EQUAL       shift, and go to state 115
-    GREATER          shift, and go to state 116
-    LESS             shift, and go to state 117
-    CONDITIONAL_AND  shift, and go to state 118
-    CONDITIONAL_OR   shift, and go to state 119
-    MODULO           shift, and go to state 120
+    MODULO           shift, and go to state 112
+    EQUALITY         shift, and go to state 113
+    NOT_EQUAL        shift, and go to state 114
+    GREATER_EQUAL    shift, and go to state 115
+    LESS_EQUAL       shift, and go to state 116
+    GREATER          shift, and go to state 117
+    LESS             shift, and go to state 118
+    CONDITIONAL_AND  shift, and go to state 119
+    CONDITIONAL_OR   shift, and go to state 120
 
-    ADD              [reduce using rule 72 (binary_expr)]
-    SUBTRACT         [reduce using rule 72 (binary_expr)]
-    MULTIPLY         [reduce using rule 72 (binary_expr)]
-    DIVIDE           [reduce using rule 72 (binary_expr)]
-    EQUALITY         [reduce using rule 72 (binary_expr)]
-    NOT_EQUAL        [reduce using rule 72 (binary_expr)]
-    GREATER_EQUAL    [reduce using rule 72 (binary_expr)]
-    LESS_EQUAL       [reduce using rule 72 (binary_expr)]
-    GREATER          [reduce using rule 72 (binary_expr)]
-    LESS             [reduce using rule 72 (binary_expr)]
-    CONDITIONAL_AND  [reduce using rule 72 (binary_expr)]
-    CONDITIONAL_OR   [reduce using rule 72 (binary_expr)]
-    MODULO           [reduce using rule 72 (binary_expr)]
-    $default         reduce using rule 72 (binary_expr)
+    $default  reduce using rule 72 (binary_expr)
 
 
 state 133
@@ -2191,34 +2108,18 @@ state 133
    82            | expr . CONDITIONAL_AND expr
    83            | expr . CONDITIONAL_OR expr
 
-    ADD              shift, and go to state 108
-    SUBTRACT         shift, and go to state 109
-    MULTIPLY         shift, and go to state 110
     DIVIDE           shift, and go to state 111
-    EQUALITY         shift, and go to state 112
-    NOT_EQUAL        shift, and go to state 113
-    GREATER_EQUAL    shift, and go to state 114
-    LESS_EQUAL       shift, and go to state 115
-    GREATER          shift, and go to state 116
-    LESS             shift, and go to state 117
-    CONDITIONAL_AND  shift, and go to state 118
-    CONDITIONAL_OR   shift, and go to state 119
-    MODULO           shift, and go to state 120
+    MODULO           shift, and go to state 112
+    EQUALITY         shift, and go to state 113
+    NOT_EQUAL        shift, and go to state 114
+    GREATER_EQUAL    shift, and go to state 115
+    LESS_EQUAL       shift, and go to state 116
+    GREATER          shift, and go to state 117
+    LESS             shift, and go to state 118
+    CONDITIONAL_AND  shift, and go to state 119
+    CONDITIONAL_OR   shift, and go to state 120
 
-    ADD              [reduce using rule 73 (binary_expr)]
-    SUBTRACT         [reduce using rule 73 (binary_expr)]
-    MULTIPLY         [reduce using rule 73 (binary_expr)]
-    DIVIDE           [reduce using rule 73 (binary_expr)]
-    EQUALITY         [reduce using rule 73 (binary_expr)]
-    NOT_EQUAL        [reduce using rule 73 (binary_expr)]
-    GREATER_EQUAL    [reduce using rule 73 (binary_expr)]
-    LESS_EQUAL       [reduce using rule 73 (binary_expr)]
-    GREATER          [reduce using rule 73 (binary_expr)]
-    LESS             [reduce using rule 73 (binary_expr)]
-    CONDITIONAL_AND  [reduce using rule 73 (binary_expr)]
-    CONDITIONAL_OR   [reduce using rule 73 (binary_expr)]
-    MODULO           [reduce using rule 73 (binary_expr)]
-    $default         reduce using rule 73 (binary_expr)
+    $default  reduce using rule 73 (binary_expr)
 
 
 state 134
@@ -2238,413 +2139,20 @@ state 134
    82            | expr . CONDITIONAL_AND expr
    83            | expr . CONDITIONAL_OR expr
 
-    ADD              shift, and go to state 108
-    SUBTRACT         shift, and go to state 109
-    MULTIPLY         shift, and go to state 110
-    DIVIDE           shift, and go to state 111
-    EQUALITY         shift, and go to state 112
-    NOT_EQUAL        shift, and go to state 113
-    GREATER_EQUAL    shift, and go to state 114
-    LESS_EQUAL       shift, and go to state 115
-    GREATER          shift, and go to state 116
-    LESS             shift, and go to state 117
-    CONDITIONAL_AND  shift, and go to state 118
-    CONDITIONAL_OR   shift, and go to state 119
-    MODULO           shift, and go to state 120
+    MODULO           shift, and go to state 112
+    EQUALITY         shift, and go to state 113
+    NOT_EQUAL        shift, and go to state 114
+    GREATER_EQUAL    shift, and go to state 115
+    LESS_EQUAL       shift, and go to state 116
+    GREATER          shift, and go to state 117
+    LESS             shift, and go to state 118
+    CONDITIONAL_AND  shift, and go to state 119
+    CONDITIONAL_OR   shift, and go to state 120
 
-    ADD              [reduce using rule 74 (binary_expr)]
-    SUBTRACT         [reduce using rule 74 (binary_expr)]
-    MULTIPLY         [reduce using rule 74 (binary_expr)]
-    DIVIDE           [reduce using rule 74 (binary_expr)]
-    EQUALITY         [reduce using rule 74 (binary_expr)]
-    NOT_EQUAL        [reduce using rule 74 (binary_expr)]
-    GREATER_EQUAL    [reduce using rule 74 (binary_expr)]
-    LESS_EQUAL       [reduce using rule 74 (binary_expr)]
-    GREATER          [reduce using rule 74 (binary_expr)]
-    LESS             [reduce using rule 74 (binary_expr)]
-    CONDITIONAL_AND  [reduce using rule 74 (binary_expr)]
-    CONDITIONAL_OR   [reduce using rule 74 (binary_expr)]
-    MODULO           [reduce using rule 74 (binary_expr)]
-    $default         reduce using rule 74 (binary_expr)
+    $default  reduce using rule 74 (binary_expr)
 
 
 state 135
-
-   71 binary_expr: expr . ADD expr
-   72            | expr . SUBTRACT expr
-   73            | expr . MULTIPLY expr
-   74            | expr . DIVIDE expr
-   75            | expr . MODULO expr
-   76            | expr . GREATER expr
-   77            | expr . LESS expr
-   78            | expr . GREATER_EQUAL expr
-   79            | expr . LESS_EQUAL expr
-   80            | expr . EQUALITY expr
-   80            | expr EQUALITY expr .
-   81            | expr . NOT_EQUAL expr
-   82            | expr . CONDITIONAL_AND expr
-   83            | expr . CONDITIONAL_OR expr
-
-    ADD              shift, and go to state 108
-    SUBTRACT         shift, and go to state 109
-    MULTIPLY         shift, and go to state 110
-    DIVIDE           shift, and go to state 111
-    EQUALITY         shift, and go to state 112
-    NOT_EQUAL        shift, and go to state 113
-    GREATER_EQUAL    shift, and go to state 114
-    LESS_EQUAL       shift, and go to state 115
-    GREATER          shift, and go to state 116
-    LESS             shift, and go to state 117
-    CONDITIONAL_AND  shift, and go to state 118
-    CONDITIONAL_OR   shift, and go to state 119
-    MODULO           shift, and go to state 120
-
-    ADD              [reduce using rule 80 (binary_expr)]
-    SUBTRACT         [reduce using rule 80 (binary_expr)]
-    MULTIPLY         [reduce using rule 80 (binary_expr)]
-    DIVIDE           [reduce using rule 80 (binary_expr)]
-    EQUALITY         [reduce using rule 80 (binary_expr)]
-    NOT_EQUAL        [reduce using rule 80 (binary_expr)]
-    GREATER_EQUAL    [reduce using rule 80 (binary_expr)]
-    LESS_EQUAL       [reduce using rule 80 (binary_expr)]
-    GREATER          [reduce using rule 80 (binary_expr)]
-    LESS             [reduce using rule 80 (binary_expr)]
-    CONDITIONAL_AND  [reduce using rule 80 (binary_expr)]
-    CONDITIONAL_OR   [reduce using rule 80 (binary_expr)]
-    MODULO           [reduce using rule 80 (binary_expr)]
-    $default         reduce using rule 80 (binary_expr)
-
-
-state 136
-
-   71 binary_expr: expr . ADD expr
-   72            | expr . SUBTRACT expr
-   73            | expr . MULTIPLY expr
-   74            | expr . DIVIDE expr
-   75            | expr . MODULO expr
-   76            | expr . GREATER expr
-   77            | expr . LESS expr
-   78            | expr . GREATER_EQUAL expr
-   79            | expr . LESS_EQUAL expr
-   80            | expr . EQUALITY expr
-   81            | expr . NOT_EQUAL expr
-   81            | expr NOT_EQUAL expr .
-   82            | expr . CONDITIONAL_AND expr
-   83            | expr . CONDITIONAL_OR expr
-
-    ADD              shift, and go to state 108
-    SUBTRACT         shift, and go to state 109
-    MULTIPLY         shift, and go to state 110
-    DIVIDE           shift, and go to state 111
-    EQUALITY         shift, and go to state 112
-    NOT_EQUAL        shift, and go to state 113
-    GREATER_EQUAL    shift, and go to state 114
-    LESS_EQUAL       shift, and go to state 115
-    GREATER          shift, and go to state 116
-    LESS             shift, and go to state 117
-    CONDITIONAL_AND  shift, and go to state 118
-    CONDITIONAL_OR   shift, and go to state 119
-    MODULO           shift, and go to state 120
-
-    ADD              [reduce using rule 81 (binary_expr)]
-    SUBTRACT         [reduce using rule 81 (binary_expr)]
-    MULTIPLY         [reduce using rule 81 (binary_expr)]
-    DIVIDE           [reduce using rule 81 (binary_expr)]
-    EQUALITY         [reduce using rule 81 (binary_expr)]
-    NOT_EQUAL        [reduce using rule 81 (binary_expr)]
-    GREATER_EQUAL    [reduce using rule 81 (binary_expr)]
-    LESS_EQUAL       [reduce using rule 81 (binary_expr)]
-    GREATER          [reduce using rule 81 (binary_expr)]
-    LESS             [reduce using rule 81 (binary_expr)]
-    CONDITIONAL_AND  [reduce using rule 81 (binary_expr)]
-    CONDITIONAL_OR   [reduce using rule 81 (binary_expr)]
-    MODULO           [reduce using rule 81 (binary_expr)]
-    $default         reduce using rule 81 (binary_expr)
-
-
-state 137
-
-   71 binary_expr: expr . ADD expr
-   72            | expr . SUBTRACT expr
-   73            | expr . MULTIPLY expr
-   74            | expr . DIVIDE expr
-   75            | expr . MODULO expr
-   76            | expr . GREATER expr
-   77            | expr . LESS expr
-   78            | expr . GREATER_EQUAL expr
-   78            | expr GREATER_EQUAL expr .
-   79            | expr . LESS_EQUAL expr
-   80            | expr . EQUALITY expr
-   81            | expr . NOT_EQUAL expr
-   82            | expr . CONDITIONAL_AND expr
-   83            | expr . CONDITIONAL_OR expr
-
-    ADD              shift, and go to state 108
-    SUBTRACT         shift, and go to state 109
-    MULTIPLY         shift, and go to state 110
-    DIVIDE           shift, and go to state 111
-    EQUALITY         shift, and go to state 112
-    NOT_EQUAL        shift, and go to state 113
-    GREATER_EQUAL    shift, and go to state 114
-    LESS_EQUAL       shift, and go to state 115
-    GREATER          shift, and go to state 116
-    LESS             shift, and go to state 117
-    CONDITIONAL_AND  shift, and go to state 118
-    CONDITIONAL_OR   shift, and go to state 119
-    MODULO           shift, and go to state 120
-
-    ADD              [reduce using rule 78 (binary_expr)]
-    SUBTRACT         [reduce using rule 78 (binary_expr)]
-    MULTIPLY         [reduce using rule 78 (binary_expr)]
-    DIVIDE           [reduce using rule 78 (binary_expr)]
-    EQUALITY         [reduce using rule 78 (binary_expr)]
-    NOT_EQUAL        [reduce using rule 78 (binary_expr)]
-    GREATER_EQUAL    [reduce using rule 78 (binary_expr)]
-    LESS_EQUAL       [reduce using rule 78 (binary_expr)]
-    GREATER          [reduce using rule 78 (binary_expr)]
-    LESS             [reduce using rule 78 (binary_expr)]
-    CONDITIONAL_AND  [reduce using rule 78 (binary_expr)]
-    CONDITIONAL_OR   [reduce using rule 78 (binary_expr)]
-    MODULO           [reduce using rule 78 (binary_expr)]
-    $default         reduce using rule 78 (binary_expr)
-
-
-state 138
-
-   71 binary_expr: expr . ADD expr
-   72            | expr . SUBTRACT expr
-   73            | expr . MULTIPLY expr
-   74            | expr . DIVIDE expr
-   75            | expr . MODULO expr
-   76            | expr . GREATER expr
-   77            | expr . LESS expr
-   78            | expr . GREATER_EQUAL expr
-   79            | expr . LESS_EQUAL expr
-   79            | expr LESS_EQUAL expr .
-   80            | expr . EQUALITY expr
-   81            | expr . NOT_EQUAL expr
-   82            | expr . CONDITIONAL_AND expr
-   83            | expr . CONDITIONAL_OR expr
-
-    ADD              shift, and go to state 108
-    SUBTRACT         shift, and go to state 109
-    MULTIPLY         shift, and go to state 110
-    DIVIDE           shift, and go to state 111
-    EQUALITY         shift, and go to state 112
-    NOT_EQUAL        shift, and go to state 113
-    GREATER_EQUAL    shift, and go to state 114
-    LESS_EQUAL       shift, and go to state 115
-    GREATER          shift, and go to state 116
-    LESS             shift, and go to state 117
-    CONDITIONAL_AND  shift, and go to state 118
-    CONDITIONAL_OR   shift, and go to state 119
-    MODULO           shift, and go to state 120
-
-    ADD              [reduce using rule 79 (binary_expr)]
-    SUBTRACT         [reduce using rule 79 (binary_expr)]
-    MULTIPLY         [reduce using rule 79 (binary_expr)]
-    DIVIDE           [reduce using rule 79 (binary_expr)]
-    EQUALITY         [reduce using rule 79 (binary_expr)]
-    NOT_EQUAL        [reduce using rule 79 (binary_expr)]
-    GREATER_EQUAL    [reduce using rule 79 (binary_expr)]
-    LESS_EQUAL       [reduce using rule 79 (binary_expr)]
-    GREATER          [reduce using rule 79 (binary_expr)]
-    LESS             [reduce using rule 79 (binary_expr)]
-    CONDITIONAL_AND  [reduce using rule 79 (binary_expr)]
-    CONDITIONAL_OR   [reduce using rule 79 (binary_expr)]
-    MODULO           [reduce using rule 79 (binary_expr)]
-    $default         reduce using rule 79 (binary_expr)
-
-
-state 139
-
-   71 binary_expr: expr . ADD expr
-   72            | expr . SUBTRACT expr
-   73            | expr . MULTIPLY expr
-   74            | expr . DIVIDE expr
-   75            | expr . MODULO expr
-   76            | expr . GREATER expr
-   76            | expr GREATER expr .
-   77            | expr . LESS expr
-   78            | expr . GREATER_EQUAL expr
-   79            | expr . LESS_EQUAL expr
-   80            | expr . EQUALITY expr
-   81            | expr . NOT_EQUAL expr
-   82            | expr . CONDITIONAL_AND expr
-   83            | expr . CONDITIONAL_OR expr
-
-    ADD              shift, and go to state 108
-    SUBTRACT         shift, and go to state 109
-    MULTIPLY         shift, and go to state 110
-    DIVIDE           shift, and go to state 111
-    EQUALITY         shift, and go to state 112
-    NOT_EQUAL        shift, and go to state 113
-    GREATER_EQUAL    shift, and go to state 114
-    LESS_EQUAL       shift, and go to state 115
-    GREATER          shift, and go to state 116
-    LESS             shift, and go to state 117
-    CONDITIONAL_AND  shift, and go to state 118
-    CONDITIONAL_OR   shift, and go to state 119
-    MODULO           shift, and go to state 120
-
-    ADD              [reduce using rule 76 (binary_expr)]
-    SUBTRACT         [reduce using rule 76 (binary_expr)]
-    MULTIPLY         [reduce using rule 76 (binary_expr)]
-    DIVIDE           [reduce using rule 76 (binary_expr)]
-    EQUALITY         [reduce using rule 76 (binary_expr)]
-    NOT_EQUAL        [reduce using rule 76 (binary_expr)]
-    GREATER_EQUAL    [reduce using rule 76 (binary_expr)]
-    LESS_EQUAL       [reduce using rule 76 (binary_expr)]
-    GREATER          [reduce using rule 76 (binary_expr)]
-    LESS             [reduce using rule 76 (binary_expr)]
-    CONDITIONAL_AND  [reduce using rule 76 (binary_expr)]
-    CONDITIONAL_OR   [reduce using rule 76 (binary_expr)]
-    MODULO           [reduce using rule 76 (binary_expr)]
-    $default         reduce using rule 76 (binary_expr)
-
-
-state 140
-
-   71 binary_expr: expr . ADD expr
-   72            | expr . SUBTRACT expr
-   73            | expr . MULTIPLY expr
-   74            | expr . DIVIDE expr
-   75            | expr . MODULO expr
-   76            | expr . GREATER expr
-   77            | expr . LESS expr
-   77            | expr LESS expr .
-   78            | expr . GREATER_EQUAL expr
-   79            | expr . LESS_EQUAL expr
-   80            | expr . EQUALITY expr
-   81            | expr . NOT_EQUAL expr
-   82            | expr . CONDITIONAL_AND expr
-   83            | expr . CONDITIONAL_OR expr
-
-    ADD              shift, and go to state 108
-    SUBTRACT         shift, and go to state 109
-    MULTIPLY         shift, and go to state 110
-    DIVIDE           shift, and go to state 111
-    EQUALITY         shift, and go to state 112
-    NOT_EQUAL        shift, and go to state 113
-    GREATER_EQUAL    shift, and go to state 114
-    LESS_EQUAL       shift, and go to state 115
-    GREATER          shift, and go to state 116
-    LESS             shift, and go to state 117
-    CONDITIONAL_AND  shift, and go to state 118
-    CONDITIONAL_OR   shift, and go to state 119
-    MODULO           shift, and go to state 120
-
-    ADD              [reduce using rule 77 (binary_expr)]
-    SUBTRACT         [reduce using rule 77 (binary_expr)]
-    MULTIPLY         [reduce using rule 77 (binary_expr)]
-    DIVIDE           [reduce using rule 77 (binary_expr)]
-    EQUALITY         [reduce using rule 77 (binary_expr)]
-    NOT_EQUAL        [reduce using rule 77 (binary_expr)]
-    GREATER_EQUAL    [reduce using rule 77 (binary_expr)]
-    LESS_EQUAL       [reduce using rule 77 (binary_expr)]
-    GREATER          [reduce using rule 77 (binary_expr)]
-    LESS             [reduce using rule 77 (binary_expr)]
-    CONDITIONAL_AND  [reduce using rule 77 (binary_expr)]
-    CONDITIONAL_OR   [reduce using rule 77 (binary_expr)]
-    MODULO           [reduce using rule 77 (binary_expr)]
-    $default         reduce using rule 77 (binary_expr)
-
-
-state 141
-
-   71 binary_expr: expr . ADD expr
-   72            | expr . SUBTRACT expr
-   73            | expr . MULTIPLY expr
-   74            | expr . DIVIDE expr
-   75            | expr . MODULO expr
-   76            | expr . GREATER expr
-   77            | expr . LESS expr
-   78            | expr . GREATER_EQUAL expr
-   79            | expr . LESS_EQUAL expr
-   80            | expr . EQUALITY expr
-   81            | expr . NOT_EQUAL expr
-   82            | expr . CONDITIONAL_AND expr
-   82            | expr CONDITIONAL_AND expr .
-   83            | expr . CONDITIONAL_OR expr
-
-    ADD              shift, and go to state 108
-    SUBTRACT         shift, and go to state 109
-    MULTIPLY         shift, and go to state 110
-    DIVIDE           shift, and go to state 111
-    EQUALITY         shift, and go to state 112
-    NOT_EQUAL        shift, and go to state 113
-    GREATER_EQUAL    shift, and go to state 114
-    LESS_EQUAL       shift, and go to state 115
-    GREATER          shift, and go to state 116
-    LESS             shift, and go to state 117
-    CONDITIONAL_AND  shift, and go to state 118
-    CONDITIONAL_OR   shift, and go to state 119
-    MODULO           shift, and go to state 120
-
-    ADD              [reduce using rule 82 (binary_expr)]
-    SUBTRACT         [reduce using rule 82 (binary_expr)]
-    MULTIPLY         [reduce using rule 82 (binary_expr)]
-    DIVIDE           [reduce using rule 82 (binary_expr)]
-    EQUALITY         [reduce using rule 82 (binary_expr)]
-    NOT_EQUAL        [reduce using rule 82 (binary_expr)]
-    GREATER_EQUAL    [reduce using rule 82 (binary_expr)]
-    LESS_EQUAL       [reduce using rule 82 (binary_expr)]
-    GREATER          [reduce using rule 82 (binary_expr)]
-    LESS             [reduce using rule 82 (binary_expr)]
-    CONDITIONAL_AND  [reduce using rule 82 (binary_expr)]
-    CONDITIONAL_OR   [reduce using rule 82 (binary_expr)]
-    MODULO           [reduce using rule 82 (binary_expr)]
-    $default         reduce using rule 82 (binary_expr)
-
-
-state 142
-
-   71 binary_expr: expr . ADD expr
-   72            | expr . SUBTRACT expr
-   73            | expr . MULTIPLY expr
-   74            | expr . DIVIDE expr
-   75            | expr . MODULO expr
-   76            | expr . GREATER expr
-   77            | expr . LESS expr
-   78            | expr . GREATER_EQUAL expr
-   79            | expr . LESS_EQUAL expr
-   80            | expr . EQUALITY expr
-   81            | expr . NOT_EQUAL expr
-   82            | expr . CONDITIONAL_AND expr
-   83            | expr . CONDITIONAL_OR expr
-   83            | expr CONDITIONAL_OR expr .
-
-    ADD              shift, and go to state 108
-    SUBTRACT         shift, and go to state 109
-    MULTIPLY         shift, and go to state 110
-    DIVIDE           shift, and go to state 111
-    EQUALITY         shift, and go to state 112
-    NOT_EQUAL        shift, and go to state 113
-    GREATER_EQUAL    shift, and go to state 114
-    LESS_EQUAL       shift, and go to state 115
-    GREATER          shift, and go to state 116
-    LESS             shift, and go to state 117
-    CONDITIONAL_AND  shift, and go to state 118
-    CONDITIONAL_OR   shift, and go to state 119
-    MODULO           shift, and go to state 120
-
-    ADD              [reduce using rule 83 (binary_expr)]
-    SUBTRACT         [reduce using rule 83 (binary_expr)]
-    MULTIPLY         [reduce using rule 83 (binary_expr)]
-    DIVIDE           [reduce using rule 83 (binary_expr)]
-    EQUALITY         [reduce using rule 83 (binary_expr)]
-    NOT_EQUAL        [reduce using rule 83 (binary_expr)]
-    GREATER_EQUAL    [reduce using rule 83 (binary_expr)]
-    LESS_EQUAL       [reduce using rule 83 (binary_expr)]
-    GREATER          [reduce using rule 83 (binary_expr)]
-    LESS             [reduce using rule 83 (binary_expr)]
-    CONDITIONAL_AND  [reduce using rule 83 (binary_expr)]
-    CONDITIONAL_OR   [reduce using rule 83 (binary_expr)]
-    MODULO           [reduce using rule 83 (binary_expr)]
-    $default         reduce using rule 83 (binary_expr)
-
-
-state 143
 
    71 binary_expr: expr . ADD expr
    72            | expr . SUBTRACT expr
@@ -2661,34 +2169,211 @@ state 143
    82            | expr . CONDITIONAL_AND expr
    83            | expr . CONDITIONAL_OR expr
 
-    ADD              shift, and go to state 108
-    SUBTRACT         shift, and go to state 109
-    MULTIPLY         shift, and go to state 110
-    DIVIDE           shift, and go to state 111
-    EQUALITY         shift, and go to state 112
-    NOT_EQUAL        shift, and go to state 113
-    GREATER_EQUAL    shift, and go to state 114
-    LESS_EQUAL       shift, and go to state 115
-    GREATER          shift, and go to state 116
-    LESS             shift, and go to state 117
-    CONDITIONAL_AND  shift, and go to state 118
-    CONDITIONAL_OR   shift, and go to state 119
-    MODULO           shift, and go to state 120
+    EQUALITY         shift, and go to state 113
+    NOT_EQUAL        shift, and go to state 114
+    GREATER_EQUAL    shift, and go to state 115
+    LESS_EQUAL       shift, and go to state 116
+    GREATER          shift, and go to state 117
+    LESS             shift, and go to state 118
+    CONDITIONAL_AND  shift, and go to state 119
+    CONDITIONAL_OR   shift, and go to state 120
 
-    ADD              [reduce using rule 75 (binary_expr)]
-    SUBTRACT         [reduce using rule 75 (binary_expr)]
-    MULTIPLY         [reduce using rule 75 (binary_expr)]
-    DIVIDE           [reduce using rule 75 (binary_expr)]
-    EQUALITY         [reduce using rule 75 (binary_expr)]
-    NOT_EQUAL        [reduce using rule 75 (binary_expr)]
-    GREATER_EQUAL    [reduce using rule 75 (binary_expr)]
-    LESS_EQUAL       [reduce using rule 75 (binary_expr)]
-    GREATER          [reduce using rule 75 (binary_expr)]
-    LESS             [reduce using rule 75 (binary_expr)]
-    CONDITIONAL_AND  [reduce using rule 75 (binary_expr)]
-    CONDITIONAL_OR   [reduce using rule 75 (binary_expr)]
-    MODULO           [reduce using rule 75 (binary_expr)]
-    $default         reduce using rule 75 (binary_expr)
+    $default  reduce using rule 75 (binary_expr)
+
+
+state 136
+
+   71 binary_expr: expr . ADD expr
+   72            | expr . SUBTRACT expr
+   73            | expr . MULTIPLY expr
+   74            | expr . DIVIDE expr
+   75            | expr . MODULO expr
+   76            | expr . GREATER expr
+   77            | expr . LESS expr
+   78            | expr . GREATER_EQUAL expr
+   79            | expr . LESS_EQUAL expr
+   80            | expr . EQUALITY expr
+   80            | expr EQUALITY expr .
+   81            | expr . NOT_EQUAL expr
+   82            | expr . CONDITIONAL_AND expr
+   83            | expr . CONDITIONAL_OR expr
+
+    NOT_EQUAL        shift, and go to state 114
+    GREATER_EQUAL    shift, and go to state 115
+    LESS_EQUAL       shift, and go to state 116
+    GREATER          shift, and go to state 117
+    LESS             shift, and go to state 118
+    CONDITIONAL_AND  shift, and go to state 119
+    CONDITIONAL_OR   shift, and go to state 120
+
+    $default  reduce using rule 80 (binary_expr)
+
+
+state 137
+
+   71 binary_expr: expr . ADD expr
+   72            | expr . SUBTRACT expr
+   73            | expr . MULTIPLY expr
+   74            | expr . DIVIDE expr
+   75            | expr . MODULO expr
+   76            | expr . GREATER expr
+   77            | expr . LESS expr
+   78            | expr . GREATER_EQUAL expr
+   79            | expr . LESS_EQUAL expr
+   80            | expr . EQUALITY expr
+   81            | expr . NOT_EQUAL expr
+   81            | expr NOT_EQUAL expr .
+   82            | expr . CONDITIONAL_AND expr
+   83            | expr . CONDITIONAL_OR expr
+
+    GREATER_EQUAL    shift, and go to state 115
+    LESS_EQUAL       shift, and go to state 116
+    GREATER          shift, and go to state 117
+    LESS             shift, and go to state 118
+    CONDITIONAL_AND  shift, and go to state 119
+    CONDITIONAL_OR   shift, and go to state 120
+
+    $default  reduce using rule 81 (binary_expr)
+
+
+state 138
+
+   71 binary_expr: expr . ADD expr
+   72            | expr . SUBTRACT expr
+   73            | expr . MULTIPLY expr
+   74            | expr . DIVIDE expr
+   75            | expr . MODULO expr
+   76            | expr . GREATER expr
+   77            | expr . LESS expr
+   78            | expr . GREATER_EQUAL expr
+   78            | expr GREATER_EQUAL expr .
+   79            | expr . LESS_EQUAL expr
+   80            | expr . EQUALITY expr
+   81            | expr . NOT_EQUAL expr
+   82            | expr . CONDITIONAL_AND expr
+   83            | expr . CONDITIONAL_OR expr
+
+    LESS_EQUAL       shift, and go to state 116
+    GREATER          shift, and go to state 117
+    LESS             shift, and go to state 118
+    CONDITIONAL_AND  shift, and go to state 119
+    CONDITIONAL_OR   shift, and go to state 120
+
+    $default  reduce using rule 78 (binary_expr)
+
+
+state 139
+
+   71 binary_expr: expr . ADD expr
+   72            | expr . SUBTRACT expr
+   73            | expr . MULTIPLY expr
+   74            | expr . DIVIDE expr
+   75            | expr . MODULO expr
+   76            | expr . GREATER expr
+   77            | expr . LESS expr
+   78            | expr . GREATER_EQUAL expr
+   79            | expr . LESS_EQUAL expr
+   79            | expr LESS_EQUAL expr .
+   80            | expr . EQUALITY expr
+   81            | expr . NOT_EQUAL expr
+   82            | expr . CONDITIONAL_AND expr
+   83            | expr . CONDITIONAL_OR expr
+
+    GREATER          shift, and go to state 117
+    LESS             shift, and go to state 118
+    CONDITIONAL_AND  shift, and go to state 119
+    CONDITIONAL_OR   shift, and go to state 120
+
+    $default  reduce using rule 79 (binary_expr)
+
+
+state 140
+
+   71 binary_expr: expr . ADD expr
+   72            | expr . SUBTRACT expr
+   73            | expr . MULTIPLY expr
+   74            | expr . DIVIDE expr
+   75            | expr . MODULO expr
+   76            | expr . GREATER expr
+   76            | expr GREATER expr .
+   77            | expr . LESS expr
+   78            | expr . GREATER_EQUAL expr
+   79            | expr . LESS_EQUAL expr
+   80            | expr . EQUALITY expr
+   81            | expr . NOT_EQUAL expr
+   82            | expr . CONDITIONAL_AND expr
+   83            | expr . CONDITIONAL_OR expr
+
+    LESS             shift, and go to state 118
+    CONDITIONAL_AND  shift, and go to state 119
+    CONDITIONAL_OR   shift, and go to state 120
+
+    $default  reduce using rule 76 (binary_expr)
+
+
+state 141
+
+   71 binary_expr: expr . ADD expr
+   72            | expr . SUBTRACT expr
+   73            | expr . MULTIPLY expr
+   74            | expr . DIVIDE expr
+   75            | expr . MODULO expr
+   76            | expr . GREATER expr
+   77            | expr . LESS expr
+   77            | expr LESS expr .
+   78            | expr . GREATER_EQUAL expr
+   79            | expr . LESS_EQUAL expr
+   80            | expr . EQUALITY expr
+   81            | expr . NOT_EQUAL expr
+   82            | expr . CONDITIONAL_AND expr
+   83            | expr . CONDITIONAL_OR expr
+
+    CONDITIONAL_AND  shift, and go to state 119
+    CONDITIONAL_OR   shift, and go to state 120
+
+    $default  reduce using rule 77 (binary_expr)
+
+
+state 142
+
+   71 binary_expr: expr . ADD expr
+   72            | expr . SUBTRACT expr
+   73            | expr . MULTIPLY expr
+   74            | expr . DIVIDE expr
+   75            | expr . MODULO expr
+   76            | expr . GREATER expr
+   77            | expr . LESS expr
+   78            | expr . GREATER_EQUAL expr
+   79            | expr . LESS_EQUAL expr
+   80            | expr . EQUALITY expr
+   81            | expr . NOT_EQUAL expr
+   82            | expr . CONDITIONAL_AND expr
+   82            | expr CONDITIONAL_AND expr .
+   83            | expr . CONDITIONAL_OR expr
+
+    CONDITIONAL_OR  shift, and go to state 120
+
+    $default  reduce using rule 82 (binary_expr)
+
+
+state 143
+
+   71 binary_expr: expr . ADD expr
+   72            | expr . SUBTRACT expr
+   73            | expr . MULTIPLY expr
+   74            | expr . DIVIDE expr
+   75            | expr . MODULO expr
+   76            | expr . GREATER expr
+   77            | expr . LESS expr
+   78            | expr . GREATER_EQUAL expr
+   79            | expr . LESS_EQUAL expr
+   80            | expr . EQUALITY expr
+   81            | expr . NOT_EQUAL expr
+   82            | expr . CONDITIONAL_AND expr
+   83            | expr . CONDITIONAL_OR expr
+   83            | expr CONDITIONAL_OR expr .
+
+    $default  reduce using rule 83 (binary_expr)
 
 
 state 144
@@ -2712,15 +2397,15 @@ state 144
     SUBTRACT         shift, and go to state 109
     MULTIPLY         shift, and go to state 110
     DIVIDE           shift, and go to state 111
-    EQUALITY         shift, and go to state 112
-    NOT_EQUAL        shift, and go to state 113
-    GREATER_EQUAL    shift, and go to state 114
-    LESS_EQUAL       shift, and go to state 115
-    GREATER          shift, and go to state 116
-    LESS             shift, and go to state 117
-    CONDITIONAL_AND  shift, and go to state 118
-    CONDITIONAL_OR   shift, and go to state 119
-    MODULO           shift, and go to state 120
+    MODULO           shift, and go to state 112
+    EQUALITY         shift, and go to state 113
+    NOT_EQUAL        shift, and go to state 114
+    GREATER_EQUAL    shift, and go to state 115
+    LESS_EQUAL       shift, and go to state 116
+    GREATER          shift, and go to state 117
+    LESS             shift, and go to state 118
+    CONDITIONAL_AND  shift, and go to state 119
+    CONDITIONAL_OR   shift, and go to state 120
     COMMA            shift, and go to state 154
 
 
@@ -2751,15 +2436,15 @@ state 148
 
    56 non_empty_method_call_args: non_empty_method_call_args COMMA . expr
 
+    SUBTRACT      shift, and go to state 76
+    NOT           shift, and go to state 77
     CALLOUT       shift, and go to state 53
-    TRUE          shift, and go to state 76
-    FALSE         shift, and go to state 77
+    TRUE          shift, and go to state 78
+    FALSE         shift, and go to state 79
     NUM           shift, and go to state 24
     HEX_LITERAL   shift, and go to state 25
-    CHAR_LITERAL  shift, and go to state 78
+    CHAR_LITERAL  shift, and go to state 80
     ID            shift, and go to state 59
-    SUBTRACT      shift, and go to state 79
-    NOT           shift, and go to state 80
     OPEN          shift, and go to state 81
 
     location       go to state 82
@@ -2819,15 +2504,15 @@ state 152
     SUBTRACT         shift, and go to state 109
     MULTIPLY         shift, and go to state 110
     DIVIDE           shift, and go to state 111
-    EQUALITY         shift, and go to state 112
-    NOT_EQUAL        shift, and go to state 113
-    GREATER_EQUAL    shift, and go to state 114
-    LESS_EQUAL       shift, and go to state 115
-    GREATER          shift, and go to state 116
-    LESS             shift, and go to state 117
-    CONDITIONAL_AND  shift, and go to state 118
-    CONDITIONAL_OR   shift, and go to state 119
-    MODULO           shift, and go to state 120
+    MODULO           shift, and go to state 112
+    EQUALITY         shift, and go to state 113
+    NOT_EQUAL        shift, and go to state 114
+    GREATER_EQUAL    shift, and go to state 115
+    LESS_EQUAL       shift, and go to state 116
+    GREATER          shift, and go to state 117
+    LESS             shift, and go to state 118
+    CONDITIONAL_AND  shift, and go to state 119
+    CONDITIONAL_OR   shift, and go to state 120
 
     $default  reduce using rule 61 (callout_arg)
 
@@ -2843,15 +2528,15 @@ state 154
 
    43 for_statement: FOR ID EQUAL expr COMMA . expr code_block
 
+    SUBTRACT      shift, and go to state 76
+    NOT           shift, and go to state 77
     CALLOUT       shift, and go to state 53
-    TRUE          shift, and go to state 76
-    FALSE         shift, and go to state 77
+    TRUE          shift, and go to state 78
+    FALSE         shift, and go to state 79
     NUM           shift, and go to state 24
     HEX_LITERAL   shift, and go to state 25
-    CHAR_LITERAL  shift, and go to state 78
+    CHAR_LITERAL  shift, and go to state 80
     ID            shift, and go to state 59
-    SUBTRACT      shift, and go to state 79
-    NOT           shift, and go to state 80
     OPEN          shift, and go to state 81
 
     location       go to state 82
@@ -2899,15 +2584,15 @@ state 156
     SUBTRACT         shift, and go to state 109
     MULTIPLY         shift, and go to state 110
     DIVIDE           shift, and go to state 111
-    EQUALITY         shift, and go to state 112
-    NOT_EQUAL        shift, and go to state 113
-    GREATER_EQUAL    shift, and go to state 114
-    LESS_EQUAL       shift, and go to state 115
-    GREATER          shift, and go to state 116
-    LESS             shift, and go to state 117
-    CONDITIONAL_AND  shift, and go to state 118
-    CONDITIONAL_OR   shift, and go to state 119
-    MODULO           shift, and go to state 120
+    MODULO           shift, and go to state 112
+    EQUALITY         shift, and go to state 113
+    NOT_EQUAL        shift, and go to state 114
+    GREATER_EQUAL    shift, and go to state 115
+    LESS_EQUAL       shift, and go to state 116
+    GREATER          shift, and go to state 117
+    LESS             shift, and go to state 118
+    CONDITIONAL_AND  shift, and go to state 119
+    CONDITIONAL_OR   shift, and go to state 120
 
     $default  reduce using rule 56 (non_empty_method_call_args)
 
@@ -2923,16 +2608,16 @@ state 158
 
    60 non_empty_callout_args: non_empty_callout_args COMMA . callout_arg
 
+    SUBTRACT      shift, and go to state 76
+    NOT           shift, and go to state 77
     CALLOUT       shift, and go to state 53
-    TRUE          shift, and go to state 76
-    FALSE         shift, and go to state 77
+    TRUE          shift, and go to state 78
+    FALSE         shift, and go to state 79
     NUM           shift, and go to state 24
     HEX_LITERAL   shift, and go to state 25
-    CHAR_LITERAL  shift, and go to state 78
+    CHAR_LITERAL  shift, and go to state 80
     STRING        shift, and go to state 102
     ID            shift, and go to state 59
-    SUBTRACT      shift, and go to state 79
-    NOT           shift, and go to state 80
     OPEN          shift, and go to state 81
 
     location        go to state 82
@@ -2971,15 +2656,15 @@ state 159
     SUBTRACT         shift, and go to state 109
     MULTIPLY         shift, and go to state 110
     DIVIDE           shift, and go to state 111
-    EQUALITY         shift, and go to state 112
-    NOT_EQUAL        shift, and go to state 113
-    GREATER_EQUAL    shift, and go to state 114
-    LESS_EQUAL       shift, and go to state 115
-    GREATER          shift, and go to state 116
-    LESS             shift, and go to state 117
-    CONDITIONAL_AND  shift, and go to state 118
-    CONDITIONAL_OR   shift, and go to state 119
-    MODULO           shift, and go to state 120
+    MODULO           shift, and go to state 112
+    EQUALITY         shift, and go to state 113
+    NOT_EQUAL        shift, and go to state 114
+    GREATER_EQUAL    shift, and go to state 115
+    LESS_EQUAL       shift, and go to state 116
+    GREATER          shift, and go to state 117
+    LESS             shift, and go to state 118
+    CONDITIONAL_AND  shift, and go to state 119
+    CONDITIONAL_OR   shift, and go to state 120
     CURLY_OPEN       shift, and go to state 40
 
     code_block  go to state 163

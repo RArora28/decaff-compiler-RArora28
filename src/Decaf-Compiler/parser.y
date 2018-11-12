@@ -7,6 +7,25 @@
 	extern union Node yylval;
 %} 
 
+%left ADD
+%left SUBTRACT
+%left MULTIPLY
+%left DIVIDE
+%left MODULO
+%left EQUAL
+%left PLUS_EQUAL
+%left MINUS_EQUAL
+%left EQUALITY
+%left NOT_EQUAL
+%left GREATER_EQUAL
+%left LESS_EQUAL
+%left GREATER
+%left LESS
+%left NOT
+%left CONDITIONAL_AND
+%left CONDITIONAL_OR
+
+
 /* token declaration */ 
 %token PROGRAM 
 %token CLASS 
