@@ -67,6 +67,61 @@ union Node {
 typedef union Node YYSTYPE; 
 #define YYSTYPE_IS_DECLARED 1 
 
+class Visitor {
+public:
+	int visit(program*);   
+
+	int visit(fieldDeclarations*); 
+	int visit(fieldDeclaration*); 
+	int visit(fieldNames*); 
+	int visit(field*); 
+	int visit(varType*);
+
+	int visit(methodDeclarations*); 
+	int visit(methodDeclaration*); 
+	int visit(parameterDeclarations*); 
+	int visit(parameterDeclaration*); 
+	int visit(nonEmptyParDecl*); 
+
+	int visit(codeBlock*); 
+	int visit(block*); 
+
+	int visit(varDeclarations*); 
+	int visit(varDeclaration*); 
+	int visit(varNames*); 
+
+	int visit(statements*); 
+	int visit(statement*); 
+	int visit(assignSt*); 
+	int visit(ifSt*); 
+	int visit(elseSt*); 
+	int visit(forSt*); 
+	int visit(returnSt*); 
+	int visit(returnVal*); 
+	int visit(terminalSt*); 
+	int visit(location*); 
+
+	int visit(methodCallSt*); 
+	int visit(methodCall*); 
+	int visit(normalCall*); 
+	int visit(methodCallArgs*); 
+	int visit(nonEmptyCallArgs*); 
+	int visit(calloutCall*); 
+	int visit(nonEmptyCalloutArgs*); 
+	int visit(calloutArg*); 
+
+	int visit(Expr*);
+	int visit(binExpr*); 
+	int visit(unaryExpr*); 
+	int visit(enclosedExpr*); 
+	int visit(assignOp*); 
+
+	int visit(intLiteral*); 
+	int visit(boolLiteral*); 
+	int visit(charLiteral*); 
+	int visit(stringLiteral*); 
+}; 
+
 class baseAstNode { 
 }; 
 

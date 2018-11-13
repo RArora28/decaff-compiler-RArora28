@@ -5,6 +5,8 @@
 	extern "C" int yyparse();
 	extern "C" void yyerror(const char *s);
 	extern union Node yylval;
+
+	program* root; 
 %} 
 
 %left ADD
@@ -109,7 +111,10 @@
 
 /* Outermost Match */ 
 program_declaration		: 	CLASS PROGRAM CURLY_OPEN field_declarations 									method_declarations CURLY_CLOSE
-							{ 	$$ = new program($4, $5); }
+							{ 	
+								$$ = new program($4, $5); 
+								root = $$; 
+							}
 
 						; 
 /* Data types in grammar */ 
@@ -416,7 +421,9 @@ string_literal 			: 	STRING
 
 %%
 int main(int argc, char **argv) {
+ 	Visitor* visitor = new Visitor(); 
  	yyparse();
+ 	visitor->visit(root); 
  	return 0; 
 }
 

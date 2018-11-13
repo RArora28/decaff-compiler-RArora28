@@ -206,5 +206,205 @@ stringLiteral::stringLiteral(char* value_) {
 	value = strdup(value_);
 }
 
+map < string, pair < string, int > > globalFields; // name: [type, size]
+string currFieldType; 
 
+// Code for Visitor class 
+int Visitor::visit(program* p) {
+	visit(p->fieldDecls);
+	// for(auto x: globalFields) {
+	// 	cout << x.first << ":" << x.second.first << " " << x.second.second << endl;
+	// }
+	return 0;
+}
+int Visitor::visit(fieldDeclarations* f) {
+	for(auto x: f->list) visit(x); 
+	return 0;
+}
 
+int Visitor::visit(fieldDeclaration* f) {
+	visit(f->type);
+	visit(f->fNames); 
+	return 0;
+}
+int Visitor::visit(varType* v) {
+	currFieldType = v->type; 
+	return 0;
+}
+int Visitor::visit(fieldNames* f) {
+	for(auto x: f->fields) visit(x); 
+	return 0; 
+}
+int Visitor::visit(field* f) {
+	globalFields[f->name] = {currFieldType, f->size ? f->size->value: -1}; 
+	return 0;
+}
+
+int Visitor::visit(methodDeclarations* m) {
+	for(auto x: m->list) visit(x);
+	return 0;
+} 
+int Visitor::visit(methodDeclaration* m) {
+	visit(m->returnType); 
+	// do something with the methodName 
+	visit(m->params); 
+	visit(m->code);
+	return 0;
+} 
+int Visitor::visit(parameterDeclarations* p) {
+	visit(p->nonEmptyParams); 
+	return 0;
+} 
+int Visitor::visit(parameterDeclaration* p) {
+	visit(p->type);
+	// do something with the name 
+	return 0;
+} 
+int Visitor::visit(nonEmptyParDecl* n) {
+	for(auto x: n->listParams) visit(x); 
+	return 0;
+} 
+
+int Visitor::visit(codeBlock* c) {
+	visit(c->bl);
+	return 0;
+} 
+int Visitor::visit(block* b) {
+	visit(b->varDecls);
+	visit(b->stmts);
+	return 0;
+} 
+
+int Visitor::visit(varDeclarations* v) {
+	for(auto x: v->list) visit(x);
+	return 0;
+}
+int Visitor::visit(varDeclaration* v) {
+	visit(v->type); 
+	visit(v->names);
+	return 0;
+}
+int Visitor::visit(varNames* v) {
+	return 0;
+}
+
+int Visitor::visit(statements* st) {
+	for(auto x: st->list) visit(x); 
+	return 0;
+}
+int Visitor::visit(statement* st) {
+	// do something with the label if you want to? 
+	return 0;
+}
+int Visitor::visit(assignSt* aSt) {
+	visit(aSt->loc); 
+	visit(aSt->asOp); 
+	visit(aSt->exp); 
+	return 0;
+}
+int Visitor::visit(ifSt* iSt) {
+	visit(iSt->condition);
+	visit(iSt->code);
+	visit(iSt->eSt);
+	return 0;
+}
+int Visitor::visit(elseSt* eSt) {
+	visit(eSt->bl);
+	return 0;
+}
+int Visitor::visit(forSt* fSt) {
+	// do something with the looping var
+	visit(fSt->start);
+	visit(fSt->end); 
+	visit(fSt->bl); 
+	return 0;
+}
+int Visitor::visit(returnSt* rSt) {
+	visit(rSt->ret);
+	return 0;
+}
+int Visitor::visit(returnVal* rVal) {
+	visit(rVal->ret);
+	return 0;
+}
+int Visitor::visit(terminalSt* tSt) {
+	// do something with the name 
+	return 0;
+}
+int Visitor::visit(location* loc) {
+	// do something with the name 
+	visit(loc->exp);
+	return 0;
+}
+
+int Visitor::visit(methodCallSt* mSt) {
+	visit(mSt->call);
+	return 0;
+}
+int Visitor::visit(methodCall* mC) {
+	// empty class 
+	return 0;
+}
+int Visitor::visit(normalCall* nC) {
+	visit(nC->args);
+	return 0;
+}
+int Visitor::visit(methodCallArgs* m) {
+	// empty class 
+	return 0;
+}
+int Visitor::visit(nonEmptyCallArgs* n) {
+	for(auto x: n->list) visit(x);
+	return 0;
+}
+int Visitor::visit(calloutCall* c) {
+	visit(c->callName);
+	visit(c->args);
+	return 0;
+}
+int Visitor::visit(nonEmptyCalloutArgs* n) {
+	for(auto x: n->list) visit(x);
+	return 0;
+}
+int Visitor::visit(calloutArg* c) {
+	visit(c->argName); 
+	visit(c->exp);
+	return 0;
+}
+
+int Visitor::visit(Expr* e) {
+	// empty class 
+	return 0;
+}
+int Visitor::visit(binExpr* b) {
+	visit(b->exp1); 
+	// do something with the op
+	visit(b->exp2);
+	return 0;
+}
+int Visitor::visit(unaryExpr* u) {
+	// do something with the op
+	visit(u->exp);
+	return 0;
+}
+int Visitor::visit(enclosedExpr* e) {
+	visit(e->exp);
+	return 0;
+}
+int Visitor::visit(assignOp*) {
+	// do something with the assign op; 
+	return 0;
+}
+
+int Visitor::visit(intLiteral* i) {
+	return 0; 
+} 
+int Visitor::visit(boolLiteral* b) {
+	return 0;
+} 
+int Visitor::visit(charLiteral* c) {
+	return 0;
+} 
+int Visitor::visit(stringLiteral* s) {
+	return 0;
+} 
