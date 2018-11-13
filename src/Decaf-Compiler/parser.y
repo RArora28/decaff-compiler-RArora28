@@ -163,7 +163,7 @@ method_declaration 		: 	VOID ID OPEN parameter_declarations CLOSE code_block
 								class varType* temp = new varType("void");
 								$$ = new methodDeclaration(temp, $2, $4, $6); 
 							}
-						| 	var_type ID OPEN parameter_declarations CLOSE 			code_block   
+						| 	var_type ID OPEN parameter_declarations CLOSE 							code_block   
 							{	
 								$$ = new methodDeclaration($1, $2, $4, $6); 	
 							}

@@ -1,4 +1,21 @@
 class Program {
+	
 	int x, y, z, a[40];
 	boolean c; 
+	
+	void method1(boolean a, boolean c, boolean d) {
+
+	}
+
+	int method2(int y, int r, boolean t) {
+
+	}
+
+	boolean method3() {
+
+	}
+
+	int method4(int x) {
+
+	}
 }

@@ -206,205 +206,326 @@ stringLiteral::stringLiteral(char* value_) {
 	value = strdup(value_);
 }
 
+vector < map < string, string > > currVars;  
 map < string, pair < string, int > > globalFields; // name: [type, size]
-string currFieldType; 
+map < string, vector < pair < string, string > > > methodArgs;
+map < string, string > returnType;   
+string currType, currMethodName; 
 
-// Code for Visitor class 
-int Visitor::visit(program* p) {
-	visit(p->fieldDecls);
+void printDetails() {
 	// for(auto x: globalFields) {
 	// 	cout << x.first << ":" << x.second.first << " " << x.second.second << endl;
 	// }
+	// for(auto x: returnType) {
+	// 	cout << x.first << ": " << x.second << endl;
+	// }
+	for(auto x: methodArgs) {
+		cout << x.first << ": "; 
+		for(auto t: x.second) {
+			cout << t.first << "-" << t.second << " ";
+		}
+		cout << endl;
+	}
+	
+}
+// Code for Visitor class 
+int Visitor::visit(program* p) {
+	if (p) {
+		visit(p->fieldDecls);
+		visit(p->methodDecls);
+	}
+	printDetails(); 
 	return 0;
 }
 int Visitor::visit(fieldDeclarations* f) {
-	for(auto x: f->list) visit(x); 
+	if (f) {
+		for(auto x: f->list) {
+			visit(x); 
+		}
+	}
 	return 0;
 }
 
 int Visitor::visit(fieldDeclaration* f) {
-	visit(f->type);
-	visit(f->fNames); 
+	if (f) {
+		visit(f->type);
+		visit(f->fNames); 
+	}
 	return 0;
 }
 int Visitor::visit(varType* v) {
-	currFieldType = v->type; 
+	if (v) {
+		currType = v->type; 
+	}
 	return 0;
 }
 int Visitor::visit(fieldNames* f) {
-	for(auto x: f->fields) visit(x); 
+	if (f) {
+		for(auto x: f->fields) {
+			visit(x); 
+		}
+	}
 	return 0; 
 }
 int Visitor::visit(field* f) {
-	globalFields[f->name] = {currFieldType, f->size ? f->size->value: -1}; 
+	if (f) {
+		globalFields[f->name] = {currType, f->size ? f->size->value: -1}; 
+	}
 	return 0;
 }
 
 int Visitor::visit(methodDeclarations* m) {
-	for(auto x: m->list) visit(x);
+	if (m) {
+		for(auto x: m->list) {
+			visit(x);
+		}
+	}
 	return 0;
 } 
 int Visitor::visit(methodDeclaration* m) {
-	visit(m->returnType); 
-	// do something with the methodName 
-	visit(m->params); 
-	visit(m->code);
+	if (m) {
+		visit(m->returnType); 
+		currMethodName = m->methodName;
+		returnType[currMethodName] = currType;   
+		visit(m->params); 
+		visit(m->code);
+	}
 	return 0;
 } 
 int Visitor::visit(parameterDeclarations* p) {
-	visit(p->nonEmptyParams); 
+	if (p) {
+		visit(p->nonEmptyParams); 
+	}
 	return 0;
 } 
-int Visitor::visit(parameterDeclaration* p) {
-	visit(p->type);
-	// do something with the name 
-	return 0;
-} 
+
 int Visitor::visit(nonEmptyParDecl* n) {
-	for(auto x: n->listParams) visit(x); 
+	if (n) {
+		for(auto x: n->listParams) {
+			visit(x); 
+		}
+	}
+	return 0;
+} 
+
+int Visitor::visit(parameterDeclaration* p) {
+	if (p) {
+		visit(p->type);
+		methodArgs[currMethodName].push_back({p->name, currType});  
+	}
 	return 0;
 } 
 
 int Visitor::visit(codeBlock* c) {
-	visit(c->bl);
+	if (c) {
+		visit(c->bl);
+	}
 	return 0;
 } 
 int Visitor::visit(block* b) {
-	visit(b->varDecls);
-	visit(b->stmts);
+	if (b) {
+		visit(b->varDecls);
+		visit(b->stmts);
+	}
 	return 0;
 } 
 
 int Visitor::visit(varDeclarations* v) {
-	for(auto x: v->list) visit(x);
+	if (v) {
+		for(auto x: v->list) { 
+			visit(x);
+		}
+	}
 	return 0;
 }
 int Visitor::visit(varDeclaration* v) {
-	visit(v->type); 
-	visit(v->names);
+	if (v) {
+		visit(v->type); 
+		visit(v->names);
+	}
 	return 0;
 }
 int Visitor::visit(varNames* v) {
+	if (v) {
+
+	}
 	return 0;
 }
 
 int Visitor::visit(statements* st) {
-	for(auto x: st->list) visit(x); 
+	if (st) {
+		for(auto x: st->list) {
+			visit(x); 
+		}
+	}
 	return 0;
 }
 int Visitor::visit(statement* st) {
+	if (st) {
+
+	}
 	// do something with the label if you want to? 
 	return 0;
 }
 int Visitor::visit(assignSt* aSt) {
-	visit(aSt->loc); 
-	visit(aSt->asOp); 
-	visit(aSt->exp); 
+	if (aSt) {
+		visit(aSt->loc); 
+		visit(aSt->asOp); 
+		visit(aSt->exp); 
+	}
 	return 0;
 }
 int Visitor::visit(ifSt* iSt) {
-	visit(iSt->condition);
-	visit(iSt->code);
-	visit(iSt->eSt);
+	if (iSt) {
+		visit(iSt->condition);
+		visit(iSt->code);
+		visit(iSt->eSt);
+	}
 	return 0;
 }
 int Visitor::visit(elseSt* eSt) {
-	visit(eSt->bl);
+	if (eSt) {
+		visit(eSt->bl);
+	}
 	return 0;
 }
 int Visitor::visit(forSt* fSt) {
-	// do something with the looping var
-	visit(fSt->start);
-	visit(fSt->end); 
-	visit(fSt->bl); 
+	if (fSt) {
+		// do something with the looping var
+		visit(fSt->start);
+		visit(fSt->end); 
+		visit(fSt->bl); 
+	}
 	return 0;
 }
 int Visitor::visit(returnSt* rSt) {
-	visit(rSt->ret);
+	if (rSt) {
+		visit(rSt->ret);
+	}
 	return 0;
 }
 int Visitor::visit(returnVal* rVal) {
-	visit(rVal->ret);
+	if (rVal) {
+		visit(rVal->ret);
+	}
 	return 0;
 }
 int Visitor::visit(terminalSt* tSt) {
-	// do something with the name 
+	if (tSt) {
+		// do something with the name 
+	}
 	return 0;
 }
 int Visitor::visit(location* loc) {
-	// do something with the name 
-	visit(loc->exp);
+	if (loc) {
+		// do something with the name 
+		visit(loc->exp);
+	}
 	return 0;
 }
 
 int Visitor::visit(methodCallSt* mSt) {
-	visit(mSt->call);
+	if (mSt) {
+		visit(mSt->call);
+	}
 	return 0;
 }
 int Visitor::visit(methodCall* mC) {
-	// empty class 
+	if (mC) {
+		// empty class 
+	}
 	return 0;
 }
 int Visitor::visit(normalCall* nC) {
-	visit(nC->args);
+	if (nC) {
+		visit(nC->args);
+	}
 	return 0;
 }
 int Visitor::visit(methodCallArgs* m) {
-	// empty class 
+	if (m) {
+		// empty class 
+	}
 	return 0;
 }
 int Visitor::visit(nonEmptyCallArgs* n) {
-	for(auto x: n->list) visit(x);
+	if (n) {
+		for(auto x: n->list) {
+			visit(x);
+		}
+	}
 	return 0;
 }
 int Visitor::visit(calloutCall* c) {
-	visit(c->callName);
-	visit(c->args);
+	if (c) {
+		visit(c->callName);
+		visit(c->args);
+	}
 	return 0;
 }
 int Visitor::visit(nonEmptyCalloutArgs* n) {
-	for(auto x: n->list) visit(x);
+	if (n) {
+		for(auto x: n->list) {
+			visit(x);
+		}
+	}
 	return 0;
 }
 int Visitor::visit(calloutArg* c) {
-	visit(c->argName); 
-	visit(c->exp);
+	if (c) {
+		visit(c->argName); 
+		visit(c->exp);
+	}
 	return 0;
 }
 
 int Visitor::visit(Expr* e) {
-	// empty class 
+	if (e) {
+		// empty class 
+	}
 	return 0;
 }
 int Visitor::visit(binExpr* b) {
-	visit(b->exp1); 
-	// do something with the op
-	visit(b->exp2);
+	if (b) {
+		visit(b->exp1); 
+		// do something with the op
+		visit(b->exp2);
+	}
 	return 0;
 }
 int Visitor::visit(unaryExpr* u) {
-	// do something with the op
-	visit(u->exp);
+	if (u) {
+		// do something with the op
+		visit(u->exp);
+	}
 	return 0;
 }
 int Visitor::visit(enclosedExpr* e) {
-	visit(e->exp);
+	if (e) {
+		visit(e->exp);
+	}
 	return 0;
 }
-int Visitor::visit(assignOp*) {
-	// do something with the assign op; 
+int Visitor::visit(assignOp* aOp) {
+	if (aOp) {
+		// do something with the assign op; 
+	}
 	return 0;
 }
 
 int Visitor::visit(intLiteral* i) {
+	if (i) {}
 	return 0; 
 } 
 int Visitor::visit(boolLiteral* b) {
+	if (b) {}
 	return 0;
 } 
 int Visitor::visit(charLiteral* c) {
+	if (c) {}
 	return 0;
 } 
 int Visitor::visit(stringLiteral* s) {
+	if (s) {}
 	return 0;
 } 
