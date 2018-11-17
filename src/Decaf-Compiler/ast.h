@@ -245,6 +245,7 @@ public:
 
 class statement: public baseAstNode {
 public:
+	virtual int accept(Visitor *v); 
 	string label; 
 }; 
 
@@ -254,11 +255,22 @@ public:
 	codeBlock(class block* bl_); 
 }; 
 
-class Expr: public baseAstNode {	
+class Expr: public baseAstNode {
+public:
+	string type; 
+	virtual int accept(Visitor *v);
 }; 
-
+/*
+vector < map < string, string > > Vars;
+map < string, string > currVars;   
+map < string, pair < string, int > > globalFields; // name: [type, size]
+map < string, vector < pair < string, string > > > methodArgs;
+map < string, string > returnType;   
+string currType, currMethodName, currVarName; 
+*/
 class location: public Expr {
 public: 
+	string type; 
 	string name; 
 	class Expr* exp;
 	location(const string& name_,
@@ -273,6 +285,8 @@ public:
 	assignSt(class location* loc_,
 			 class assignOp* asOp_,
 			 class Expr* exp_);
+
+	int accept(Visitor *v); 
 };
 
 class ifSt: public statement {
@@ -300,6 +314,8 @@ public:
 		  class Expr* start_, 
 		  class Expr* end_, 
 		  class codeBlock* bl_); 
+
+	int accept(Visitor *v); 
 }; 
 
 class returnSt: public statement {
@@ -311,6 +327,8 @@ class terminalSt: public statement {
 public:
 	string name; 
 	terminalSt(const string& name_); 
+
+	int accept(Visitor *v); 
 }; 
 
 class returnVal: public baseAstNode {

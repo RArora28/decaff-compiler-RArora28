@@ -1,4 +1,5 @@
 #include <bits/stdc++.h>
+#include "decafExceptions.cpp"
 using namespace std; 
 
 #include "ast.h"
@@ -89,9 +90,18 @@ void varNames::add(const string& name_) {
 	names.push_back(name_);
 }
 
-statements::statements() {} 
+statements::statements() {
+} 
 void statements::add(class statement* st_) {
 	list.push_back(st_);
+}
+
+int statement::accept(Visitor *v) {
+	return v->visit(this);
+}
+
+int Expr::accept(Visitor *v) {
+	v->visit(this);
 }
 
 location::location(const string& name_,
@@ -107,7 +117,10 @@ assignSt::assignSt(class location* loc_,
 	asOp = asOp_; 
 	exp = exp_;
 }
- 
+int assignSt::accept(Visitor *v) {
+	return v->visit(this);
+}
+
 ifSt::ifSt(	class Expr* condition_, 
 		 	class codeBlock* code_, 
 		 	class elseSt* eSt_) {
@@ -129,7 +142,10 @@ forSt::forSt(const string& var_,
 	end = end_;
 	bl = bl_;
 }
- 
+int forSt::accept(Visitor *v) {
+	v->visit(this);
+}
+
 returnSt::returnSt(class returnVal* ret_) {
 	ret = ret_; 
 }
@@ -140,7 +156,9 @@ returnVal::returnVal(class Expr* ret_) {
 terminalSt::terminalSt(const string& name_) {
 	name = name_;
 }
-
+int terminalSt::accept(Visitor* v) {
+	return v->visit(this);
+}
 
 methodCallSt::methodCallSt(class methodCall* call_) {
 	call = call_; 
@@ -185,6 +203,7 @@ binExpr::binExpr (class Expr* exp1_,
 	op = op_;
 	exp2 = exp2_; 
 }
+
 enclosedExpr::enclosedExpr(class Expr* exp_) {
 	exp = exp_; 
 }
@@ -206,11 +225,17 @@ stringLiteral::stringLiteral(char* value_) {
 	value = strdup(value_);
 }
 
-vector < map < string, string > > currVars;  
+vector < map < string, string > > Vars;
+map < string, string > currVars;   
 map < string, pair < string, int > > globalFields; // name: [type, size]
 map < string, vector < pair < string, string > > > methodArgs;
 map < string, string > returnType;   
-string currType, currMethodName; 
+string currType, currMethodName, currVarName; 
+bool Main = false, inFor = false; 
+vector < string > arith_op 	= {"+", "-", "*", "/", "%"}; 
+vector < string > rel_op 	= {"<", ">", "<=", ">="}; 
+vector < string > cond_op 	= {"&&", "||"};
+vector < string > eq_op  	= {"==", "!="}; 
 
 void printDetails() {
 	// for(auto x: globalFields) {
@@ -219,20 +244,33 @@ void printDetails() {
 	// for(auto x: returnType) {
 	// 	cout << x.first << ": " << x.second << endl;
 	// }
-	for(auto x: methodArgs) {
-		cout << x.first << ": "; 
-		for(auto t: x.second) {
-			cout << t.first << "-" << t.second << " ";
-		}
-		cout << endl;
-	}
-	
+	// for(auto x: methodArgs) {
+	// 	cout << x.first << ": "; 
+	// 	for(auto t: x.second) {
+	// 		cout << t.first << "-" << t.second << " ";
+	// 	}
+	// 	cout << endl;
+	// }
+	// cout << Vars.size() << endl;
+	// for(auto t: Vars) {
+	// 	for(auto x: t) {
+	// 		cout << x.first << ": " << x.second << endl;
+	// 	}
+	// }
 }
+
 // Code for Visitor class 
 int Visitor::visit(program* p) {
 	if (p) {
 		visit(p->fieldDecls);
 		visit(p->methodDecls);
+		try {
+			if (!Main) {
+				throw missing_main_function(); 
+			} 
+		} catch (std::exception& e) {
+			cout << e.what() << endl;
+		}
 	}
 	printDetails(); 
 	return 0;
@@ -269,7 +307,16 @@ int Visitor::visit(fieldNames* f) {
 }
 int Visitor::visit(field* f) {
 	if (f) {
-		globalFields[f->name] = {currType, f->size ? f->size->value: -1}; 
+		try {
+			if (globalFields.count(f->name)) {
+				throw repeated_var_declaration(); 
+			} else if (f->size && f->size->value <= 0) {
+				throw array_size(); 
+			}
+			globalFields[f->name] = {currType, f->size ? f->size->value: -1}; 
+		} catch(std::exception& e) {
+			cout << e.what() << endl;
+		}
 	}
 	return 0;
 }
@@ -284,11 +331,24 @@ int Visitor::visit(methodDeclarations* m) {
 } 
 int Visitor::visit(methodDeclaration* m) {
 	if (m) {
-		visit(m->returnType); 
-		currMethodName = m->methodName;
-		returnType[currMethodName] = currType;   
-		visit(m->params); 
-		visit(m->code);
+		if (!Main) {
+			visit(m->returnType); 
+			currMethodName = m->methodName;
+			returnType[currMethodName] = currType;
+			if (currMethodName == "main") {
+				try {
+					if (m->params->nonEmptyParams) {
+						throw main_containing_params(); 
+					}
+					Main = true; 
+				} catch(std::exception& e) {
+					cout << e.what() << endl;
+				}
+			}  
+			methodArgs[currMethodName];
+			visit(m->params); 
+			visit(m->code);
+		}
 	}
 	return 0;
 } 
@@ -318,13 +378,18 @@ int Visitor::visit(parameterDeclaration* p) {
 
 int Visitor::visit(codeBlock* c) {
 	if (c) {
+		currVars.clear(); 
 		visit(c->bl);
+		if (currVars.size()) Vars.pop_back();
 	}
 	return 0;
 } 
 int Visitor::visit(block* b) {
 	if (b) {
 		visit(b->varDecls);
+		if (currVars.size()) {
+			Vars.push_back(currVars);
+		}
 		visit(b->stmts);
 	}
 	return 0;
@@ -347,7 +412,16 @@ int Visitor::visit(varDeclaration* v) {
 }
 int Visitor::visit(varNames* v) {
 	if (v) {
-
+		for(auto x: v->names) {
+			try {
+				if (currVars.count(x)) {
+					throw repeated_var_declaration(); 
+				}
+				currVars[x] = currType; 
+			} catch(std::exception &e) {
+				cout << e.what() << endl;
+			}
+		}
 	}
 	return 0;
 }
@@ -355,23 +429,22 @@ int Visitor::visit(varNames* v) {
 int Visitor::visit(statements* st) {
 	if (st) {
 		for(auto x: st->list) {
-			visit(x); 
+			x->accept(this); 
 		}
 	}
 	return 0;
 }
 int Visitor::visit(statement* st) {
 	if (st) {
-
 	}
 	// do something with the label if you want to? 
 	return 0;
 }
 int Visitor::visit(assignSt* aSt) {
 	if (aSt) {
-		visit(aSt->loc); 
-		visit(aSt->asOp); 
 		visit(aSt->exp); 
+		visit(aSt->asOp); 
+		visit(aSt->loc); 
 	}
 	return 0;
 }
@@ -393,8 +466,10 @@ int Visitor::visit(forSt* fSt) {
 	if (fSt) {
 		// do something with the looping var
 		visit(fSt->start);
-		visit(fSt->end); 
-		visit(fSt->bl); 
+		visit(fSt->end);
+		inFor = true;  
+		visit(fSt->bl);
+		inFor = false;  
 	}
 	return 0;
 }
@@ -412,15 +487,50 @@ int Visitor::visit(returnVal* rVal) {
 }
 int Visitor::visit(terminalSt* tSt) {
 	if (tSt) {
-		// do something with the name 
+		//tSt->name is either break / continue 
+		try {
+			if (!inFor) {
+				((tSt->name == "break") ?  
+				throw break_without_for(): 
+				throw continue_without_for()); 
+			}
+		} catch(std::exception& e) {
+			cout << e.what() << endl;
+		}
 	}
 	return 0;
 }
 int Visitor::visit(location* loc) {
 	if (loc) {
-		// do something with the name 
-		visit(loc->exp);
-	}
+		try {
+			auto name = loc->name; 
+			if (loc->exp) {
+				if (!globalFields.count(name) ||
+					globalFields.count(name) && globalFields[name].second == -1) {
+						throw array_not_declared(); 
+				}
+				loc->exp->accept(this); 
+				if (loc->exp->type != "int") {
+					throw invalid_array_subscript(); 
+				}
+				return 0; 
+			}
+			for(int i = Vars.size() - 1; i >= 0; --i) {
+				if (Vars[i].count(name)) {
+					loc->type = Vars[i][name];
+					return 0; 
+				}
+			}
+			if (globalFields.count(name) && globalFields[name].second != -1) {
+				loc->type = globalFields[name].first;
+				return 0;
+			}
+			throw variable_not_declared(); 
+
+		} catch (std::exception &e) {
+			cout << e.what() << endl;
+		}
+	} 
 	return 0;
 }
 
@@ -485,11 +595,14 @@ int Visitor::visit(Expr* e) {
 	}
 	return 0;
 }
+
 int Visitor::visit(binExpr* b) {
 	if (b) {
 		visit(b->exp1); 
-		// do something with the op
 		visit(b->exp2);
+		
+		string op = b->op;
+		// if (op == )
 	}
 	return 0;
 }

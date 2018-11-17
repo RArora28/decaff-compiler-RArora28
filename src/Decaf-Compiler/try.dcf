@@ -1,21 +1,22 @@
 class Program {
 	
-	int x, y, z, a[40];
-	boolean c; 
-	
-	void method1(boolean a, boolean c, boolean d) {
+	int x, y, z;
+
+	void method1(int x) {
+		int a; 
+		int b;  
+		for i = 0, n {
+			break; 
+			continue;
+		}
+		b += 1;  
+	}
+
+	void main() {
 
 	}
 
-	int method2(int y, int r, boolean t) {
-
-	}
-
-	boolean method3() {
-
-	}
-
-	int method4(int x) {
+	boolean method2() {
 
 	}
 }

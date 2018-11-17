@@ -203,7 +203,7 @@ code_block				: 	CURLY_OPEN block CURLY_CLOSE
 block 					: 	/* Epsilon */ 
 							{ 	$$ = new block(NULL, NULL); }
 						| 	var_declarations statements
-							{ 	$$ = new block($1, NULL); }
+							{ 	$$ = new block($1, $2); }
 						; 
 
 
@@ -230,9 +230,9 @@ var_names				: 	ID
 
 /* Set of statements in a code block */ 
 statements				: 	/* Epsilon */
-							{ 	$$ = new statements() }
+							{ 	$$ = new statements();  }
 						| 	statements statement
-							{ 	$$->add($2); }
+							{ 	$$->add($2); 		}
 						; 
 
 statement 				: 	assign_statement 		{ $$ = $1; }	
@@ -265,7 +265,7 @@ else_statement			:  	/* Epsilon */
 						;
 
 for_statement 			: 	FOR ID EQUAL expr COMMA expr code_block
-							{ 	$$ = new forSt($2, $4, $6, $7); 	} 
+							{ 	$$ = new forSt($2, $4, $6, $7); } 
 						; 
 
 return_statement 		: 	RETURN return_value SEMI_COLON
@@ -280,7 +280,8 @@ return_value			: 	/* Epsilon */
 terminal_statement	 	: 	BREAK SEMI_COLON
 							{	$$ = new terminalSt("break"); 	}
 						| 	CONTINUE SEMI_COLON
-							{ 	$$ = new terminalSt("continue"); 	}
+							{ 	$$ = new terminalSt("continue"); 	
+							}
 						; 
 
 
