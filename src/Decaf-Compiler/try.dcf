@@ -3,7 +3,7 @@ class Program {
 	int x, y, z;
 
 	void method1() {
-		z = x + y;  
+		x += y; 
 	}	
 	
 	void main() {

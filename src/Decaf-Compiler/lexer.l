@@ -45,7 +45,7 @@ delim [ \t\n]+
 							return NUM; 			}
 
 {alpha}{alpha_num}*   	{ yylval.keyword = strdup(yytext); 
-							return ID;				}
+							return var_id;				}
 
 {string}				{ yylval.strLit = strdup(yytext);
 						 	return STRING; 			}

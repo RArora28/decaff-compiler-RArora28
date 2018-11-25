@@ -890,7 +890,7 @@ case 16:
 YY_RULE_SETUP
 #line 47 "lexer.l"
 { yylval.keyword = strdup(yytext); 
-							return ID;				}
+							return var_id;				}
 	YY_BREAK
 case 17:
 YY_RULE_SETUP

@@ -41,7 +41,7 @@
 %token <intLit> HEX_LITERAL
 %token <strLit> CHAR_LITERAL
 %token <strLit> STRING 
-%token <keyword> ID
+%token <keyword> var_id
 %token ADD SUBTRACT MULTIPLY DIVIDE 
 %token EQUAL PLUS_EQUAL MINUS_EQUAL EQUALITY 
 %token NOT_EQUAL GREATER_EQUAL LESS_EQUAL GREATER LESS 
@@ -140,9 +140,9 @@ field_names				: 	field_name
 							{ 	$$->add($3); 	}
 						;
 
-field_name 				: 	ID 
+field_name 				: 	var_id 
 						  	{ 	$$ = new field($1, NULL); 	}
-						| 	ID SQUARE_OPEN int_literal SQUARE_CLOSE
+						| 	var_id SQUARE_OPEN int_literal SQUARE_CLOSE
 							{ 	$$ = new field($1, $3); 	}
 						; 
 
@@ -153,21 +153,21 @@ method_declarations		: 	method_declaration method_declarations
 							{ 	$$ = new methodDeclarations(); }
 						; 
 
-method_declaration 		: 	VOID ID OPEN parameter_declarations CLOSE code_block 
+method_declaration 		: 	VOID var_id OPEN parameter_declarations CLOSE code_block 
 							{
 								class varType* temp = new varType("void");
 								$$ = new methodDeclaration(temp, $2, $4, $6); 
 							}
-						| 	var_type ID OPEN parameter_declarations CLOSE 				code_block   
+						| 	var_type var_id OPEN parameter_declarations CLOSE 				code_block   
 							{	
 								$$ = new methodDeclaration($1, $2, $4, $6); 	
 							}
-						| 	VOID ID OPEN CLOSE code_block 
+						| 	VOID var_id OPEN CLOSE code_block 
 							{
 								class varType* temp = new varType("void");
 								$$ = new methodDeclaration(temp, $2, NULL, $5); 
 							}
-						| 	var_type ID OPEN CLOSE code_block   
+						| 	var_type var_id OPEN CLOSE code_block   
 							{	
 								$$ = new methodDeclaration($1, $2, NULL, $5); 	
 							}
@@ -183,7 +183,7 @@ parameter_declarations 	:	parameter_declaration
 						; 
 
 
-parameter_declaration 	: 	var_type ID
+parameter_declaration 	: 	var_type var_id
 							{	$$ = new parameterDeclaration($1, $2); 	}
 						; 
 
@@ -211,12 +211,12 @@ var_declaration 		: 	var_type var_names
 							{ 	$$ = new varDeclaration($1, $2); 	}
 						;
 
-var_names				: 	ID 
+var_names				: 	var_id
 							{ 
 								$$ = new varNames(); 
 								$$->add($1); 
 							}
-						| 	var_names COMMA ID 
+						| 	var_names COMMA var_id 
 							{ 	$$->add($3); }
 						; 
 
@@ -241,9 +241,9 @@ assign_statement		: 	location assign_op expr SEMI_COLON
 							{ 	$$ = new assignSt($1, $2, $3); }
 						; 
 
-location				: 	ID 
+location				: 	var_id 
 							{ 	$$ = new location($1, NULL); }
-						| 	ID SQUARE_OPEN expr SQUARE_CLOSE 
+						| 	var_id SQUARE_OPEN expr SQUARE_CLOSE 
 							{ 	$$ = new location($1, $3); } 
 						; 
 
@@ -257,7 +257,7 @@ else_statement			:  	/* Epsilon */
 							{	$$ = new elseSt($2); } 
 						;
 
-for_statement 			: 	FOR ID EQUAL expr COMMA expr code_block
+for_statement 			: 	FOR var_id EQUAL expr COMMA expr code_block
 							{ 	$$ = new forSt($2, $4, $6, $7); } 
 						; 
 
@@ -278,9 +278,9 @@ method_call_statement 	: 	method_call	SEMI_COLON
 						| 	callout_call SEMI_COLON
 							{ 	$$ = $1; 	}
 
-method_call 			: 	ID OPEN method_call_args CLOSE
+method_call 			: 	var_id OPEN method_call_args CLOSE
 							{ 	$$ = new methodCall($3); 	}
-						|	ID OPEN CLOSE
+						|	var_id OPEN CLOSE
 							{ 	$$ = new methodCall(NULL);	}
 						; 
 

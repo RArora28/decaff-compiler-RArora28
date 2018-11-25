@@ -8,6 +8,7 @@ program::program(class fieldDeclarations* fieldDecls_,
 	fieldDecls = fieldDecls_;
 	methodDecls = methodDecls_; 
 }
+
 program::~program() {
 	// delete []fieldDecls; 
 	// delete methodDecls; 	
@@ -99,7 +100,6 @@ void statements::add(class statement* st_) {
 
 location::location(const string& name_,
 				   class Expr* exp_) {
-	cout << "Megh the great: " << name_ << ' ' << this << endl; 
 	name = name_;
 	exp = exp_;
 }

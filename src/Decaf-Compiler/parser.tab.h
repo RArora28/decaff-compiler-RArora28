@@ -74,7 +74,7 @@
      HEX_LITERAL = 290,
      CHAR_LITERAL = 291,
      STRING = 292,
-     ID = 293,
+     var_id = 293,
      ABSOLUTE = 294,
      CURLY_OPEN = 295,
      CURLY_CLOSE = 296,
@@ -122,7 +122,7 @@
 #define HEX_LITERAL 290
 #define CHAR_LITERAL 291
 #define STRING 292
-#define ID 293
+#define var_id 293
 #define ABSOLUTE 294
 #define CURLY_OPEN 295
 #define CURLY_CLOSE 296

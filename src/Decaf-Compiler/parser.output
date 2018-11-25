@@ -23,21 +23,21 @@ Grammar
     7 field_names: field_name
     8            | field_names COMMA field_name
 
-    9 field_name: ID
-   10           | ID SQUARE_OPEN int_literal SQUARE_CLOSE
+    9 field_name: var_id
+   10           | var_id SQUARE_OPEN int_literal SQUARE_CLOSE
 
    11 method_declarations: method_declaration method_declarations
    12                    | /* empty */
 
-   13 method_declaration: VOID ID OPEN parameter_declarations CLOSE code_block
-   14                   | var_type ID OPEN parameter_declarations CLOSE code_block
-   15                   | VOID ID OPEN CLOSE code_block
-   16                   | var_type ID OPEN CLOSE code_block
+   13 method_declaration: VOID var_id OPEN parameter_declarations CLOSE code_block
+   14                   | var_type var_id OPEN parameter_declarations CLOSE code_block
+   15                   | VOID var_id OPEN CLOSE code_block
+   16                   | var_type var_id OPEN CLOSE code_block
 
    17 parameter_declarations: parameter_declaration
    18                       | parameter_declarations COMMA parameter_declaration
 
-   19 parameter_declaration: var_type ID
+   19 parameter_declaration: var_type var_id
 
    20 code_block: CURLY_OPEN block CURLY_CLOSE
 
@@ -49,8 +49,8 @@ Grammar
 
    25 var_declaration: var_type var_names
 
-   26 var_names: ID
-   27          | var_names COMMA ID
+   26 var_names: var_id
+   27          | var_names COMMA var_id
 
    28 statements: /* empty */
    29           | statements statement
@@ -65,15 +65,15 @@ Grammar
 
    37 assign_statement: location assign_op expr SEMI_COLON
 
-   38 location: ID
-   39         | ID SQUARE_OPEN expr SQUARE_CLOSE
+   38 location: var_id
+   39         | var_id SQUARE_OPEN expr SQUARE_CLOSE
 
    40 if_statement: IF OPEN expr CLOSE code_block else_statement
 
    41 else_statement: /* empty */
    42               | ELSE code_block
 
-   43 for_statement: FOR ID EQUAL expr COMMA expr code_block
+   43 for_statement: FOR var_id EQUAL expr COMMA expr code_block
 
    44 return_statement: RETURN expr SEMI_COLON
    45                 | RETURN SEMI_COLON
@@ -84,8 +84,8 @@ Grammar
    48 method_call_statement: method_call SEMI_COLON
    49                      | callout_call SEMI_COLON
 
-   50 method_call: ID OPEN method_call_args CLOSE
-   51            | ID OPEN CLOSE
+   50 method_call: var_id OPEN method_call_args CLOSE
+   51            | var_id OPEN CLOSE
 
    52 method_call_args: expr
    53                 | method_call_args COMMA expr
@@ -181,7 +181,7 @@ NUM (289) 88
 HEX_LITERAL (290) 89
 CHAR_LITERAL (291) 87
 STRING (292) 92
-ID (293) 9 10 13 14 15 16 19 26 27 38 39 43 50 51
+var_id (293) 9 10 13 14 15 16 19 26 27 38 39 43 50 51
 ABSOLUTE (294)
 CURLY_OPEN (295) 1 20
 CURLY_CLOSE (296) 1 20
@@ -344,10 +344,10 @@ state 6
 
 state 7
 
-   13 method_declaration: VOID . ID OPEN parameter_declarations CLOSE code_block
-   15                   | VOID . ID OPEN CLOSE code_block
+   13 method_declaration: VOID . var_id OPEN parameter_declarations CLOSE code_block
+   15                   | VOID . var_id OPEN CLOSE code_block
 
-    ID  shift, and go to state 14
+    var_id  shift, and go to state 14
 
 
 state 8
@@ -367,10 +367,10 @@ state 9
 state 10
 
     6 field_declaration: var_type . field_names
-   14 method_declaration: var_type . ID OPEN parameter_declarations CLOSE code_block
-   16                   | var_type . ID OPEN CLOSE code_block
+   14 method_declaration: var_type . var_id OPEN parameter_declarations CLOSE code_block
+   16                   | var_type . var_id OPEN CLOSE code_block
 
-    ID  shift, and go to state 15
+    var_id  shift, and go to state 15
 
     field_names  go to state 16
     field_name   go to state 17
@@ -407,18 +407,18 @@ state 13
 
 state 14
 
-   13 method_declaration: VOID ID . OPEN parameter_declarations CLOSE code_block
-   15                   | VOID ID . OPEN CLOSE code_block
+   13 method_declaration: VOID var_id . OPEN parameter_declarations CLOSE code_block
+   15                   | VOID var_id . OPEN CLOSE code_block
 
     OPEN  shift, and go to state 22
 
 
 state 15
 
-    9 field_name: ID .
-   10           | ID . SQUARE_OPEN int_literal SQUARE_CLOSE
-   14 method_declaration: var_type ID . OPEN parameter_declarations CLOSE code_block
-   16                   | var_type ID . OPEN CLOSE code_block
+    9 field_name: var_id .
+   10           | var_id . SQUARE_OPEN int_literal SQUARE_CLOSE
+   14 method_declaration: var_type var_id . OPEN parameter_declarations CLOSE code_block
+   16                   | var_type var_id . OPEN CLOSE code_block
 
     SQUARE_OPEN  shift, and go to state 23
     OPEN         shift, and go to state 24
@@ -459,10 +459,10 @@ state 19
 
 state 20
 
-   14 method_declaration: var_type . ID OPEN parameter_declarations CLOSE code_block
-   16                   | var_type . ID OPEN CLOSE code_block
+   14 method_declaration: var_type . var_id OPEN parameter_declarations CLOSE code_block
+   16                   | var_type . var_id OPEN CLOSE code_block
 
-    ID  shift, and go to state 26
+    var_id  shift, and go to state 26
 
 
 state 21
@@ -474,8 +474,8 @@ state 21
 
 state 22
 
-   13 method_declaration: VOID ID OPEN . parameter_declarations CLOSE code_block
-   15                   | VOID ID OPEN . CLOSE code_block
+   13 method_declaration: VOID var_id OPEN . parameter_declarations CLOSE code_block
+   15                   | VOID var_id OPEN . CLOSE code_block
 
     INT      shift, and go to state 8
     BOOLEAN  shift, and go to state 9
@@ -488,7 +488,7 @@ state 22
 
 state 23
 
-   10 field_name: ID SQUARE_OPEN . int_literal SQUARE_CLOSE
+   10 field_name: var_id SQUARE_OPEN . int_literal SQUARE_CLOSE
 
     NUM          shift, and go to state 31
     HEX_LITERAL  shift, and go to state 32
@@ -498,8 +498,8 @@ state 23
 
 state 24
 
-   14 method_declaration: var_type ID OPEN . parameter_declarations CLOSE code_block
-   16                   | var_type ID OPEN . CLOSE code_block
+   14 method_declaration: var_type var_id OPEN . parameter_declarations CLOSE code_block
+   16                   | var_type var_id OPEN . CLOSE code_block
 
     INT      shift, and go to state 8
     BOOLEAN  shift, and go to state 9
@@ -514,22 +514,22 @@ state 25
 
     8 field_names: field_names COMMA . field_name
 
-    ID  shift, and go to state 36
+    var_id  shift, and go to state 36
 
     field_name  go to state 37
 
 
 state 26
 
-   14 method_declaration: var_type ID . OPEN parameter_declarations CLOSE code_block
-   16                   | var_type ID . OPEN CLOSE code_block
+   14 method_declaration: var_type var_id . OPEN parameter_declarations CLOSE code_block
+   16                   | var_type var_id . OPEN CLOSE code_block
 
     OPEN  shift, and go to state 24
 
 
 state 27
 
-   15 method_declaration: VOID ID OPEN CLOSE . code_block
+   15 method_declaration: VOID var_id OPEN CLOSE . code_block
 
     CURLY_OPEN  shift, and go to state 38
 
@@ -538,14 +538,14 @@ state 27
 
 state 28
 
-   19 parameter_declaration: var_type . ID
+   19 parameter_declaration: var_type . var_id
 
-    ID  shift, and go to state 40
+    var_id  shift, and go to state 40
 
 
 state 29
 
-   13 method_declaration: VOID ID OPEN parameter_declarations . CLOSE code_block
+   13 method_declaration: VOID var_id OPEN parameter_declarations . CLOSE code_block
    18 parameter_declarations: parameter_declarations . COMMA parameter_declaration
 
     CLOSE  shift, and go to state 41
@@ -575,14 +575,14 @@ state 32
 
 state 33
 
-   10 field_name: ID SQUARE_OPEN int_literal . SQUARE_CLOSE
+   10 field_name: var_id SQUARE_OPEN int_literal . SQUARE_CLOSE
 
     SQUARE_CLOSE  shift, and go to state 43
 
 
 state 34
 
-   16 method_declaration: var_type ID OPEN CLOSE . code_block
+   16 method_declaration: var_type var_id OPEN CLOSE . code_block
 
     CURLY_OPEN  shift, and go to state 38
 
@@ -591,7 +591,7 @@ state 34
 
 state 35
 
-   14 method_declaration: var_type ID OPEN parameter_declarations . CLOSE code_block
+   14 method_declaration: var_type var_id OPEN parameter_declarations . CLOSE code_block
    18 parameter_declarations: parameter_declarations . COMMA parameter_declaration
 
     CLOSE  shift, and go to state 45
@@ -600,8 +600,8 @@ state 35
 
 state 36
 
-    9 field_name: ID .
-   10           | ID . SQUARE_OPEN int_literal SQUARE_CLOSE
+    9 field_name: var_id .
+   10           | var_id . SQUARE_OPEN int_literal SQUARE_CLOSE
 
     SQUARE_OPEN  shift, and go to state 23
 
@@ -629,21 +629,21 @@ state 38
 
 state 39
 
-   15 method_declaration: VOID ID OPEN CLOSE code_block .
+   15 method_declaration: VOID var_id OPEN CLOSE code_block .
 
     $default  reduce using rule 15 (method_declaration)
 
 
 state 40
 
-   19 parameter_declaration: var_type ID .
+   19 parameter_declaration: var_type var_id .
 
     $default  reduce using rule 19 (parameter_declaration)
 
 
 state 41
 
-   13 method_declaration: VOID ID OPEN parameter_declarations CLOSE . code_block
+   13 method_declaration: VOID var_id OPEN parameter_declarations CLOSE . code_block
 
     CURLY_OPEN  shift, and go to state 38
 
@@ -663,21 +663,21 @@ state 42
 
 state 43
 
-   10 field_name: ID SQUARE_OPEN int_literal SQUARE_CLOSE .
+   10 field_name: var_id SQUARE_OPEN int_literal SQUARE_CLOSE .
 
     $default  reduce using rule 10 (field_name)
 
 
 state 44
 
-   16 method_declaration: var_type ID OPEN CLOSE code_block .
+   16 method_declaration: var_type var_id OPEN CLOSE code_block .
 
     $default  reduce using rule 16 (method_declaration)
 
 
 state 45
 
-   14 method_declaration: var_type ID OPEN parameter_declarations CLOSE . code_block
+   14 method_declaration: var_type var_id OPEN parameter_declarations CLOSE . code_block
 
     CURLY_OPEN  shift, and go to state 38
 
@@ -708,7 +708,7 @@ state 47
 
 state 48
 
-   13 method_declaration: VOID ID OPEN parameter_declarations CLOSE code_block .
+   13 method_declaration: VOID var_id OPEN parameter_declarations CLOSE code_block .
 
     $default  reduce using rule 13 (method_declaration)
 
@@ -722,7 +722,7 @@ state 49
 
 state 50
 
-   14 method_declaration: var_type ID OPEN parameter_declarations CLOSE code_block .
+   14 method_declaration: var_type var_id OPEN parameter_declarations CLOSE code_block .
 
     $default  reduce using rule 14 (method_declaration)
 
@@ -738,7 +738,7 @@ state 52
 
    25 var_declaration: var_type . var_names
 
-    ID  shift, and go to state 55
+    var_id  shift, and go to state 55
 
     var_names  go to state 56
 
@@ -761,7 +761,7 @@ state 54
     RETURN      shift, and go to state 61
     FOR         shift, and go to state 62
     IF          shift, and go to state 63
-    ID          shift, and go to state 64
+    var_id      shift, and go to state 64
     CURLY_OPEN  shift, and go to state 38
 
     $default  reduce using rule 22 (block)
@@ -781,7 +781,7 @@ state 54
 
 state 55
 
-   26 var_names: ID .
+   26 var_names: var_id .
 
     $default  reduce using rule 26 (var_names)
 
@@ -789,7 +789,7 @@ state 55
 state 56
 
    25 var_declaration: var_type var_names .
-   27 var_names: var_names . COMMA ID
+   27 var_names: var_names . COMMA var_id
 
     COMMA  shift, and go to state 76
 
@@ -838,7 +838,7 @@ state 61
     NUM           shift, and go to state 31
     HEX_LITERAL   shift, and go to state 32
     CHAR_LITERAL  shift, and go to state 84
-    ID            shift, and go to state 64
+    var_id        shift, and go to state 64
     OPEN          shift, and go to state 85
     SEMI_COLON    shift, and go to state 86
 
@@ -857,9 +857,9 @@ state 61
 
 state 62
 
-   43 for_statement: FOR . ID EQUAL expr COMMA expr code_block
+   43 for_statement: FOR . var_id EQUAL expr COMMA expr code_block
 
-    ID  shift, and go to state 96
+    var_id  shift, and go to state 96
 
 
 state 63
@@ -871,10 +871,10 @@ state 63
 
 state 64
 
-   38 location: ID .
-   39         | ID . SQUARE_OPEN expr SQUARE_CLOSE
-   50 method_call: ID . OPEN method_call_args CLOSE
-   51            | ID . OPEN CLOSE
+   38 location: var_id .
+   39         | var_id . SQUARE_OPEN expr SQUARE_CLOSE
+   50 method_call: var_id . OPEN method_call_args CLOSE
+   51            | var_id . OPEN CLOSE
 
     SQUARE_OPEN  shift, and go to state 98
     OPEN         shift, and go to state 99
@@ -965,9 +965,9 @@ state 75
 
 state 76
 
-   27 var_names: var_names COMMA . ID
+   27 var_names: var_names COMMA . var_id
 
-    ID  shift, and go to state 106
+    var_id  shift, and go to state 106
 
 
 state 77
@@ -1006,7 +1006,7 @@ state 80
     NUM           shift, and go to state 31
     HEX_LITERAL   shift, and go to state 32
     CHAR_LITERAL  shift, and go to state 84
-    ID            shift, and go to state 64
+    var_id        shift, and go to state 64
     OPEN          shift, and go to state 85
 
     location               go to state 87
@@ -1034,7 +1034,7 @@ state 81
     NUM           shift, and go to state 31
     HEX_LITERAL   shift, and go to state 32
     CHAR_LITERAL  shift, and go to state 84
-    ID            shift, and go to state 64
+    var_id        shift, and go to state 64
     OPEN          shift, and go to state 85
 
     location               go to state 87
@@ -1083,7 +1083,7 @@ state 85
     NUM           shift, and go to state 31
     HEX_LITERAL   shift, and go to state 32
     CHAR_LITERAL  shift, and go to state 84
-    ID            shift, and go to state 64
+    var_id        shift, and go to state 64
     OPEN          shift, and go to state 85
 
     location               go to state 87
@@ -1197,7 +1197,7 @@ state 95
 
 state 96
 
-   43 for_statement: FOR ID . EQUAL expr COMMA expr code_block
+   43 for_statement: FOR var_id . EQUAL expr COMMA expr code_block
 
     EQUAL  shift, and go to state 126
 
@@ -1214,7 +1214,7 @@ state 97
     NUM           shift, and go to state 31
     HEX_LITERAL   shift, and go to state 32
     CHAR_LITERAL  shift, and go to state 84
-    ID            shift, and go to state 64
+    var_id        shift, and go to state 64
     OPEN          shift, and go to state 85
 
     location               go to state 87
@@ -1232,7 +1232,7 @@ state 97
 
 state 98
 
-   39 location: ID SQUARE_OPEN . expr SQUARE_CLOSE
+   39 location: var_id SQUARE_OPEN . expr SQUARE_CLOSE
 
     SUBTRACT      shift, and go to state 80
     NOT           shift, and go to state 81
@@ -1242,7 +1242,7 @@ state 98
     NUM           shift, and go to state 31
     HEX_LITERAL   shift, and go to state 32
     CHAR_LITERAL  shift, and go to state 84
-    ID            shift, and go to state 64
+    var_id        shift, and go to state 64
     OPEN          shift, and go to state 85
 
     location               go to state 87
@@ -1260,8 +1260,8 @@ state 98
 
 state 99
 
-   50 method_call: ID OPEN . method_call_args CLOSE
-   51            | ID OPEN . CLOSE
+   50 method_call: var_id OPEN . method_call_args CLOSE
+   51            | var_id OPEN . CLOSE
 
     SUBTRACT      shift, and go to state 80
     NOT           shift, and go to state 81
@@ -1271,7 +1271,7 @@ state 99
     NUM           shift, and go to state 31
     HEX_LITERAL   shift, and go to state 32
     CHAR_LITERAL  shift, and go to state 84
-    ID            shift, and go to state 64
+    var_id        shift, and go to state 64
     OPEN          shift, and go to state 85
     CLOSE         shift, and go to state 129
 
@@ -1322,7 +1322,7 @@ state 103
     NUM           shift, and go to state 31
     HEX_LITERAL   shift, and go to state 32
     CHAR_LITERAL  shift, and go to state 84
-    ID            shift, and go to state 64
+    var_id        shift, and go to state 64
     OPEN          shift, and go to state 85
 
     location               go to state 87
@@ -1354,7 +1354,7 @@ state 105
 
 state 106
 
-   27 var_names: var_names COMMA ID .
+   27 var_names: var_names COMMA var_id .
 
     $default  reduce using rule 27 (var_names)
 
@@ -1475,7 +1475,7 @@ state 112
     NUM           shift, and go to state 31
     HEX_LITERAL   shift, and go to state 32
     CHAR_LITERAL  shift, and go to state 84
-    ID            shift, and go to state 64
+    var_id        shift, and go to state 64
     OPEN          shift, and go to state 85
 
     location               go to state 87
@@ -1503,7 +1503,7 @@ state 113
     NUM           shift, and go to state 31
     HEX_LITERAL   shift, and go to state 32
     CHAR_LITERAL  shift, and go to state 84
-    ID            shift, and go to state 64
+    var_id        shift, and go to state 64
     OPEN          shift, and go to state 85
 
     location               go to state 87
@@ -1531,7 +1531,7 @@ state 114
     NUM           shift, and go to state 31
     HEX_LITERAL   shift, and go to state 32
     CHAR_LITERAL  shift, and go to state 84
-    ID            shift, and go to state 64
+    var_id        shift, and go to state 64
     OPEN          shift, and go to state 85
 
     location               go to state 87
@@ -1559,7 +1559,7 @@ state 115
     NUM           shift, and go to state 31
     HEX_LITERAL   shift, and go to state 32
     CHAR_LITERAL  shift, and go to state 84
-    ID            shift, and go to state 64
+    var_id        shift, and go to state 64
     OPEN          shift, and go to state 85
 
     location               go to state 87
@@ -1587,7 +1587,7 @@ state 116
     NUM           shift, and go to state 31
     HEX_LITERAL   shift, and go to state 32
     CHAR_LITERAL  shift, and go to state 84
-    ID            shift, and go to state 64
+    var_id        shift, and go to state 64
     OPEN          shift, and go to state 85
 
     location               go to state 87
@@ -1615,7 +1615,7 @@ state 117
     NUM           shift, and go to state 31
     HEX_LITERAL   shift, and go to state 32
     CHAR_LITERAL  shift, and go to state 84
-    ID            shift, and go to state 64
+    var_id        shift, and go to state 64
     OPEN          shift, and go to state 85
 
     location               go to state 87
@@ -1643,7 +1643,7 @@ state 118
     NUM           shift, and go to state 31
     HEX_LITERAL   shift, and go to state 32
     CHAR_LITERAL  shift, and go to state 84
-    ID            shift, and go to state 64
+    var_id        shift, and go to state 64
     OPEN          shift, and go to state 85
 
     location               go to state 87
@@ -1671,7 +1671,7 @@ state 119
     NUM           shift, and go to state 31
     HEX_LITERAL   shift, and go to state 32
     CHAR_LITERAL  shift, and go to state 84
-    ID            shift, and go to state 64
+    var_id        shift, and go to state 64
     OPEN          shift, and go to state 85
 
     location               go to state 87
@@ -1699,7 +1699,7 @@ state 120
     NUM           shift, and go to state 31
     HEX_LITERAL   shift, and go to state 32
     CHAR_LITERAL  shift, and go to state 84
-    ID            shift, and go to state 64
+    var_id        shift, and go to state 64
     OPEN          shift, and go to state 85
 
     location               go to state 87
@@ -1727,7 +1727,7 @@ state 121
     NUM           shift, and go to state 31
     HEX_LITERAL   shift, and go to state 32
     CHAR_LITERAL  shift, and go to state 84
-    ID            shift, and go to state 64
+    var_id        shift, and go to state 64
     OPEN          shift, and go to state 85
 
     location               go to state 87
@@ -1755,7 +1755,7 @@ state 122
     NUM           shift, and go to state 31
     HEX_LITERAL   shift, and go to state 32
     CHAR_LITERAL  shift, and go to state 84
-    ID            shift, and go to state 64
+    var_id        shift, and go to state 64
     OPEN          shift, and go to state 85
 
     location               go to state 87
@@ -1783,7 +1783,7 @@ state 123
     NUM           shift, and go to state 31
     HEX_LITERAL   shift, and go to state 32
     CHAR_LITERAL  shift, and go to state 84
-    ID            shift, and go to state 64
+    var_id        shift, and go to state 64
     OPEN          shift, and go to state 85
 
     location               go to state 87
@@ -1811,7 +1811,7 @@ state 124
     NUM           shift, and go to state 31
     HEX_LITERAL   shift, and go to state 32
     CHAR_LITERAL  shift, and go to state 84
-    ID            shift, and go to state 64
+    var_id        shift, and go to state 64
     OPEN          shift, and go to state 85
 
     location               go to state 87
@@ -1836,7 +1836,7 @@ state 125
 
 state 126
 
-   43 for_statement: FOR ID EQUAL . expr COMMA expr code_block
+   43 for_statement: FOR var_id EQUAL . expr COMMA expr code_block
 
     SUBTRACT      shift, and go to state 80
     NOT           shift, and go to state 81
@@ -1846,7 +1846,7 @@ state 126
     NUM           shift, and go to state 31
     HEX_LITERAL   shift, and go to state 32
     CHAR_LITERAL  shift, and go to state 84
-    ID            shift, and go to state 64
+    var_id        shift, and go to state 64
     OPEN          shift, and go to state 85
 
     location               go to state 87
@@ -1897,7 +1897,7 @@ state 127
 
 state 128
 
-   39 location: ID SQUARE_OPEN expr . SQUARE_CLOSE
+   39 location: var_id SQUARE_OPEN expr . SQUARE_CLOSE
    68 binary_expr: expr . ADD expr
    69            | expr . SUBTRACT expr
    70            | expr . MULTIPLY expr
@@ -1930,14 +1930,14 @@ state 128
 
 state 129
 
-   51 method_call: ID OPEN CLOSE .
+   51 method_call: var_id OPEN CLOSE .
 
     $default  reduce using rule 51 (method_call)
 
 
 state 130
 
-   50 method_call: ID OPEN method_call_args . CLOSE
+   50 method_call: var_id OPEN method_call_args . CLOSE
    53 method_call_args: method_call_args . COMMA expr
 
     CLOSE  shift, and go to state 152
@@ -2031,7 +2031,7 @@ state 134
     HEX_LITERAL   shift, and go to state 32
     CHAR_LITERAL  shift, and go to state 84
     STRING        shift, and go to state 107
-    ID            shift, and go to state 64
+    var_id        shift, and go to state 64
     OPEN          shift, and go to state 85
 
     location               go to state 87
@@ -2409,7 +2409,7 @@ state 148
 
 state 149
 
-   43 for_statement: FOR ID EQUAL expr . COMMA expr code_block
+   43 for_statement: FOR var_id EQUAL expr . COMMA expr code_block
    68 binary_expr: expr . ADD expr
    69            | expr . SUBTRACT expr
    70            | expr . MULTIPLY expr
@@ -2451,14 +2451,14 @@ state 150
 
 state 151
 
-   39 location: ID SQUARE_OPEN expr SQUARE_CLOSE .
+   39 location: var_id SQUARE_OPEN expr SQUARE_CLOSE .
 
     $default  reduce using rule 39 (location)
 
 
 state 152
 
-   50 method_call: ID OPEN method_call_args CLOSE .
+   50 method_call: var_id OPEN method_call_args CLOSE .
 
     $default  reduce using rule 50 (method_call)
 
@@ -2475,7 +2475,7 @@ state 153
     NUM           shift, and go to state 31
     HEX_LITERAL   shift, and go to state 32
     CHAR_LITERAL  shift, and go to state 84
-    ID            shift, and go to state 64
+    var_id        shift, and go to state 64
     OPEN          shift, and go to state 85
 
     location               go to state 87
@@ -2557,7 +2557,7 @@ state 158
 
 state 159
 
-   43 for_statement: FOR ID EQUAL expr COMMA . expr code_block
+   43 for_statement: FOR var_id EQUAL expr COMMA . expr code_block
 
     SUBTRACT      shift, and go to state 80
     NOT           shift, and go to state 81
@@ -2567,7 +2567,7 @@ state 159
     NUM           shift, and go to state 31
     HEX_LITERAL   shift, and go to state 32
     CHAR_LITERAL  shift, and go to state 84
-    ID            shift, and go to state 64
+    var_id        shift, and go to state 64
     OPEN          shift, and go to state 85
 
     location               go to state 87
@@ -2648,7 +2648,7 @@ state 163
     HEX_LITERAL   shift, and go to state 32
     CHAR_LITERAL  shift, and go to state 84
     STRING        shift, and go to state 107
-    ID            shift, and go to state 64
+    var_id        shift, and go to state 64
     OPEN          shift, and go to state 85
 
     location               go to state 87
@@ -2668,7 +2668,7 @@ state 163
 
 state 164
 
-   43 for_statement: FOR ID EQUAL expr COMMA expr . code_block
+   43 for_statement: FOR var_id EQUAL expr COMMA expr . code_block
    68 binary_expr: expr . ADD expr
    69            | expr . SUBTRACT expr
    70            | expr . MULTIPLY expr
@@ -2726,7 +2726,7 @@ state 167
 
 state 168
 
-   43 for_statement: FOR ID EQUAL expr COMMA expr code_block .
+   43 for_statement: FOR var_id EQUAL expr COMMA expr code_block .
 
     $default  reduce using rule 43 (for_statement)
 

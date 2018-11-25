@@ -101,7 +101,7 @@
      HEX_LITERAL = 290,
      CHAR_LITERAL = 291,
      STRING = 292,
-     ID = 293,
+     var_id = 293,
      ABSOLUTE = 294,
      CURLY_OPEN = 295,
      CURLY_CLOSE = 296,
@@ -149,7 +149,7 @@
 #define HEX_LITERAL 290
 #define CHAR_LITERAL 291
 #define STRING 292
-#define ID 293
+#define var_id 293
 #define ABSOLUTE 294
 #define CURLY_OPEN 295
 #define CURLY_CLOSE 296
@@ -554,7 +554,7 @@ static const char *const yytname[] =
   "CONDITIONAL_AND", "CONDITIONAL_OR", "PROGRAM", "CLASS", "CALLOUT",
   "VOID", "INT", "BOOLEAN", "TRUE", "FALSE", "BREAK", "CONTINUE", "RETURN",
   "FOR", "IF", "ELSE", "NUM", "HEX_LITERAL", "CHAR_LITERAL", "STRING",
-  "ID", "ABSOLUTE", "CURLY_OPEN", "CURLY_CLOSE", "SQUARE_OPEN",
+  "var_id", "ABSOLUTE", "CURLY_OPEN", "CURLY_CLOSE", "SQUARE_OPEN",
   "SQUARE_CLOSE", "OPEN", "CLOSE", "SEMI_COLON", "COMMA", "$accept",
   "program_declaration", "var_type", "field_declarations",
   "field_declaration", "field_names", "field_name", "method_declarations",
