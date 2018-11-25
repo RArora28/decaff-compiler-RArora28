@@ -339,7 +339,7 @@ public:
 
 class calloutCall: public methodCallSt {
 public:
-	class stringLiteral *callName; 
+	stringLiteral *callName; 
 	class CalloutArgs* args; 
 	calloutCall(class stringLiteral* callName_,
 				class CalloutArgs* args_); 
