@@ -2,8 +2,8 @@ class Program {
 	
 	int x, y, z;
 
-	void method1(boolean y, int x) {
-			f(a, b, c);
+	void method1() {
+		z = x + y;  
 	}	
 	
 	void main() {
