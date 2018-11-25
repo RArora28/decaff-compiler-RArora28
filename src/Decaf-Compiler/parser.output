@@ -91,10 +91,10 @@ Grammar
    53                 | method_call_args COMMA expr
 
    54 callout_call: CALLOUT OPEN string_literal CLOSE
-   55             | CALLOUT OPEN string_literal COMMA non_empty_callout_args CLOSE
+   55             | CALLOUT OPEN string_literal COMMA callout_args CLOSE
 
-   56 non_empty_callout_args: callout_arg
-   57                       | non_empty_callout_args COMMA callout_arg
+   56 callout_args: callout_arg
+   57             | callout_args COMMA callout_arg
 
    58 callout_arg: expr
    59            | string_literal
@@ -253,7 +253,7 @@ method_call_args (75)
     on left: 52 53, on right: 50 53
 callout_call (76)
     on left: 54 55, on right: 49
-non_empty_callout_args (77)
+callout_args (77)
     on left: 56 57, on right: 55 57
 callout_arg (78)
     on left: 58 59, on right: 56 57
@@ -806,7 +806,7 @@ state 57
 state 58
 
    54 callout_call: CALLOUT . OPEN string_literal CLOSE
-   55             | CALLOUT . OPEN string_literal COMMA non_empty_callout_args CLOSE
+   55             | CALLOUT . OPEN string_literal COMMA callout_args CLOSE
 
     OPEN  shift, and go to state 77
 
@@ -973,7 +973,7 @@ state 76
 state 77
 
    54 callout_call: CALLOUT OPEN . string_literal CLOSE
-   55             | CALLOUT OPEN . string_literal COMMA non_empty_callout_args CLOSE
+   55             | CALLOUT OPEN . string_literal COMMA callout_args CLOSE
 
     STRING  shift, and go to state 107
 
@@ -1369,7 +1369,7 @@ state 107
 state 108
 
    54 callout_call: CALLOUT OPEN string_literal . CLOSE
-   55             | CALLOUT OPEN string_literal . COMMA non_empty_callout_args CLOSE
+   55             | CALLOUT OPEN string_literal . COMMA callout_args CLOSE
 
     CLOSE  shift, and go to state 133
     COMMA  shift, and go to state 134
@@ -2020,7 +2020,7 @@ state 133
 
 state 134
 
-   55 callout_call: CALLOUT OPEN string_literal COMMA . non_empty_callout_args CLOSE
+   55 callout_call: CALLOUT OPEN string_literal COMMA . callout_args CLOSE
 
     SUBTRACT      shift, and go to state 80
     NOT           shift, and go to state 81
@@ -2034,20 +2034,20 @@ state 134
     ID            shift, and go to state 64
     OPEN          shift, and go to state 85
 
-    location                go to state 87
-    method_call_statement   go to state 88
-    method_call             go to state 74
-    callout_call            go to state 75
-    non_empty_callout_args  go to state 155
-    callout_arg             go to state 156
-    expr                    go to state 157
-    binary_expr             go to state 90
-    enclosed_expr           go to state 91
-    unary_expr              go to state 92
-    char_literal            go to state 93
-    int_literal             go to state 94
-    bool_literal            go to state 95
-    string_literal          go to state 158
+    location               go to state 87
+    method_call_statement  go to state 88
+    method_call            go to state 74
+    callout_call           go to state 75
+    callout_args           go to state 155
+    callout_arg            go to state 156
+    expr                   go to state 157
+    binary_expr            go to state 90
+    enclosed_expr          go to state 91
+    unary_expr             go to state 92
+    char_literal           go to state 93
+    int_literal            go to state 94
+    bool_literal           go to state 95
+    string_literal         go to state 158
 
 
 state 135
@@ -2500,8 +2500,8 @@ state 154
 
 state 155
 
-   55 callout_call: CALLOUT OPEN string_literal COMMA non_empty_callout_args . CLOSE
-   57 non_empty_callout_args: non_empty_callout_args . COMMA callout_arg
+   55 callout_call: CALLOUT OPEN string_literal COMMA callout_args . CLOSE
+   57 callout_args: callout_args . COMMA callout_arg
 
     CLOSE  shift, and go to state 162
     COMMA  shift, and go to state 163
@@ -2509,9 +2509,9 @@ state 155
 
 state 156
 
-   56 non_empty_callout_args: callout_arg .
+   56 callout_args: callout_arg .
 
-    $default  reduce using rule 56 (non_empty_callout_args)
+    $default  reduce using rule 56 (callout_args)
 
 
 state 157
@@ -2630,14 +2630,14 @@ state 161
 
 state 162
 
-   55 callout_call: CALLOUT OPEN string_literal COMMA non_empty_callout_args CLOSE .
+   55 callout_call: CALLOUT OPEN string_literal COMMA callout_args CLOSE .
 
     $default  reduce using rule 55 (callout_call)
 
 
 state 163
 
-   57 non_empty_callout_args: non_empty_callout_args COMMA . callout_arg
+   57 callout_args: callout_args COMMA . callout_arg
 
     SUBTRACT      shift, and go to state 80
     NOT           shift, and go to state 81
@@ -2719,9 +2719,9 @@ state 166
 
 state 167
 
-   57 non_empty_callout_args: non_empty_callout_args COMMA callout_arg .
+   57 callout_args: callout_args COMMA callout_arg .
 
-    $default  reduce using rule 57 (non_empty_callout_args)
+    $default  reduce using rule 57 (callout_args)
 
 
 state 168

@@ -89,7 +89,7 @@
 %type <mCArgs> method_call_args; 
 
 %type <cC> callout_call; 
-%type <nECalloutArgs> non_empty_callout_args; 
+%type <CArgs> callout_args; 
 %type <cArgs> callout_arg; 
 
 %type <Exp> expr; 
@@ -299,17 +299,17 @@ method_call_args		: 	expr
 /* General Method Call */ 
 callout_call			: 	CALLOUT OPEN string_literal CLOSE 
 							{ 	$$ = new calloutCall($3, NULL); }
-						| 	CALLOUT OPEN string_literal COMMA 						non_empty_callout_args CLOSE
+						| 	CALLOUT OPEN string_literal COMMA 							callout_args CLOSE
 							{ 	$$ = new calloutCall($3, $5); }
 						; 
 
 
-non_empty_callout_args 	: 	callout_arg 
+callout_args 			: 	callout_arg 
 							{
-								$$ = new nonEmptyCalloutArgs(); 
+								$$ = new CalloutArgs(); 
 								$$->add($1); 
 							}
-						| 	non_empty_callout_args COMMA callout_arg
+						| 	callout_args COMMA callout_arg
 							{
 								$$->add($3); 
 							}

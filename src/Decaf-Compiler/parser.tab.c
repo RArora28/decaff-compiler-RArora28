@@ -564,10 +564,9 @@ static const char *const yytname[] =
   "var_names", "statements", "statement", "assign_statement", "location",
   "if_statement", "else_statement", "for_statement", "return_statement",
   "terminal_statement", "method_call_statement", "method_call",
-  "method_call_args", "callout_call", "non_empty_callout_args",
-  "callout_arg", "expr", "binary_expr", "enclosed_expr", "unary_expr",
-  "assign_op", "char_literal", "int_literal", "bool_literal",
-  "string_literal", 0
+  "method_call_args", "callout_call", "callout_args", "callout_arg",
+  "expr", "binary_expr", "enclosed_expr", "unary_expr", "assign_op",
+  "char_literal", "int_literal", "bool_literal", "string_literal", 0
 };
 #endif
 
@@ -1902,21 +1901,21 @@ yyreduce:
 
   case 56:
 #line 303 "parser.y"
-    { 	(yyval.cC) = new calloutCall((yyvsp[(3) - (6)].stringLit), (yyvsp[(5) - (6)].nECalloutArgs)); ;}
+    { 	(yyval.cC) = new calloutCall((yyvsp[(3) - (6)].stringLit), (yyvsp[(5) - (6)].CArgs)); ;}
     break;
 
   case 57:
 #line 308 "parser.y"
     {
-								(yyval.nECalloutArgs) = new nonEmptyCalloutArgs(); 
-								(yyval.nECalloutArgs)->add((yyvsp[(1) - (1)].cArgs)); 
+								(yyval.CArgs) = new CalloutArgs(); 
+								(yyval.CArgs)->add((yyvsp[(1) - (1)].cArgs)); 
 							;}
     break;
 
   case 58:
 #line 313 "parser.y"
     {
-								(yyval.nECalloutArgs)->add((yyvsp[(3) - (3)].cArgs)); 
+								(yyval.CArgs)->add((yyvsp[(3) - (3)].cArgs)); 
 							;}
     break;
 
@@ -2097,7 +2096,7 @@ yyreduce:
 
 
 /* Line 1267 of yacc.c.  */
-#line 2101 "parser.tab.c"
+#line 2100 "parser.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);

@@ -44,7 +44,7 @@ union Node {
 	class methodCallArgs* mCArgs; 
 	
 	class calloutCall* cC; 
-	class nonEmptyCalloutArgs* nECalloutArgs; 
+	class CalloutArgs* CArgs; 
 	class calloutArg* cArgs; 
 
 	class Expr* Exp; 
@@ -98,8 +98,9 @@ public:
 	int visit(methodCallSt*); 
 	int visit(methodCall*); 
 	int visit(methodCallArgs*); 
+
 	int visit(calloutCall*); 
-	int visit(nonEmptyCalloutArgs*); 
+	int visit(CalloutArgs*); 
 	int visit(calloutArg*); 
 
 	int visit(Expr*);
@@ -339,15 +340,15 @@ public:
 class calloutCall: public methodCallSt {
 public:
 	class stringLiteral *callName; 
-	class nonEmptyCalloutArgs* args; 
+	class CalloutArgs* args; 
 	calloutCall(class stringLiteral* callName_,
-				class nonEmptyCalloutArgs* args_); 
+				class CalloutArgs* args_); 
 }; 
 
-class nonEmptyCalloutArgs: public baseAstNode {
+class CalloutArgs: public baseAstNode {
 public:
 	vector < class calloutArg* > list;  
-	nonEmptyCalloutArgs();
+	CalloutArgs();
 	void add(class calloutArg* arg_);
 }; 
 

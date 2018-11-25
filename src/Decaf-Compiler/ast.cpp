@@ -175,13 +175,13 @@ void methodCallArgs::add(class Expr* exp) {
 }
 
 calloutCall::calloutCall(class stringLiteral* callName_,
-				class nonEmptyCalloutArgs* args_) {
+				class CalloutArgs* args_) {
 	callName = callName_; 
 	args = args_;
 }
 
-nonEmptyCalloutArgs::nonEmptyCalloutArgs() {}
-void nonEmptyCalloutArgs::add(class calloutArg* arg_) {
+CalloutArgs::CalloutArgs() {}
+void CalloutArgs::add(class calloutArg* arg_) {
 	list.push_back(arg_);
 }
  
@@ -564,7 +564,7 @@ int Visitor::visit(calloutCall* c) {
 	}
 	return 0;
 }
-int Visitor::visit(nonEmptyCalloutArgs* n) {
+int Visitor::visit(CalloutArgs* n) {
 	if (n) {
 		for(auto x: n->list) {
 			visit(x);
