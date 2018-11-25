@@ -45,19 +45,18 @@ void methodDeclarations::add(class methodDeclaration* methodDecl_) {
 	return; 
 }
 methodDeclaration::methodDeclaration(class varType* returnType_, 
-					  const string& methodName_,
-					  class parameterDeclarations* params_,
-					  class codeBlock* code_) {
+					  				 const string& methodName_,
+					   				 class parameterDeclarations* params_,
+					  				 class codeBlock* code_) {
 	returnType = returnType_; 
-	methodName = methodName_; 
+	methodName = methodName_;
 	params     = params_; 
 	code 	   = code_; 
 }
-parameterDeclarations::parameterDeclarations(class nonEmptyParDecl* nonEmptyParams_) {
-	nonEmptyParams = nonEmptyParams_; 
-}
-nonEmptyParDecl::nonEmptyParDecl() {} 
-void nonEmptyParDecl::add(class parameterDeclaration* param_) {
+
+
+parameterDeclarations::parameterDeclarations() {} 
+void parameterDeclarations::add(class parameterDeclaration* param_) {
 	listParams.push_back(param_);
 	return; 
 }
@@ -119,6 +118,7 @@ assignSt::assignSt(class location* loc_,
 }
 int assignSt::accept(Visitor *v) {
 	return v->visit(this);
+	return 0;
 }
 
 ifSt::ifSt(	class Expr* condition_, 
@@ -128,9 +128,16 @@ ifSt::ifSt(	class Expr* condition_,
 	code = code_; 
 	eSt = eSt_;
 }
+int ifSt::accept(Visitor *v) {
+	v->visit(this);
+	return 0;
+}
 
 elseSt::elseSt(class codeBlock* bl_) {
 	bl = bl_;
+}
+int elseSt::accept(Visitor *v) {
+	return v->visit(this); 
 }
 
 forSt::forSt(const string& var_,
@@ -146,11 +153,8 @@ int forSt::accept(Visitor *v) {
 	v->visit(this);
 }
 
-returnSt::returnSt(class returnVal* ret_) {
+returnSt::returnSt(class Expr* ret_) {
 	ret = ret_; 
-}
-returnVal::returnVal(class Expr* ret_) {
-	ret = ret_;
 }
 
 terminalSt::terminalSt(const string& name_) {
@@ -160,16 +164,13 @@ int terminalSt::accept(Visitor* v) {
 	return v->visit(this);
 }
 
-methodCallSt::methodCallSt(class methodCall* call_) {
-	call = call_; 
-} 
 
-normalCall::normalCall(class methodCallArgs* args_) {
+methodCall::methodCall(class methodCallArgs* args_) {
 	args = args_; 
 }
 
-nonEmptyCallArgs::nonEmptyCallArgs() {}
-void nonEmptyCallArgs::add(class Expr* exp) {
+methodCallArgs::methodCallArgs() {}
+void methodCallArgs::add(class Expr* exp) {
 	list.push_back(exp);
 }
 
@@ -230,12 +231,12 @@ map < string, string > currVars;
 map < string, pair < string, int > > globalFields; // name: [type, size]
 map < string, vector < pair < string, string > > > methodArgs;
 map < string, string > returnType;   
-string currType, currMethodName, currVarName; 
-bool Main = false, inFor = false; 
 vector < string > arith_op 	= {"+", "-", "*", "/", "%"}; 
 vector < string > rel_op 	= {"<", ">", "<=", ">="}; 
 vector < string > cond_op 	= {"&&", "||"};
 vector < string > eq_op  	= {"==", "!="}; 
+string currType, currMethodName, currVarName; 
+bool Main = false, inFor = false; 
 
 void printDetails() {
 	// for(auto x: globalFields) {
@@ -331,16 +332,16 @@ int Visitor::visit(methodDeclarations* m) {
 } 
 int Visitor::visit(methodDeclaration* m) {
 	if (m) {
-		if (!Main) {
+		if (Main || m->methodName == "main") {
 			visit(m->returnType); 
 			currMethodName = m->methodName;
 			returnType[currMethodName] = currType;
 			if (currMethodName == "main") {
 				try {
-					if (m->params->nonEmptyParams) {
+					Main = true; 
+					if (m->params) {
 						throw main_containing_params(); 
 					}
-					Main = true; 
 				} catch(std::exception& e) {
 					cout << e.what() << endl;
 				}
@@ -354,14 +355,7 @@ int Visitor::visit(methodDeclaration* m) {
 } 
 int Visitor::visit(parameterDeclarations* p) {
 	if (p) {
-		visit(p->nonEmptyParams); 
-	}
-	return 0;
-} 
-
-int Visitor::visit(nonEmptyParDecl* n) {
-	if (n) {
-		for(auto x: n->listParams) {
+		for(auto x: p->listParams) {
 			visit(x); 
 		}
 	}
@@ -379,6 +373,9 @@ int Visitor::visit(parameterDeclaration* p) {
 int Visitor::visit(codeBlock* c) {
 	if (c) {
 		currVars.clear(); 
+		if (inFor) {
+			currVars[currVarName] = currType;
+		}
 		visit(c->bl);
 		if (currVars.size()) Vars.pop_back();
 	}
@@ -450,7 +447,14 @@ int Visitor::visit(assignSt* aSt) {
 }
 int Visitor::visit(ifSt* iSt) {
 	if (iSt) {
-		visit(iSt->condition);
+		visit(iSt->condition); 
+		try {
+			if (iSt->condition->type != "boolean") {
+				throw invalid_if_condition();
+			}
+		} catch(std::exception& e) {
+			cout << e.what() << endl;
+		} 
 		visit(iSt->code);
 		visit(iSt->eSt);
 	}
@@ -468,6 +472,8 @@ int Visitor::visit(forSt* fSt) {
 		visit(fSt->start);
 		visit(fSt->end);
 		inFor = true;  
+		currVarName = fSt->var; 
+		currType = "int"; 
 		visit(fSt->bl);
 		inFor = false;  
 	}
@@ -479,12 +485,7 @@ int Visitor::visit(returnSt* rSt) {
 	}
 	return 0;
 }
-int Visitor::visit(returnVal* rVal) {
-	if (rVal) {
-		visit(rVal->ret);
-	}
-	return 0;
-}
+
 int Visitor::visit(terminalSt* tSt) {
 	if (tSt) {
 		//tSt->name is either break / continue 
@@ -536,31 +537,21 @@ int Visitor::visit(location* loc) {
 
 int Visitor::visit(methodCallSt* mSt) {
 	if (mSt) {
-		visit(mSt->call);
+		// do something if you want. 
 	}
 	return 0;
 }
+
 int Visitor::visit(methodCall* mC) {
 	if (mC) {
-		// empty class 
+		visit(mC->args);
 	}
 	return 0;
 }
-int Visitor::visit(normalCall* nC) {
-	if (nC) {
-		visit(nC->args);
-	}
-	return 0;
-}
+
 int Visitor::visit(methodCallArgs* m) {
 	if (m) {
-		// empty class 
-	}
-	return 0;
-}
-int Visitor::visit(nonEmptyCallArgs* n) {
-	if (n) {
-		for(auto x: n->list) {
+		for(auto x: m->list) {
 			visit(x);
 		}
 	}

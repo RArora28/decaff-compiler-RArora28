@@ -65,7 +65,6 @@
 %type <meDecls> method_declarations; 
 %type <meDecl> method_declaration; 
 %type <parDecls> parameter_declarations; 
-%type <nonEmpParDecl> non_empty_parameter_declaration; 
 %type <parDecl> parameter_declaration; 
 
 %type <codeBl> code_block; 
@@ -81,16 +80,13 @@
 %type <If> if_statement; 
 %type <Else> else_statement;
 %type <For> for_statement; 
-%type <Return> return_statement; 
-%type <retVal> return_value; 
+%type <Return> return_statement;
 %type <ter> terminal_statement; 
 %type <loc> location; 
 
-%type <mCSt> method_call_statment; 
+%type <mCSt> method_call_statement; 
 %type <mC> method_call; 
-%type <nC> normal_call; 
 %type <mCArgs> method_call_args; 
-%type <nECArgs> non_empty_method_call_args; 
 
 %type <cC> callout_call; 
 %type <nECalloutArgs> non_empty_callout_args; 
@@ -110,30 +106,30 @@
 %%
 
 /* Outermost Match */ 
-program_declaration		: 	CLASS PROGRAM CURLY_OPEN field_declarations 									method_declarations CURLY_CLOSE
+program_declaration		: 	CLASS PROGRAM CURLY_OPEN field_declarations 											method_declarations CURLY_CLOSE
 							{ 	
 								$$ = new program($4, $5); 
 								root = $$; 
 							}
+						;
 
-						; 
 /* Data types in grammar */ 
 var_type				: 	INT  	
-							{ 	$$ = new varType("int"); }
+							{ 	$$ = new varType("int"); 		}
 						| 	BOOLEAN
-							{ 	$$ = new varType("boolean"); }
+							{ 	$$ = new varType("boolean"); 	}
 						; 
 
 
 /* Field Declaration */ 
 field_declarations		: 	/* Epsilon */ 	
-							{ 	$$ = new fieldDeclarations(); }
+							{ 	$$ = new fieldDeclarations(); 	}
 						| 	field_declarations field_declaration SEMI_COLON
-							{	$$->add($2); }
+							{	$$ = $1; $$->add($2); }
 						;
 
 field_declaration 		: 	var_type field_names
-							{ 	$$ = new fieldDeclaration($1, $2); }
+							{ 	$$ = new fieldDeclaration($1, $2); 	}
 						;
 
 field_names				: 	field_name 
@@ -142,20 +138,20 @@ field_names				: 	field_name
 								$$->add($1); 
 							}
 						| 	field_names COMMA field_name
-							{ 	$$->add($3); }
+							{ 	$$->add($3); 	}
 						;
 
 field_name 				: 	ID 
-						  	{ 	$$ = new field($1, NULL); }
+						  	{ 	$$ = new field($1, NULL); 	}
 						| 	ID SQUARE_OPEN int_literal SQUARE_CLOSE
-							{ 	$$ = new field($1, $3); }
+							{ 	$$ = new field($1, $3); 	}
 						; 
 
 /* Declaration for a method */ 
-method_declarations		: 	/* Epsilon */
+method_declarations		: 	method_declaration method_declarations
+							{ 	$$ = $2; $$->add($1); }
+						|	/* Epsilon */
 							{ 	$$ = new methodDeclarations(); }
-						| 	method_declarations method_declaration
-							{ 	$$->add($2); }
 						; 
 
 method_declaration 		: 	VOID ID OPEN parameter_declarations CLOSE code_block 
@@ -163,35 +159,33 @@ method_declaration 		: 	VOID ID OPEN parameter_declarations CLOSE code_block
 								class varType* temp = new varType("void");
 								$$ = new methodDeclaration(temp, $2, $4, $6); 
 							}
-						| 	var_type ID OPEN parameter_declarations CLOSE 							code_block   
+						| 	var_type ID OPEN parameter_declarations CLOSE 				code_block   
 							{	
 								$$ = new methodDeclaration($1, $2, $4, $6); 	
 							}
+						| 	VOID ID OPEN CLOSE code_block 
+							{
+								class varType* temp = new varType("void");
+								$$ = new methodDeclaration(temp, $2, NULL, $5); 
+							}
+						| 	var_type ID OPEN CLOSE code_block   
+							{	
+								$$ = new methodDeclaration($1, $2, NULL, $5); 	
+							}
 						; 
 
-parameter_declarations	: 	/* Epsilon */ 
-							{ 	$$ = new parameterDeclarations(NULL); }
-						| 	non_empty_parameter_declaration
-							{ 	$$ = new parameterDeclarations($1); }
-						;
-
-non_empty_parameter_declaration
-						: 	parameter_declaration 
-							{ 
-								$$ = new nonEmptyParDecl(); 
+parameter_declarations 	:	parameter_declaration 
+							{	
+								$$ = new parameterDeclarations(); 
 								$$->add($1); 
 							}
-						| 	non_empty_parameter_declaration COMMA 
-							parameter_declaration
-							{
-								$$->add($3);  
-							}
+						| 	parameter_declarations COMMA parameter_declaration
+							{	$$->add($3); 	}
 						; 
 
+
 parameter_declaration 	: 	var_type ID
-							{	
-								$$ = new parameterDeclaration($1, $2); 
-							}
+							{	$$ = new parameterDeclaration($1, $2); 	}
 						; 
 
 
@@ -209,13 +203,13 @@ block 					: 	/* Epsilon */
 
 /* Variable Declarations inside a code block */ 
 var_declarations		:  	/* Epsilon */ 
-							{ 	$$ = new varDeclarations(); }
+							{ 	$$ = new varDeclarations();		}
 						| 	var_declarations var_declaration SEMI_COLON 
 							{ 	$$->add($2); }
 						;
 
 var_declaration 		: 	var_type var_names 
-							{ 	$$ = new varDeclaration($1, $2); }
+							{ 	$$ = new varDeclaration($1, $2); 	}
 						;
 
 var_names				: 	ID 
@@ -236,7 +230,7 @@ statements				: 	/* Epsilon */
 						; 
 
 statement 				: 	assign_statement 		{ $$ = $1; }	
-						| 	method_call_statment 	{ $$ = $1; }
+						| 	method_call_statement 	{ $$ = $1; }
 						| 	if_statement 			{ $$ = $1; }
 						|   for_statement 			{ $$ = $1; } 
 						| 	return_statement  		{ $$ = $1; } 
@@ -268,50 +262,35 @@ for_statement 			: 	FOR ID EQUAL expr COMMA expr code_block
 							{ 	$$ = new forSt($2, $4, $6, $7); } 
 						; 
 
-return_statement 		: 	RETURN return_value SEMI_COLON
-							{ 	$$ = new returnSt($2); 	}
-						
-return_value			: 	/* Epsilon */ 
-							{ 	$$ = new returnVal(NULL); 	  	}
-						| 	expr
-							{ 	$$ = new returnVal($1); 			}
-						;
+return_statement 		: 	RETURN expr SEMI_COLON
+							{ 	$$ = new returnSt($2); 		}
+						| 	RETURN SEMI_COLON
+							{	$$ = new returnSt(NULL); 	}
+						; 
 
 terminal_statement	 	: 	BREAK SEMI_COLON
-							{	$$ = new terminalSt("break"); 	}
+							{	$$ = new terminalSt("break"); 		}
 						| 	CONTINUE SEMI_COLON
-							{ 	$$ = new terminalSt("continue"); 	
-							}
+							{ 	$$ = new terminalSt("continue"); 	}
 						; 
 
-
-method_call_statment 	: 	method_call SEMI_COLON
-							{ $$ = new methodCallSt($1); 	}
-						; 
-
-method_call 			: 	normal_call
-							{ 	$$ = $1; }  
-						| 	callout_call
-							{ 	$$ = $1; }  
-						; 
-
-normal_call 			: 	ID OPEN method_call_args CLOSE
-							{ 	$$ = new normalCall($3); }
-						; 
-
-method_call_args 		: 	/* Epsilon */ 
-							{ 	$$ = NULL }  
-						| 	non_empty_method_call_args
+method_call_statement 	: 	method_call	SEMI_COLON	
 							{ 	$$ = $1; 	}
-						;
+						| 	callout_call SEMI_COLON
+							{ 	$$ = $1; 	}
 
-non_empty_method_call_args
-						: 	expr
+method_call 			: 	ID OPEN method_call_args CLOSE
+							{ 	$$ = new methodCall($3); 	}
+						|	ID OPEN CLOSE
+							{ 	$$ = new methodCall(NULL);	}
+						; 
+
+method_call_args		: 	expr
 							{ 
-								$$ = new nonEmptyCallArgs(); 
+								$$ = new methodCallArgs(); 
 							  	$$->add($1); 
 							}
-						| 	non_empty_method_call_args COMMA expr
+						| 	method_call_args COMMA expr
 							{
 								$$->add($3); 
 							}
@@ -343,7 +322,7 @@ callout_arg 			: 	expr
 						;
 
 expr					: 	location				{ $$ = $1; }
-						| 	method_call 			{ $$ = $1; }
+						| 	method_call_statement 	{ $$ = $1; }
 						| 	char_literal 			{ $$ = $1; }
 						|	int_literal				{ $$ = $1; }
 						| 	bool_literal			{ $$ = $1; }
@@ -422,9 +401,9 @@ string_literal 			: 	STRING
 
 %%
 int main(int argc, char **argv) {
- 	Visitor* visitor = new Visitor(); 
+ 	Visitor* v = new Visitor(); 
  	yyparse();
- 	visitor->visit(root); 
+ 	v->visit(root); 
  	return 0; 
 }
 

@@ -20,7 +20,6 @@ union Node {
 	class methodDeclarations* meDecls; 
 	class methodDeclaration* meDecl; 
 	class parameterDeclarations* parDecls; 
-	class nonEmptyParDecl* nonEmpParDecl; 
 	class parameterDeclaration* parDecl; 
 	
 	class codeBlock* codeBl; 
@@ -37,15 +36,12 @@ union Node {
 	class elseSt* Else; 
 	class forSt* For; 
 	class returnSt* Return; 
-	class returnVal* retVal; 
 	class terminalSt* ter; 
 	class location* loc; 	
 
 	class methodCallSt* mCSt; 
 	class methodCall* mC; 
-	class normalCall* nC; 
 	class methodCallArgs* mCArgs; 
-	class nonEmptyCallArgs* nECArgs; 
 	
 	class calloutCall* cC; 
 	class nonEmptyCalloutArgs* nECalloutArgs; 
@@ -81,8 +77,7 @@ public:
 	int visit(methodDeclaration*); 
 	int visit(parameterDeclarations*); 
 	int visit(parameterDeclaration*); 
-	int visit(nonEmptyParDecl*); 
-
+	
 	int visit(codeBlock*); 
 	int visit(block*); 
 
@@ -97,15 +92,12 @@ public:
 	int visit(elseSt*); 
 	int visit(forSt*); 
 	int visit(returnSt*); 
-	int visit(returnVal*); 
 	int visit(terminalSt*); 
 	int visit(location*); 
 
 	int visit(methodCallSt*); 
 	int visit(methodCall*); 
-	int visit(normalCall*); 
 	int visit(methodCallArgs*); 
-	int visit(nonEmptyCallArgs*); 
 	int visit(calloutCall*); 
 	int visit(nonEmptyCalloutArgs*); 
 	int visit(calloutArg*); 
@@ -170,7 +162,6 @@ public:
 }; 
 
 
-
 class methodDeclarations: public baseAstNode {
 public:
 	vector < class methodDeclaration*> list; 
@@ -190,13 +181,8 @@ public:
 }; 
 class parameterDeclarations: public baseAstNode {
 public: 
-	class nonEmptyParDecl* nonEmptyParams; 
-	parameterDeclarations(class nonEmptyParDecl* nonEmptyParams_); 
-}; 
-class nonEmptyParDecl: public baseAstNode {
-public:
 	vector <class parameterDeclaration*> listParams; 
-	nonEmptyParDecl(); 
+	parameterDeclarations(); 
 	void add(class parameterDeclaration* param_);
 }; 
 class parameterDeclaration: public baseAstNode {
@@ -296,12 +282,16 @@ public:
 	class elseSt* eSt; 
 	ifSt(class Expr* condition_, 
 		 class codeBlock* code_, 
-		 class elseSt* eSt_); 
+		 class elseSt* eSt_);
+
+	int accept(Visitor *v);  
 }; 
 class elseSt: public baseAstNode {
 public: 
 	class codeBlock* bl; 
 	elseSt(class codeBlock* bl_);
+
+	int accept(Visitor *v);
 }; 
 
 class forSt: public statement {
@@ -320,48 +310,33 @@ public:
 
 class returnSt: public statement {
 public:
-	class returnVal* ret; 
-	returnSt(class returnVal* ret_); 
+	class Expr* ret; 
+	returnSt(class Expr* ret_); 
 };
 class terminalSt: public statement {
 public:
 	string name; 
 	terminalSt(const string& name_); 
-
 	int accept(Visitor *v); 
 }; 
 
-class returnVal: public baseAstNode {
-public:
-	class Expr* ret; 
-	returnVal(class Expr* ret_);
-};
-
-class methodCallSt: public statement {
-public:
-	class methodCall* call; 
-	methodCallSt(class methodCall* call_); 
-}; 
-class methodCall: public Expr {
-
+class methodCallSt: public statement, public Expr {
 }; 
 
-class normalCall: public methodCall {
+class methodCall: public methodCallSt {
 public:
 	class methodCallArgs* args; 
-	normalCall(class methodCallArgs* args_); 
+	methodCall(class methodCallArgs* args_); 
 }; 
 
 class methodCallArgs: public baseAstNode {
-};
-class nonEmptyCallArgs: public methodCallArgs {
 public:
 	vector < class Expr* > list; 
-	nonEmptyCallArgs();
+	methodCallArgs();
 	void add(class Expr* exp);
 }; 
 
-class calloutCall: public methodCall {
+class calloutCall: public methodCallSt {
 public:
 	class stringLiteral *callName; 
 	class nonEmptyCalloutArgs* args; 
