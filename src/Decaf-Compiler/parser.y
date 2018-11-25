@@ -242,11 +242,7 @@ assign_statement		: 	location assign_op expr SEMI_COLON
 						; 
 
 location				: 	ID 
-							{ 	
-							$$ = new location($1, NULL); 
-							printf("%p\n", $$);
-							}
-							
+							{ 	$$ = new location($1, NULL); }
 						| 	ID SQUARE_OPEN expr SQUARE_CLOSE 
 							{ 	$$ = new location($1, $3); } 
 						; 
@@ -324,9 +320,7 @@ callout_arg 			: 	expr
 							{ 	$$ = new calloutArg($1, NULL); }
 						;
 
-expr					: 	location				{ $$ = $1; 
-						printf("$1: %p\n", $1); 
-}
+expr					: 	location				{ $$ = $1; }
 						| 	method_call_statement 	{ $$ = $1; }
 						| 	char_literal 			{ $$ = $1; }
 						|	int_literal				{ $$ = $1; }
