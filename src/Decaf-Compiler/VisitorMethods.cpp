@@ -4,23 +4,6 @@ using namespace std;
 
 #include "ast.h"
 
-#define TRACE 
-#ifdef  TRACE
-#define trace(...) __f(#__VA_ARGS__, __VA_ARGS__)
-	template <typename Arg1>
-	void __f(const char* name, Arg1&& arg1){
-		cerr << name << " : " << arg1 << endl;
-	}
-	template <typename Arg1, typename... Args>
-	void __f(const char* names, Arg1&& arg1, Args&&... args){
-		const char* comma = strchr(names + 1, ','); 
-		cerr.write(names, comma - names) << " : " << arg1 << " | ";
-		__f(comma + 1, args...);
-	}
-#else
-#define trace(...)
-#endif
-
 vector < map < string, string > > Vars;
 map < string, string > currVars;
 map < string, string > currMethodArgs;    
@@ -242,7 +225,7 @@ int Visitor::visit(assignSt* aSt) {
 		visit(aSt->loc); 
 		string op = aSt->asOp->op; 
 		if (op == "=") {
-			trace(aSt->loc->type, aSt->exp->type);
+			// trace(aSt->loc->type, aSt->exp->type);
 			if (aSt->exp->type != aSt->loc->type) {
 				cout << "panga in =" << endl; 
 			}
@@ -409,7 +392,7 @@ int Visitor::visit(binExpr* b) {
 		b->exp2->accept(this);
 		string op = b->op;
 		
-		trace(b->exp2->type, b->exp1->type, op);	
+		// trace(b->exp2->type, b->exp1->type, op);	
 		if (find(arith_op.begin(), arith_op.end(), op) != arith_op.end()) {
 	    	if (b->exp1->type != "int" || b->exp2->type != "int") {
 	    		cout << "expression me panga" << endl; 

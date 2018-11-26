@@ -136,6 +136,11 @@ public:
 	int visit(stringLiteral*); 
 }; 
 
+
+enum exprType {
+    binary = 1, loca = 2, literal = 3, enclExpr = 4, unExpr = 5
+};
+
 class baseAstNode { 
 }; 
 
@@ -285,7 +290,7 @@ public:
 class statement: public baseAstNode {
 public:
 	virtual int accept(Visitor *v); 
-	Value* codegen(); 
+	virtual Value* codegen(); 
 	string label; 
 }; 
 
@@ -365,9 +370,10 @@ public:
 class Expr: public baseAstNode {
 public:
 	string type; 
+	exprType form; 
 	Expr() {}
 	virtual int accept(Visitor *v);
-	Value* codegen(); 
+	virtual Value* codegen(); 
 	// ~Expr(); 
 }; 
 

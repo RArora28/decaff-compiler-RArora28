@@ -102,6 +102,7 @@ location::location(const string& name_,
 				   class Expr* exp_) {
 	name = name_;
 	exp = exp_;
+	form = exprType::loca; 
 }
  
 assignSt::assignSt(class location* loc_,
@@ -174,6 +175,7 @@ unaryExpr::unaryExpr (const string& op_,
 					  class Expr* exp_) {
 	op = op_; 
 	exp = exp_; 
+	form = exprType::unExpr; 
 }
 
 binExpr::binExpr (class Expr* exp1_,
@@ -182,10 +184,12 @@ binExpr::binExpr (class Expr* exp1_,
 	exp1 = exp1_; 
 	op = op_;
 	exp2 = exp2_; 
+	form = exprType::binary;
 }
 
 enclosedExpr::enclosedExpr(class Expr* exp_) {
 	exp = exp_; 
+	form = exprType::enclExpr; 
 }
 
 assignOp::assignOp(const string& op_) {
@@ -194,12 +198,15 @@ assignOp::assignOp(const string& op_) {
 
 intLiteral::intLiteral(int value_) {
 	value = value_;
+	form = exprType::literal; 
 }
 boolLiteral::boolLiteral(bool value_) {
 	value = value_;
+	form = exprType::literal; 
 }
 charLiteral::charLiteral(char* value_) {
 	value = strdup(value_);
+	form = exprType::literal; 
 }
 stringLiteral::stringLiteral(char* value_) {
 	value = strdup(value_);

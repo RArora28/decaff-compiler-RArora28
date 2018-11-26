@@ -3,10 +3,41 @@
 using namespace std; 
 using namespace llvm; 
 
+#define TRACE 
+#ifdef  TRACE
+#define trace(...) __f(#__VA_ARGS__, __VA_ARGS__)
+	template <typename Arg1>
+	void __f(const char* name, Arg1&& arg1){
+		cerr << name << " : " << arg1 << endl;
+	}
+	template <typename Arg1, typename... Args>
+	void __f(const char* names, Arg1&& arg1, Args&&... args){
+		const char* comma = strchr(names + 1, ','); 
+		cerr.write(names, comma - names) << " : " << arg1 << " | ";
+		__f(comma + 1, args...);
+	}
+#else
+#define trace(...)
+#endif
+
 static LLVMContext Context;
-static Module *TheModule = new Module("Compiler for decaf", Context);
+static Module *TheModule = new Module("decaf Compiler", Context);
 static IRBuilder<> Builder(Context);
-static std::map<std::string, AllocaInst *> NamedValues;
+static map<string, AllocaInst*> NamedValues;
+static map <string, AllocaInst*> Old_vals;
+	
+AllocaInst* CreateEntryBlockAlloca(Function *TheFunction, 
+								  const string& VarName, 
+								  const string& type) {
+    IRBuilder<> TmpB(&TheFunction->getEntryBlock(), TheFunction->getEntryBlock().begin());
+    AllocaInst *alloca_instruction = nullptr;
+    if (type == "int") {
+        alloca_instruction = TmpB.CreateAlloca(Type::getInt32Ty(Context), 0, VarName);
+    } else if (type == "boolean") {
+        alloca_instruction = TmpB.CreateAlloca(Type::getInt1Ty(Context),  0, VarName);
+    }
+    return alloca_instruction;
+}
 
 void program::generateCode() {
     TheModule->print(llvm::outs(), nullptr);
@@ -76,76 +107,77 @@ Value* methodDeclarations::codegen() {
 Value* methodDeclaration::codegen() {
 	vector<pair < string, string > > args; 
     vector<Type *> arguments;
-    auto arg_size = args.size();
-    for (auto param: listParams) {
-        /* Iterate over the arguments and get the types of them in llvm */
-        auto arg_type = param->type->type;
-        auto arg_name = param->name;
-        if (arg_type == "int") {
-            arguments.push_back(Type::getInt32Ty(Context));
-        } else if (arg_type == "boolean") {
-            arguments.push_back(Type::getInt1Ty(Context));
-        } else {
-            //errors++;
-            cout << "Arguments can only be int or boolean" << endl;
-            return nullptr;
-        }
-        args.push_back({arg_name, arg_type}); 
-    }
+    if (params) {
+	    for (auto param: params->listParams) {
+	        /* Iterate over the arguments and get the types of them in llvm */
+	        auto arg_type = param->type->type;
+	        auto arg_name = param->name;
+	        if (arg_type == "int") {
+	            arguments.push_back(Type::getInt32Ty(Context));
+	        } else if (arg_type == "boolean") {
+	            arguments.push_back(Type::getInt1Ty(Context));
+	        } else {
+	            //errors++;
+	            cout << "Arguments can only be int or boolean" << endl;
+	            return nullptr;
+	        }
+	        args.push_back(make_pair(arg_name, arg_type)); 
+	    }
+	}
 
     Type *retType;
-    switch (returnType->type) {
-    	case "int":		retType = Type::getInt32Ty(Context);
-		case "boolean":	retType = Type::getInt1Ty(Context);
-    	case "void":	retType = Type::getVoidTy(Context);
-    	default:    	{ // errors++;
-        	auto msg = "Invalid Return Type for " + methodName + ". Return Type can only be int or boolean";
-        	cout << msg << endl; 
-        	return nullptr;
-    	}
-    }
+ 	if (returnType->type == "int") {
+        retType = Type::getInt32Ty(Context);
+    } else if (returnType->type == "boolean") {
+        retType = Type::getInt1Ty(Context);
+    } else if (returnType->type == "void") {
+        retType = Type::getVoidTy(Context);
+    } else {
+        //errors++;
+        string error_msg = "Invalid Return Type for " + methodName + ". Return Type can only be int or boolean or bool";
+        cout << error_msg << endl; 
+        return nullptr;
+	}
     
     /* Get the function type and create a Function */
     FunctionType *FT = llvm::FunctionType::get(retType, arguments, false);
     Function *F = llvm::Function::Create(FT, Function::ExternalLinkage, methodName, TheModule);
 
     /* Iterate through arguments and set the Names for them */
-    int Idx = 0;
+    int Idx = 0, arg_size = args.size();
+  
     for (Function::arg_iterator AI = F->arg_begin(); Idx != arg_size; ++AI, ++Idx) {
-        AI->setName(argNames[Idx]);
+        AI->setName(args[Idx].first);
     }
 
     /* Create a New block for this Function */
-    BasicBlock *BB = BasicBlock::Create(compilerConstructs->Context, "entry", F);
-    compilerConstructs->Builder->SetInsertPoint(BB);
+    BasicBlock *BB = BasicBlock::Create(Context, "entry", F);
+    Builder.SetInsertPoint(BB);
     Idx = 0;
 
     /* Allocate memory for the arguments passed */
     for (auto &Arg : F->args()) {
-        AllocaInst *Alloca = compilerConstructs->CreateEntryBlockAlloca(F, argNames[Idx], argTypes[Idx]);
-        compilerConstructs->Builder->CreateStore(&Arg, Alloca);
-        compilerConstructs->NamedValues[argNames[Idx]] = Alloca;
+        AllocaInst *Alloca = CreateEntryBlockAlloca(F, args[Idx].first, args[Idx].second);
+        Builder.CreateStore(&Arg, Alloca);
+        NamedValues[args[Idx].first] = Alloca;
         Idx++;
     }
 
-    Value *RetVal = body->generateCode(compilerConstructs);
+    Value *RetVal = code->codegen();
+    // if (RetVal) {
+    //     /* make this the return value */
+    //     if (returnType->type != "void")
+    //         Builder.CreateRet(RetVal);
+    //     else
+    //         Builder.CreateRetVoid();
+    //     cout << "called" << endl; 
+    //     return F;
+    // }
+   
     if (RetVal) {
-        /* make this the return value */
-        if (return_type != "void")
-            compilerConstructs->Builder->CreateRet(RetVal);
-        else
-            compilerConstructs->Builder->CreateRetVoid();
-        /// Iterate through each basic block in this function and remove any dead code
-        for (auto &basicBlock : *F) {
-            BasicBlock *block = &basicBlock;
-            removeDeadCode(block);
-        }
-        /* Verify the function */
-        verifyFunction(*F);
-        compilerConstructs->TheFPM->run(*F);
-        return F;
-    }
-
+    	Builder.CreateRetVoid(); 
+    	return F;
+    } 
     /* In case of errors remove the function */
     F->eraseFromParent();
 	return nullptr;
@@ -154,22 +186,129 @@ Value* methodDeclaration::codegen() {
 Value* parameterDeclarations::codegen() {} 
 Value* parameterDeclaration::codegen() {} 
 
-Value* codeBlock::codegen() {} 
-Value* block::codegen() {} 
+Value* codeBlock::codegen() {
+	Value *V = nullptr; 
+	if (bl) {
+		V = bl->codegen(); 
+	}	
+	return V; 
+} 
+Value* block::codegen() {
+	Old_vals.clear(); 
+    Value *V; 
+    
+    if (varDecls) {
+    	V = varDecls->codegen();
+    } 
+    if (V == nullptr) {
+        return V;
+    }
+    if (stmts) {
+    	V = stmts->codegen();
+    }
+    if (V == nullptr) {
+    	return V; 
+    }
 
-Value* varDeclarations::codegen() {} 
-Value* varDeclaration::codegen() {} 
+    // Adjust the values back to old values 
+    for (auto it = Old_vals.begin(); it != Old_vals.end(); it++) {
+        NamedValues[it->first] = Old_vals[it->first];
+    }
+    return V;
+}
+
+Value* varDeclarations::codegen() {
+	Value *V = ConstantInt::get(Context, APInt(32, 1));
+    if (list.size()) {
+       for (auto &x : list) {
+	        /// Generate the code for each declaration
+	        if (x) {
+	        	V = x->codegen();
+	        } 
+	        if (V == nullptr) {
+	            return V;
+	        }
+	    }
+	} else {
+		V = nullptr; 
+	}
+    return V;
+} 
+Value* varDeclaration::codegen() {
+    Function *TheFunction = Builder.GetInsertBlock()->getParent();
+    for (const auto &var : names->names) {
+        Value *initval = nullptr;
+        AllocaInst *Alloca = nullptr;
+        if (type->type == "int") {
+            initval = ConstantInt::get(Context, APInt(32, 0));
+            Alloca  = CreateEntryBlockAlloca(TheFunction, var, "int");
+        } else if (type->type == "boolean") {
+            initval = ConstantInt::get(Context, APInt(1, 0));
+            Alloca = CreateEntryBlockAlloca(TheFunction, var, "boolean");
+        }
+        Builder.CreateStore(initval, Alloca);
+        /* Store the old value to old_vals and new value to named values */
+        Old_vals[var] = NamedValues[var];
+        NamedValues[var] = Alloca;
+    }
+    Value *V = ConstantInt::get(Context, APInt(32, 1));
+    return V;
+} 
+
 Value* varNames::codegen() {} 
 
-Value* statements::codegen() {} 
-Value* statement::codegen() {} 
-Value* assignSt::codegen() {} 
+Value* statements::codegen() {
+    Value *V = ConstantInt::get(Context, llvm::APInt(32, 1));
+    for (auto &stmt : list) {
+        V = stmt->codegen();
+        if (V == nullptr) {
+            return V; 
+        }
+    }
+    return V;
+} 
+
+Value* statement::codegen() {}
+
+Value* assignSt::codegen() {
+    auto name = loc->name; 
+    Value *curr = NamedValues[name];
+    if (curr == nullptr) {
+        curr = TheModule->getGlobalVariable(name);
+    }
+    if (curr == nullptr) {
+        // compilerConstructs->errors++;
+        auto error_msg = "Unknown Variable Name " + name; 
+        cout << error_msg << endl; 
+        // return curr; (?) 
+    }
+
+    Value *val = exp->codegen();
+    if (exp->form == exprType::loca) {
+        val = Builder.CreateLoad(val);
+    }
+
+    Value *lhs = loc->codegen();
+    curr = Builder.CreateLoad(lhs);
+
+    if (val == nullptr) {
+        // compilerConstructs->errors++;
+        auto error_msg = "Error in right hand side of the Assignment";
+        cout << error_msg << endl; 
+    }
+    if (asOp->op == "+=") {
+        val = Builder.CreateAdd(curr, val, "addEqualToTmp");
+    } else if (asOp->op == "-=") {
+        val = Builder.CreateSub(curr, val, "subEqualToTmp");
+    }
+    return Builder.CreateStore(val, lhs);
+}
+
 Value* ifSt::codegen() {} 
 Value* elseSt::codegen() {} 
 Value* forSt::codegen() {} 
 Value* returnSt::codegen() {} 
 Value* terminalSt::codegen() {} 
-Value* location::codegen() {} 
 
 Value* methodCallSt::codegen() {} 
 Value* methodCall::codegen() {} 
@@ -180,12 +319,130 @@ Value* CalloutArgs::codegen() {}
 Value* calloutArg::codegen() {} 
 
 Value* Expr::codegen() {}
-Value* binExpr::codegen() {} 
-Value* unaryExpr::codegen() {} 
-Value* enclosedExpr::codegen() {} 
+Value* location::codegen() {
+    cout << "location ke andar aaya? " << endl; 
+     /* Try to get the value of the variable */
+    Value *V = NamedValues[name];
+    if (V == nullptr) {
+        V = TheModule->getNamedGlobal(name);
+    }
+    if (V == nullptr) {
+        //compilerConstructs->errors++;
+        auto error_msg = "Unknown Variable name " + name;
+        cout << error_msg << endl; 
+    }
+    /* If location is variable return the code generated */
+    if (!exp) {
+        return V;
+    }
+
+    /* Generate the code for index of the array */
+    Value *index = exp->codegen();
+    if (exp->form == exprType::loca) {
+        index = Builder.CreateLoad(index);
+    }
+    /* If index is invalid then report error */
+    if (index == nullptr) {
+        auto error_msg = "Invalid Array Index"; 
+        cout << error_msg << endl; 
+        return index; 
+    }
+    /* Generate the code required for accessing the array at the given index */
+    vector<Value *> array_index;
+    array_index.push_back(Builder.getInt32(0));
+    array_index.push_back(index);
+    V = Builder.CreateGEP(V, array_index, name + "_Index");
+    return V;
+} 
+
+Value* binExpr::codegen() {
+    Value *left = nullptr, *right = nullptr; 
+    if (exp1->form == exprType::enclExpr) {
+        left = exp1->codegen(); 
+    }
+    if (exp2->form == exprType::enclExpr) {
+        right = exp2->codegen(); 
+    }
+    if (!left) {
+        left = exp1->codegen();
+    }
+    if (!right) {
+        right = exp2->codegen();
+    }
+    if (exp1->form == exprType::loca) {
+        left = Builder.CreateLoad(left);
+    }
+    if (exp2->form == exprType::loca) {
+        right = Builder.CreateLoad(right);
+    }
+    if (left == 0) {
+        //errors++;
+        auto error_msg = "Error in left operand of " + op;
+        return nullptr; 
+    } else if (right == 0) {
+        //errors++;
+        auto error_msg = "Error in right operand of " + op;
+        return nullptr; 
+    }
+    Value *V = nullptr;
+    if (op == "+") {
+        V = Builder.CreateAdd(left, right, "add");
+    } else if (op == "-") {
+        V = Builder.CreateSub(left, right, "sub");
+    } else if (op == "*") {
+        V = Builder.CreateMul(left, right, "mult");
+    } else if (op == "/") {
+        V = Builder.CreateSDiv(left, right, "div");
+    } else if (op == "%") {
+        V = Builder.CreateSRem(left, right, "mod");
+    } else if (op == "<") {
+        V = Builder.CreateICmpSLT(left, right, "lt");
+    } else if (op == ">") {
+        V = Builder.CreateICmpSGT(left, right, "gt");
+    } else if (op == "<=") {
+        V = Builder.CreateICmpSLE(left, right, "le");
+    } else if (op == ">=") {
+        V = Builder.CreateICmpSGE(left, right, "ge");
+    } else if (op == "==") {
+        V = Builder.CreateICmpEQ(left, right, "equality");
+    } else if (op == "!=") {
+        V = Builder.CreateICmpNE(left, right, "inequality");
+    }    
+    return V; 
+} 
+
+Value* unaryExpr::codegen() {
+    /// Generate IR for body of the expression
+    Value *V = exp->codegen();
+    if (exp->form == exprType::loca) {
+        V = Builder.CreateLoad(V);
+    }
+    /// Generate the code for operation based on the operator
+    if (op == "-") {
+        return Builder.CreateNeg(V, "neg");
+    } else if (op == "!") {
+        return Builder.CreateNot(V, "not");
+    }
+    return nullptr; 
+} 
+Value* enclosedExpr::codegen() {
+    return (exp == nullptr) ? nullptr: exp->codegen(); 
+} 
+
+// useless 
 Value* assignOp::codegen() {} 
 
-Value* intLiteral::codegen() {} 
-Value* boolLiteral::codegen() {} 
-Value* charLiteral::codegen() {} 
+Value* intLiteral::codegen() {
+    return ConstantInt::get(Context, llvm::APInt(32, static_cast<uint64_t>(value)));
+} 
+
+Value* boolLiteral::codegen() {
+    // check for error (?)
+    return ConstantInt::get(Context, llvm::APInt(1, value));
+} 
+
+Value* charLiteral::codegen() {
+
+} 
+
 Value* stringLiteral::codegen() {} 

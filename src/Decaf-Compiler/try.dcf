@@ -1,15 +1,19 @@
 class Program {
 	
-	int x, y, z, daksh[10];
+	int x, y, z, arr[10];
 
-	void method1() {
+	int method1(boolean t, int g) {
+		int a, b, c; 
+		boolean d; 
+		a += d * (b + c); 
+		y -= -a;
+		x = y; 
+		return x; 
 	}	
 	
 	void main() {
-
-	}
-
-	boolean method2() {
-
+		boolean voila; 
+		int kar, ke, dikhaegne; 
+		return; 
 	}
 }
