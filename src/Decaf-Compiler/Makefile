@@ -1,7 +1,7 @@
 TARGET=mycomp
 all=$(TARGET)
 CC=g++
-CFLAGS = -ll `llvm-config --cxxflags --cppflags mcjit native --ldflags --libs core` -lpthread -ldl
+CFLAGS = -lfl `llvm-config-6.0 --cxxflags --cppflags mcjit native --ldflags --libs core` -ltinfo -lpthread -ldl
 FLAGS =-w -Wno-deprecated -g -std=c++11
 all: $(TARGET)
 $(TARGET): lex.yy.c parser.tab.c ast.cpp ast.h AcceptMethods.cpp VisitorMethods.cpp codeGen.cpp 

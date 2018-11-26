@@ -1,9 +1,8 @@
 class Program {
 	
-	int x, y, z;
+	int x, y, z, daksh[10];
 
 	void method1() {
-		x += y; 
 	}	
 	
 	void main() {

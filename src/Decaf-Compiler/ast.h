@@ -20,7 +20,7 @@
 #include <llvm/Support/raw_ostream.h>
 
 using namespace std; 
-// using namespace llvm;  
+using namespace llvm;  
 
 union Node {
 	
@@ -145,6 +145,8 @@ public:
 	class methodDeclarations* methodDecls; 
 	program(class fieldDeclarations* fieldDecls_, 
 			class methodDeclarations* methodDecls_);
+	void generateCode(); 
+	Value* codegen(); 
 	~program(); 
 };
 
@@ -152,6 +154,7 @@ class varType: public baseAstNode {
 public: 
 	string type;  
 	varType(const string& type_); 
+	Value* codegen(); 
 	~varType(); 
 }; 
 
@@ -160,6 +163,7 @@ public:
 	vector <class fieldDeclaration* > list; 
 	fieldDeclarations(); 
 	void add(class fieldDeclaration* newFieldDecl); 
+	Value* codegen(); 
 	~fieldDeclarations(); 
 }; 
 
@@ -169,6 +173,7 @@ public:
 	class fieldNames* fNames;  
 	fieldDeclaration(class varType* type_, 
 					 class fieldNames* fNames_);
+	Value* codegen(); 
 	~fieldDeclaration(); 
 }; 
 
@@ -177,6 +182,7 @@ public:
 	vector <class field*> fields; 
 	fieldNames(); 
 	void add(class field* field_); 
+	Value* codegen(); 
 	~fieldNames(); 
 };
 
@@ -186,6 +192,7 @@ public:
 	class intLiteral* size;  
 	field(const string& name_, 
 		  class intLiteral* size_); 
+	Value* codegen(); 
 	~field(); 
 }; 
 
@@ -195,6 +202,7 @@ public:
 	vector < class methodDeclaration*> list; 
 	methodDeclarations(); 
 	void add(class methodDeclaration* methodDecl_); 
+	Value* codegen(); 
 	~methodDeclarations(); 
 }; 
 class methodDeclaration: public baseAstNode {
@@ -207,6 +215,7 @@ public:
 					  const string& methodName_,
 					  class parameterDeclarations* params_,
 					  class codeBlock* code_); 
+	Value* codegen(); 
 	~methodDeclaration(); 
 }; 
 class parameterDeclarations: public baseAstNode {
@@ -214,6 +223,7 @@ public:
 	vector <class parameterDeclaration*> listParams; 
 	parameterDeclarations(); 
 	void add(class parameterDeclaration* param_);
+	Value* codegen(); 
 	~parameterDeclarations();
 }; 
 class parameterDeclaration: public baseAstNode {
@@ -222,6 +232,7 @@ public:
 	string name; 
 	parameterDeclaration (class varType* type_,
 			  			  const string& name_);
+	Value* codegen(); 
 	~parameterDeclaration(); 
 }; 
 
@@ -231,6 +242,7 @@ public:
 	class statements* stmts;  
 	block(class varDeclarations* varDecls_, 
 		  class statements* stmts_);
+	Value* codegen(); 
 	~block();  
 }; 
 
@@ -239,6 +251,7 @@ public:
 	vector <class varDeclaration*> list; 
 	varDeclarations(); 
 	void add(class varDeclaration* decl_); 
+	Value* codegen(); 
 	~varDeclarations(); 
 }; 
 class varDeclaration: public baseAstNode {
@@ -247,6 +260,7 @@ public:
 	class varNames* names; 
 	varDeclaration(class varType* type_, 
 				   class varNames* names_); 
+	Value* codegen(); 
 	~varDeclaration(); 
 };
 class varNames: public baseAstNode {
@@ -254,6 +268,7 @@ public:
 	vector < string > names; 
 	varNames(); 
 	void add(const string& name_); 
+	Value* codegen(); 
 	~varNames(); 
 };
 
@@ -263,12 +278,14 @@ public:
 	vector <class statement*> list; 
 	statements(); 
 	void add(class statement* st_); 
+	Value* codegen(); 
 	~statements(); 
 }; 
 
 class statement: public baseAstNode {
 public:
 	virtual int accept(Visitor *v); 
+	Value* codegen(); 
 	string label; 
 }; 
 
@@ -276,6 +293,7 @@ class codeBlock: public statement {
 public: 
 	class block* bl; 
 	codeBlock(class block* bl_); 
+	Value* codegen(); 
 	~codeBlock(); 
 }; 
 
@@ -288,6 +306,7 @@ public:
 			 class assignOp* asOp_,
 			 class Expr* exp_);
 	int accept(Visitor *v); 
+	Value* codegen(); 
 	~assignSt(); 
 };
 
@@ -300,6 +319,7 @@ public:
 		 class codeBlock* code_, 
 		 class elseSt* eSt_);
 	int accept(Visitor *v);  
+	Value* codegen(); 
 	~ifSt(); 
 }; 
 class elseSt: public baseAstNode {
@@ -307,6 +327,7 @@ public:
 	class codeBlock* bl; 
 	elseSt(class codeBlock* bl_);
 	int accept(Visitor *v);
+	Value* codegen(); 
 	~elseSt(); 
 }; 
 
@@ -321,6 +342,7 @@ public:
 		  class Expr* end_, 
 		  class codeBlock* bl_); 
 	int accept(Visitor *v); 
+	Value* codegen(); 
 	~forSt(); 
 }; 
 
@@ -328,6 +350,7 @@ class returnSt: public statement {
 public:
 	class Expr* ret; 
 	returnSt(class Expr* ret_); 
+	Value* codegen(); 
 	~returnSt(); 
 };
 class terminalSt: public statement {
@@ -335,6 +358,7 @@ public:
 	string name; 
 	terminalSt(const string& name_); 
 	int accept(Visitor *v); 
+	Value* codegen(); 
 	~terminalSt(); 
 }; 
 
@@ -343,12 +367,14 @@ public:
 	string type; 
 	Expr() {}
 	virtual int accept(Visitor *v);
+	Value* codegen(); 
 	// ~Expr(); 
 }; 
 
 class methodCallSt: public statement, public Expr {
 public:
 	methodCallSt() {} 
+	Value* codegen(); 
 	~methodCallSt() {}
 }; 
 
@@ -356,6 +382,7 @@ class methodCall: public methodCallSt {
 public:
 	class methodCallArgs* args; 
 	methodCall(class methodCallArgs* args_); 
+	Value* codegen(); 
 	~methodCall(); 
 }; 
 
@@ -364,6 +391,7 @@ public:
 	vector < class Expr* > list; 
 	methodCallArgs();
 	void add(class Expr* exp);
+	Value* codegen(); 
 	~methodCallArgs(); 
 }; 
 
@@ -373,6 +401,7 @@ public:
 	class CalloutArgs* args; 
 	calloutCall(class stringLiteral* callName_,
 				class CalloutArgs* args_); 
+	Value* codegen(); 
 	~calloutCall(); 
 }; 
 
@@ -381,6 +410,7 @@ public:
 	vector < class calloutArg* > list;  
 	CalloutArgs();
 	void add(class calloutArg* arg_);
+	Value* codegen(); 
 	~CalloutArgs(); 
 }; 
 
@@ -390,6 +420,7 @@ public:
 	class Expr* exp; 
 	calloutArg(class stringLiteral* argName_,
 			   class Expr* exp_); 
+	Value* codegen(); 
 	~calloutArg(); 
 }; 
 
@@ -401,6 +432,7 @@ public:
 	location(const string& name_,
 			 class Expr* exp_); 
 	int accept(Visitor *v);
+	Value* codegen(); 
 	~location(); 
 };
 
@@ -410,6 +442,7 @@ public:
 	class Expr* exp; 
 	unaryExpr(const string& op_, 
 			  class Expr* exp);
+	Value* codegen(); 
 	~unaryExpr(); 
 }; 
 
@@ -422,6 +455,7 @@ public:
 			const string& op_, 
 			class Expr* exp2_); 
 	int accept(Visitor*);
+	Value* codegen(); 
 	~binExpr(); 
 }; 
 
@@ -429,6 +463,7 @@ class enclosedExpr: public Expr {
 public:
 	class Expr* exp; 
 	enclosedExpr(class Expr* exp_); 
+	Value* codegen(); 
 	~enclosedExpr(); 
 }; 
 	
@@ -436,6 +471,7 @@ class assignOp: public baseAstNode {
 public:
 	string op; 
 	assignOp(const string& op_); 
+	Value* codegen(); 
 	~assignOp(); 
 };
 
@@ -443,24 +479,28 @@ class intLiteral: public Expr {
 public:
 	int value; 
 	intLiteral(int value_);
+	Value* codegen(); 
 	~intLiteral();  
 };
 class boolLiteral: public Expr {
 public:
 	bool value; 
 	boolLiteral(bool value_); 
+	Value* codegen(); 
 	~boolLiteral(); 
 };
 class charLiteral: public Expr {
 public:
 	char* value; 
 	charLiteral(char* value_); 
+	Value* codegen(); 
 	~charLiteral(); 
 };
 class stringLiteral: public baseAstNode {
 public:
 	char* value; 
 	stringLiteral(char* value_); 
+	Value* codegen(); 
 	~stringLiteral(); 
 };
 
