@@ -380,14 +380,16 @@ public:
 class methodCallSt: public statement, public Expr {
 public:
 	methodCallSt() {} 
-	Value* codegen(); 
+	virtual Value* codegen(); 
 	~methodCallSt() {}
 }; 
 
 class methodCall: public methodCallSt {
 public:
+	string methodName; 
 	class methodCallArgs* args; 
-	methodCall(class methodCallArgs* args_); 
+	methodCall(const string& methodName_,
+			   class methodCallArgs* args_); 
 	Value* codegen(); 
 	~methodCall(); 
 }; 

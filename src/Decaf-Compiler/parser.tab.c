@@ -1726,13 +1726,13 @@ yyreduce:
 
   case 51:
 #line 282 "parser.y" /* yacc.c:1646  */
-    { 	(yyval.mC) = new methodCall((yyvsp[-1].mCArgs)); 	}
+    { 	(yyval.mC) = new methodCall((yyvsp[-3].keyword), (yyvsp[-1].mCArgs)); 	}
 #line 1731 "parser.tab.c" /* yacc.c:1646  */
     break;
 
   case 52:
 #line 284 "parser.y" /* yacc.c:1646  */
-    { 	(yyval.mC) = new methodCall(NULL);	}
+    { 	(yyval.mC) = new methodCall((yyvsp[-2].keyword), NULL);	}
 #line 1737 "parser.tab.c" /* yacc.c:1646  */
     break;
 

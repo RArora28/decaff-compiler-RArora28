@@ -25,10 +25,8 @@ static Module *TheModule = new Module("decaf Compiler", Context);
 static IRBuilder<> Builder(Context);
 static map<string, AllocaInst*> NamedValues;
 static map <string, AllocaInst*> Old_vals;
-	
-AllocaInst* CreateEntryBlockAlloca(Function *TheFunction, 
-								  const string& VarName, 
-								  const string& type) {
+
+AllocaInst* CreateEntryBlockAlloca(Function *TheFunction, const string& VarName, const string& type) {
     IRBuilder<> TmpB(&TheFunction->getEntryBlock(), TheFunction->getEntryBlock().begin());
     AllocaInst *alloca_instruction = nullptr;
     if (type == "int") {
@@ -174,6 +172,7 @@ Value* methodDeclaration::codegen() {
     //     return F;
     // }
    
+    trace(RetVal == nullptr); 
     if (RetVal) {
     	Builder.CreateRetVoid(); 
     	return F;
@@ -214,6 +213,7 @@ Value* block::codegen() {
     for (auto it = Old_vals.begin(); it != Old_vals.end(); it++) {
         NamedValues[it->first] = Old_vals[it->first];
     }
+    trace(V == nullptr);
     return V;
 }
 
@@ -304,14 +304,127 @@ Value* assignSt::codegen() {
     return Builder.CreateStore(val, lhs);
 }
 
-Value* ifSt::codegen() {} 
+Value* ifSt::codegen() {
+     /* Generate code for the condition */
+
+    Value *cond = condition->codegen();
+    if (cond == nullptr) {
+        //compilerConstructs->errors++;
+        auto error_msg = "Invalid Expression in the IF";
+        cout << error_msg << endl; 
+        return nullptr; 
+    }
+
+    /* Create blocks for if, else and next part of the code */
+    Function *TheFunction = Builder->GetInsertBlock()->getParent();
+    BasicBlock *ifBlock = BasicBlock::Create(Context, "if", TheFunction);
+    BasicBlock *elseBlock = BasicBlock::Create(Context, "else");
+    BasicBlock *nextBlock = BasicBlock::Create(Context, "ifcont");
+    BasicBlock *otherBlock = elseBlock;
+    bool ret_if = true, ret_else = false; 
+    // bool ret_if = if_block->has_return(), ret_else = false;
+    /// Create a conditional break and an insert point
+    if (else_block == nullptr) {
+        otherBlock = nextBlock;
+    }
+    Builder.CreateCondBr(cond, ifBlock, otherBlock);
+    Builder.SetInsertPoint(ifBlock);
+    /// generate the code for if block
+    Value *if_val = code->codegen();
+    if (if_val == nullptr) {
+        return nullptr;
+    }
+    /// Create a break for next part of the code after else block
+
+    if (!ret_if) {
+        Builder.CreateBr(nextBlock);
+    }
+
+    ifBlock = Builder.GetInsertBlock();
+    /// Create insert point for else block
+
+    Value *else_val = nullptr;
+
+    if (eSt != nullptr) {
+        /// Generate code for else block
+        TheFunction->getBasicBlockList().push_back(elseBlock);
+        Builder.SetInsertPoint(elseBlock);
+        else_val = eSt->codegen();
+        if (else_val == nullptr) {
+            return nullptr;
+        }
+        ret_else = true; 
+        if (!ret_else)
+            Builder.CreateBr(nextBlock);
+    }
+
+    // Create a break for the next part of the code
+    TheFunction->getBasicBlockList().push_back(nextBlock);
+    Builder.SetInsertPoint(nextBlock);
+    if (ret_else && ret_if) {
+        // if both if and else block have a return statement create a dummy instruction to hold a next block
+        Type *retType = Builder.GetInsertBlock()->getParent()->getReturnType();
+        if (retType == Type::getVoidTy(Context))
+            Builder.CreateRetVoid();
+        else {
+            Builder,CreateRet(ConstantInt::get(Context, APInt(32, 0)));
+        }
+    }
+    Value *V = ConstantInt::get(Context, APInt(32, 0));
+    return V;
+} 
+
 Value* elseSt::codegen() {} 
 Value* forSt::codegen() {} 
 Value* returnSt::codegen() {} 
 Value* terminalSt::codegen() {} 
 
 Value* methodCallSt::codegen() {} 
-Value* methodCall::codegen() {} 
+// fix the right recursive part in this 
+Value* methodCall::codegen() {
+    // return ConstantInt::get(Context, llvm::APInt(32, 1));
+     
+     /* Get reference to the function that is to be called */
+    cout << "iske andar aaya? " << endl; 
+    Function *calle = TheModule->getFunction(methodName);
+    //Function *calle = TheModule->getFunction(methodName);
+   
+    trace(calle == nullptr, methodName);
+    if (calle == nullptr) {
+        // compilerConstructs->errors++;
+        auto error_msg = "Unknown Function name " + methodName;
+        cout << error_msg << endl; 
+        return nullptr;
+    }
+    /* Check if required number of parameters are passed */
+    if (calle->arg_size() != args->list.size()) {
+        // compilerConstructs->errors++;
+        auto error_msg = "Incorrect Number of Parameters Passed";
+        cout << error_msg << endl; 
+        return nullptr; 
+    }
+    /// Generate the code for the arguments
+    vector<Value *> Args;
+    for (auto &arg : args->list) {
+        Value *argVal = arg->codegen();
+        if (arg->form == exprType::loca) {
+            argVal = Builder.CreateLoad(argVal);
+        }
+        if (argVal == nullptr) {
+            // compilerConstructs->errors++;
+            auto error_msg = "Argument is not valid";
+            cout << error_msg << endl; 
+            return nullptr;
+        }
+        Args.push_back(argVal);
+    }
+    // Reverse the order of arguments as the parser parses in the reverse order
+    reverse(Args.begin(), Args.end());
+    // Generate the code for the function call
+    Value *V = Builder.CreateCall(calle, Args);
+    return V;
+} 
+
 Value* methodCallArgs::codegen() {} 
 
 Value* calloutCall::codegen() {} 
@@ -320,7 +433,6 @@ Value* calloutArg::codegen() {}
 
 Value* Expr::codegen() {}
 Value* location::codegen() {
-    cout << "location ke andar aaya? " << endl; 
      /* Try to get the value of the variable */
     Value *V = NamedValues[name];
     if (V == nullptr) {
@@ -441,8 +553,6 @@ Value* boolLiteral::codegen() {
     return ConstantInt::get(Context, llvm::APInt(1, value));
 } 
 
-Value* charLiteral::codegen() {
-
-} 
+Value* charLiteral::codegen() {} 
 
 Value* stringLiteral::codegen() {} 

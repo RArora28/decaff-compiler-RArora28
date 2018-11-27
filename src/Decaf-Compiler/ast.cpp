@@ -145,7 +145,9 @@ terminalSt::terminalSt(const string& name_) {
 }
 
 
-methodCall::methodCall(class methodCallArgs* args_) {
+methodCall::methodCall(const string& methodName_,
+					   class methodCallArgs* args_) {
+	methodName = methodName_;
 	args = args_; 
 }
 

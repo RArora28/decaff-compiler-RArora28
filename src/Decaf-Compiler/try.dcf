@@ -2,6 +2,13 @@ class Program {
 	
 	int x, y, z, arr[10];
 
+	void method2() {
+		boolean ri; 
+		int sh; 
+		method1(ri, sh);
+	}
+
+
 	int method1(boolean t, int g) {
 		int a, b, c; 
 		boolean d; 
@@ -11,9 +18,11 @@ class Program {
 		return x; 
 	}	
 	
+
 	void main() {
 		boolean voila; 
 		int kar, ke, dikhaegne; 
+		
 		return; 
 	}
 }

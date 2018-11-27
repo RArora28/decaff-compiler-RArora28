@@ -279,9 +279,9 @@ method_call_statement 	: 	method_call	SEMI_COLON
 							{ 	$$ = $1; 	}
 
 method_call 			: 	var_id OPEN method_call_args CLOSE
-							{ 	$$ = new methodCall($3); 	}
+							{ 	$$ = new methodCall($1, $3); 	}
 						|	var_id OPEN CLOSE
-							{ 	$$ = new methodCall(NULL);	}
+							{ 	$$ = new methodCall($1, NULL);	}
 						; 
 
 method_call_args		: 	expr
