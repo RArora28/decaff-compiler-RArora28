@@ -320,7 +320,6 @@ int Visitor::visit(location* loc) {
 			loc->type = globalFields[name].first;
 			return 0;
 		}
-		cout << "name: " << name << endl; 
 		cout << "Compilation terminated due to use of an undeclared variable." << endl; 
 		exit(0);  
 	} 
