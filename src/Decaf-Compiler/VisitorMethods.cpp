@@ -44,13 +44,10 @@ int Visitor::visit(program* p) {
 	if (p) {
 		visit(p->fieldDecls);
 		visit(p->methodDecls);
-		// try {
-		// 	if (!Main) {
-		// 		throw missing_main_function(); 
-		// 	} 
-		// } catch (std::exception& e) {
-		// 	cout << e.what() << endl;
-		// }
+		if (!Main) {
+			cout << "Compilation terminated due to absence of main function." << endl; 
+			exit(0); 
+		} 
 	}
 	printDetails(); 
 	return 0;
@@ -87,16 +84,14 @@ int Visitor::visit(fieldNames* f) {
 }
 int Visitor::visit(field* f) {
 	if (f) {
-		// try {
-		// 	if (globalFields.count(f->name)) {
-		// 		throw repeated_var_declaration(); 
-		// 	} else if (f->size && f->size->value <= 0) {
-		// 		throw array_size(); 
-		// 	}
-		// 	globalFields[f->name] = {currType, f->size ? f->size->value: -1}; 
-		// } catch(std::exception& e) {
-		// 	cout << e.what() << endl;
-		// }
+		if (globalFields.count(f->name)) {
+			cout << "Compilation terminated due to repeated variable declaration in the same scope." << endl; 
+			exit(0);
+		} else if (f->size && f->size->value <= 0) {
+			cout << "Compilation terminated as non-positive array size is not allowed." << endl; 
+			exit(0); 
+		}
+		globalFields[f->name] = {currType, f->size ? f->size->value: -1}; 
 	}
 	return 0;
 }
@@ -117,14 +112,11 @@ int Visitor::visit(methodDeclaration* m) {
 			currMethodName = m->methodName;
 			returnType[currMethodName] = currType;
 			if (currMethodName == "main") {
-				// try {
-				// 	Main = true; 
-				// 	if (m->params) {
-				// 		throw main_containing_params(); 
-				// 	}
-				// } catch(std::exception& e) {
-				// 	cout << e.what() << endl;
-				// }
+				Main = true; 
+				if (m->params) {
+					cout << "Compilation terminated as method arguments are not allowed in the main function." << endl; 
+					exit(0); 
+				}
 			}  
 			methodArgs[currMethodName];
 			visit(m->params); 
@@ -191,14 +183,10 @@ int Visitor::visit(varDeclaration* v) {
 int Visitor::visit(varNames* v) {
 	if (v) {
 		for(auto x: v->names) {
-			// try {
-			// 	if (currVars.count(x)) {
-			// 		throw repeated_var_declaration(); 
-			// 	}
-			// 	currVars[x] = currType; 
-			// } catch(std::exception &e) {
-			// 	cout << e.what() << endl;
-			// }
+			if (currVars.count(x)) {
+				cout << "Compilation terminated due to repeated variable declaration in the same scope." << endl; 
+				exit(0); 
+			}
 		}
 	}
 	return 0;
@@ -240,13 +228,10 @@ int Visitor::visit(assignSt* aSt) {
 int Visitor::visit(ifSt* iSt) {
 	if (iSt) {
 		iSt->condition->accept(this); 
-		// try {
-		// 	if (iSt->condition->type != "boolean") {
-		// 		throw invalid_if_condition();
-		// 	}
-		// } catch(std::exception& e) {
-		// 	cout << e.what() << endl;
-		// } 
+		if (iSt->condition->type != "boolean") {
+			cout << "Compilation terminated due to invalid type of condition in if statment." << endl; 
+			exit(0); 
+		}
 		visit(iSt->code);
 		visit(iSt->eSt);
 	}
@@ -281,48 +266,45 @@ int Visitor::visit(returnSt* rSt) {
 int Visitor::visit(terminalSt* tSt) {
 	if (tSt) {
 		//tSt->name is either break / continue 
-		// try {
-		// 	if (!inFor) {
-		// 		((tSt->name == "break") ?  
-		// 		throw break_without_for(): 
-		// 		throw continue_without_for()); 
-		// 	}
-		// } catch(std::exception& e) {
-		// 	cout << e.what() << endl;
-		// }
+		if (!inFor) {
+			auto error_msg = (tSt->name == "break") ?  
+			"Compilation terminated as break statement should be within a for loop.": 
+			"Compilation terminated as continue statement should be within a for loop."; 
+			cout << error_msg << endl; 
+			exit(0); 
+		}
 	}
 	return 0;
 }
 int Visitor::visit(location* loc) {
 	if (loc) {
-		// try {
-		// 	auto name = loc->name; 
-		// 	if (loc->exp) {
-		// 		if (!globalFields.count(name) ||
-		// 			globalFields.count(name) && globalFields[name].second == -1) {
-		// 				throw array_not_declared(); 
-		// 		}
-		// 		loc->exp->accept(this); 
-		// 		if (loc->exp->type != "int") {
-		// 			throw invalid_array_subscript(); 
-		// 		}
-		// 		return 0; 
-		// 	}
-		// 	for(int i = Vars.size() - 1; i >= 0; --i) {
-		// 		if (Vars[i].count(name)) {
-		// 			loc->type = Vars[i][name];
-		// 			return 0; 
-		// 		}
-		// 	}
-		// 	if (globalFields.count(name) && globalFields[name].second == -1) {
-		// 		loc->type = globalFields[name].first;
-		// 		return 0;
-		// 	}
-		// 	throw variable_not_declared(); 
-
-		// } catch (std::exception &e) {
-		// 	cout << e.what() << endl;
-		// }
+		auto name = loc->name; 
+		if (loc->exp) {
+			if (!globalFields.count(name) ||
+				globalFields.count(name) && globalFields[name].second == -1) {
+					cout << "Compilation terminated due to use of an undeclared array." << endl;
+					exit(0); 
+			}
+			loc->exp->accept(this); 
+			if (loc->exp->type != "int") {
+				cout << "Compilation terminated due to use of an invalid array subscript." << endl;
+				exit(0); 
+			}
+			return 0; 
+		}
+		for(int i = Vars.size() - 1; i >= 0; --i) {
+			if (Vars[i].count(name)) {
+				loc->type = Vars[i][name];
+				return 0; 
+			}
+		}
+		if (globalFields.count(name) && globalFields[name].second == -1) {
+			loc->type = globalFields[name].first;
+			return 0;
+		}
+		cout << "name: " << name << endl; 
+		cout << "Compilation terminated due to use of an undeclared variable." << endl; 
+		exit(0);  
 	} 
 	return 0;
 }
