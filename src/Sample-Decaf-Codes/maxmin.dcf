@@ -1,0 +1,50 @@
+class Program 
+{
+	int arr [ 10000 ] , n, mx, mn;
+
+	void initialize (int x)
+	{
+		n = x;
+		for i = 0, n
+		{
+			arr [i] = i + 9784;
+		}
+		return;
+	}
+
+	void calcMaxMin (int x) 
+	{
+		int i;
+		mn = 2147483; 
+		mx = -2147483;
+		for i = 0, n
+		{
+			if (arr [ i ] > mx) 
+			{
+				mx = arr [ i ] ;
+			}
+			if(arr [ i ] < mn)
+			{
+				mn = arr [ i ] ;
+			}
+		}
+		return;
+	}
+
+	void printMaxMin(int x)
+	{
+		callout("printf","%d ",mx);
+		callout("printf","%d",mn);
+		return;
+	}	
+	void main() 
+	{	
+		int x;
+		x = 30;
+		initialize(x);
+		calcMaxMin(x);
+		printMaxMin(x);
+		return;
+	}
+	
+}

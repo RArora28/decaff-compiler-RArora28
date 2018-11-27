@@ -1,0 +1,21 @@
+class Program {
+  int arr[10];
+
+  void main() {
+    int n, sum, input, i;
+    n = 7;
+    sum = 0;
+    for i = 0, n {
+
+      arr[i] = i + 10;
+      callout("printf", "%d ", arr[i]);
+    }
+
+    for i = 0, n {
+      sum = sum + arr[i];
+    }
+
+    callout("printf", "%d ", sum);
+    return;
+  }
+}

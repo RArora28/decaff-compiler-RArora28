@@ -1,0 +1,63 @@
+class Program
+{
+	int n, sum, arr[10];
+    int F(int x, int y){
+        boolean x;
+
+        // return type wrong
+        return x;
+
+
+        // void return in int return
+        return;
+
+		return 0;
+
+    }
+    // void main(int x, int y) 
+	// no main also works 
+    
+    void main()
+	{
+		boolean x;
+        int a;
+
+        // function not declared
+        // a = fib(x); 
+
+		// break without for
+		// break;
+
+		// array index boolean
+		// arr[x] = a;
+
+		// array not declared
+		// AAA[1] = 1;
+
+        //duplicate variable
+        // int x;
+
+        // assignment mismatch
+        // x = n;
+
+        // boolean in arithmetic
+        // sum = n + x;
+
+        // variable not declared
+        // sum = y;
+
+        // wrong number of args
+        // F(a);
+
+        // arg types wrong
+        // n = F(a);
+
+        // non bool for if cond
+        // if(a){}
+
+        // rel operands not int
+        // if(x > true){}
+		
+        return;
+	}
+}

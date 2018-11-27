@@ -1,0 +1,17 @@
+class Program {
+  int arr[10];
+
+  void main() {
+    int n, sum, input, i;
+    boolean t; 
+    n = 5;
+    sum = 0;
+    sum = t + n; 
+    for j = 0, n {
+      callout("printf", "%d\n", i);
+      sum += 2 * i; 
+    }
+    callout("printf", "%d\n", sum);
+    return;
+  }
+}

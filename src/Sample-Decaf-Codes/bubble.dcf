@@ -1,0 +1,43 @@
+class Program{
+	int nums[100005];
+	int main()
+	{
+		int n;
+		int x;
+		n = 5;
+		nums[0] = 5;
+		nums[1] = 8;
+		nums[2] = 2;
+		nums[3] = 4; 
+		nums[4] = 1;
+		for i=0, n
+		{
+	        callout("printf","%d ",nums[i]);
+		}
+		for i = 0,  n - 1
+		{
+			for j = i+1, n
+			{
+				if(nums[j] < nums[i])
+				{
+
+					int temp;
+					temp = nums[i];
+					nums[i] = nums[j];
+					nums[j] = temp;
+				}
+			}
+			for j = 0, n
+			{
+				callout("printf","%d",nums[j]);
+			}
+			callout("printf","\n");
+		}
+		callout("printf","\n");
+		for i=0, n
+		{
+	        callout("printf","%d ",nums[i]);
+		}
+		return 0;
+	}
+}

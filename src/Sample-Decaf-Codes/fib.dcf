@@ -1,0 +1,23 @@
+class Program {
+    int fib(int n){
+    if(n > 1)
+    {
+        return fib(n-2) + fib(n-1);
+
+    }
+
+    return 1;
+}
+
+
+int main(){
+    int n,i;
+    n = 6;
+
+    for i = 1, n{
+        callout("printf","%d ", fib(i));
+    }
+
+    return 0;
+}
+}
