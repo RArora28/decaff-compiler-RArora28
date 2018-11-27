@@ -2,27 +2,38 @@ class Program {
 	
 	int x, y, z, arr[10];
 
-	void method2() {
-		boolean ri; 
-		int sh; 
-		method1(ri, sh);
+	boolean method2() {
+		boolean ri, ar, or; 
+		int sh, ab; 
+		if (sh > ab) {
+			ri = ar; 
+		} else {
+			ri = or; 
+		}
+		for sh = 0, ab {
+			ri = ar; 
+			if (sh > ab) {
+				ri = ar; 
+			}
+		}
+		return ri; 
 	}
 
 
-	int method1(boolean t, int g) {
+	int method1() {
 		int a, b, c; 
 		boolean d; 
-		a += d * (b + c); 
+		a += a * (b + c); 
 		y -= -a;
 		x = y; 
+		callout("printf","a%d\n",a);
 		return x; 
 	}	
 	
 
-	void main() {
+	int main() {
 		boolean voila; 
 		int kar, ke, dikhaegne; 
-		
-		return; 
+		return kar; 
 	}
 }

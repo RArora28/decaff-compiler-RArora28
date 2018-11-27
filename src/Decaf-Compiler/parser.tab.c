@@ -2226,7 +2226,7 @@ yyreturn:
 int main(int argc, char **argv) {
  	Visitor* v = new Visitor(); 
  	yyparse();
- 	v->visit(root); 
+ 	// v->visit(root); 
  	root->codegen(); 
  	root->generateCode(); 
  	return 0; 

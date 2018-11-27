@@ -172,9 +172,7 @@ Value* methodDeclaration::codegen() {
     //     return F;
     // }
    
-    trace(RetVal == nullptr); 
     if (RetVal) {
-    	Builder.CreateRetVoid(); 
     	return F;
     } 
     /* In case of errors remove the function */
@@ -188,20 +186,16 @@ Value* parameterDeclaration::codegen() {}
 Value* codeBlock::codegen() {
 	Value *V = nullptr; 
 	if (bl) {
-		V = bl->codegen(); 
+    	V = bl->codegen(); 
 	}	
 	return V; 
 } 
 Value* block::codegen() {
 	Old_vals.clear(); 
-    Value *V; 
-    
+    Value *V = nullptr; 
     if (varDecls) {
     	V = varDecls->codegen();
     } 
-    if (V == nullptr) {
-        return V;
-    }
     if (stmts) {
     	V = stmts->codegen();
     }
@@ -213,7 +207,6 @@ Value* block::codegen() {
     for (auto it = Old_vals.begin(); it != Old_vals.end(); it++) {
         NamedValues[it->first] = Old_vals[it->first];
     }
-    trace(V == nullptr);
     return V;
 }
 
@@ -229,9 +222,7 @@ Value* varDeclarations::codegen() {
 	            return V;
 	        }
 	    }
-	} else {
-		V = nullptr; 
-	}
+	} 
     return V;
 } 
 Value* varDeclaration::codegen() {
@@ -304,79 +295,220 @@ Value* assignSt::codegen() {
     return Builder.CreateStore(val, lhs);
 }
 
-Value* ifSt::codegen() {
-     /* Generate code for the condition */
+// Value* ifSt::codegen() {
+//     // cout << "I WANNNA GOOOOOO" << endl; 
+//      /* Generate code for the condition */
+//     if (cond == nullptr) {
+//         //compilerConstructs->errors++;
+//         auto error_msg = "Invalid Expression in the IF";
+//         cout << error_msg << endl; 
+//         return nullptr; 
+//     }
+//     /* Create blocks for if, else and next part of the code */
+//     Function *TheFunction = Builder.GetInsertBlock()->getParent();
+//     BasicBlock *ifBlock = BasicBlock::Create(Context, "if", TheFunction);
+//     BasicBlock *elseBlock = BasicBlock::Create(Context, "else");
+//     BasicBlock *nextBlock = BasicBlock::Create(Context, "ifcont");
+//     BasicBlock *otherBlock = elseBlock;
+//     bool ret_if = false, ret_else = false; 
+//     // bool ret_if = if_block->has_return(), ret_else = false;
+//     /// Create a conditional break and an insert point
+//     if (eSt == nullptr) {
+//         otherBlock = nextBlock;
+//     }
+    
+//     Builder.CreateCondBr(cond, ifBlock, otherBlock);
+//     Builder.SetInsertPoint(ifBlock);
+//     /// generate the code for if block
+//     Value *if_val = code->codegen();
+//     if (if_val == nullptr) {
+//         return nullptr;
+//     }
+//     /// Create a break for next part of the code after else block
 
+//     if (!ret_if) {
+//         Builder.CreateBr(nextBlock);
+//     }
+
+//     ifBlock = Builder.GetInsertBlock();
+//     /// Create insert point for else block
+
+//     Value *else_val = nullptr;
+//     // cout << "heloooooooooo" << endl; 
+//     // cout << (eSt->bl == nullptr) << endl; 
+//     if (eSt->bl != nullptr) {
+//         /// Generate code for else block
+//         TheFunction->getBasicBlockList().push_back(elseBlock);
+//         Builder.SetInsertPoint(elseBlock);
+//         else_val = eSt->bl->codegen();
+//         if (else_val == nullptr) {
+//             return nullptr;
+//         }
+//         ret_else = false; 
+//         if (!ret_else)
+//             Builder.CreateBr(nextBlock);
+//     }
+
+//     // Create a break for the next part of the code
+//     TheFunction->getBasicBlockList().push_back(nextBlock);
+//     Builder.SetInsertPoint(nextBlock);
+//     if (ret_else && ret_if) {
+//         // if both if and else block have a return statement create a dummy instruction to hold a next block
+//         Type *retType = Builder.GetInsertBlock()->getParent()->getReturnType();
+//         if (retType == Type::getVoidTy(Context))
+//             Builder.CreateRetVoid();
+//         else {
+//             Builder.CreateRet(ConstantInt::get(Context, APInt(32, 0)));
+//         }
+//     }
+//     Value *V = ConstantInt::get(Context, APInt(32, 0));
+//     return V;
+// } 
+
+Value* ifSt::codegen() {
     Value *cond = condition->codegen();
-    if (cond == nullptr) {
-        //compilerConstructs->errors++;
-        auto error_msg = "Invalid Expression in the IF";
-        cout << error_msg << endl; 
-        return nullptr; 
-    }
+    // if (cond == nullptr) {
+    //     errors++;
+    //     return reportError("Invalid Expression in the IF");
+    // }
 
     /* Create blocks for if, else and next part of the code */
-    Function *TheFunction = Builder->GetInsertBlock()->getParent();
-    BasicBlock *ifBlock = BasicBlock::Create(Context, "if", TheFunction);
-    BasicBlock *elseBlock = BasicBlock::Create(Context, "else");
-    BasicBlock *nextBlock = BasicBlock::Create(Context, "ifcont");
-    BasicBlock *otherBlock = elseBlock;
-    bool ret_if = true, ret_else = false; 
-    // bool ret_if = if_block->has_return(), ret_else = false;
+    auto TheFunction = Builder.GetInsertBlock()->getParent();
+    auto if_Block = BasicBlock::Create(Context, "if", TheFunction);
+    auto else_Block = BasicBlock::Create(Context, "else");
+    auto next_Block = BasicBlock::Create(Context, "ifcont");
     /// Create a conditional break and an insert point
-    if (else_block == nullptr) {
-        otherBlock = nextBlock;
-    }
-    Builder.CreateCondBr(cond, ifBlock, otherBlock);
-    Builder.SetInsertPoint(ifBlock);
+    Builder.CreateCondBr(cond, if_Block, else_Block);
+    Builder.SetInsertPoint(if_Block);
     /// generate the code for if block
     Value *if_val = code->codegen();
     if (if_val == nullptr) {
         return nullptr;
     }
     /// Create a break for next part of the code after else block
+    Builder.CreateBr(next_Block);
+    if_Block = Builder.GetInsertBlock();
 
-    if (!ret_if) {
-        Builder.CreateBr(nextBlock);
-    }
-
-    ifBlock = Builder.GetInsertBlock();
     /// Create insert point for else block
-
+    TheFunction->getBasicBlockList().push_back(else_Block);
+    Builder.SetInsertPoint(else_Block);
     Value *else_val = nullptr;
 
-    if (eSt != nullptr) {
+    if (eSt->bl) {
         /// Generate code for else block
-        TheFunction->getBasicBlockList().push_back(elseBlock);
-        Builder.SetInsertPoint(elseBlock);
-        else_val = eSt->codegen();
-        if (else_val == nullptr) {
-            return nullptr;
-        }
-        ret_else = true; 
-        if (!ret_else)
-            Builder.CreateBr(nextBlock);
+        else_val = eSt->bl->codegen();
+        // if (else_val == nullptr) {
+        //     return nullptr;
+        // }
     }
-
     // Create a break for the next part of the code
-    TheFunction->getBasicBlockList().push_back(nextBlock);
-    Builder.SetInsertPoint(nextBlock);
-    if (ret_else && ret_if) {
-        // if both if and else block have a return statement create a dummy instruction to hold a next block
-        Type *retType = Builder.GetInsertBlock()->getParent()->getReturnType();
-        if (retType == Type::getVoidTy(Context))
-            Builder.CreateRetVoid();
-        else {
-            Builder,CreateRet(ConstantInt::get(Context, APInt(32, 0)));
-        }
-    }
+    Builder.CreateBr(next_Block);
+    else_Block = Builder.GetInsertBlock();
+    TheFunction->getBasicBlockList().push_back(next_Block);
+    Builder.SetInsertPoint(next_Block);
+
+    /// Create phi nodes for if and else blocks if they have return value
+    bool phi_if = false, phi_else = false;
+    // printf("Has ret = %b\n",ifBlock->has_return);
+    // if (ifBlock->has_return) {
+    //     // printf("HAS Ret\n");
+    //     phi_if = true;
+    // }
+    // if (elseBlock && elseBlock->has_return) {
+    //     phi_else = true;
+    // }
+    // if (phi_if || phi_else) {
+    //     PHINode *PN = Builder.CreatePHI(Type::getInt32Ty(Context), 2, "iftmp");
+    //     if (phi_if)
+    //         PN->addIncoming(if_val, if_Block);
+    //     if (phi_else) {
+    //         PN->addIncoming(else_val, else_Block);
+    //     }
+    //     return PN;
+    // }
+
     Value *V = ConstantInt::get(Context, APInt(32, 0));
     return V;
-} 
-
+}
+// done 
 Value* elseSt::codegen() {} 
-Value* forSt::codegen() {} 
-Value* returnSt::codegen() {} 
+
+Value* forSt::codegen() {
+    Value *St = start->codegen();
+    if (St == nullptr) {
+        return nullptr;
+    }
+    if (start->form == exprType::loca) {
+        St = Builder.CreateLoad(St);
+    }
+    /* Get the parent method of this for loop */
+    Function *TheFunction = Builder.GetInsertBlock()->getParent();
+    
+    /* Create memory for the loop variable */
+    AllocaInst *Alloca = CreateEntryBlockAlloca(TheFunction, var, string("int"));
+    Builder.CreateStore(St, Alloca);
+
+    Value *step_val = ConstantInt::get(Context, APInt(32, 1));
+    BasicBlock *pre_header_basic_block = Builder.GetInsertBlock();
+    BasicBlock *loop_body = BasicBlock::Create(Context, "loop", TheFunction);
+    BasicBlock *afterBB = BasicBlock::Create(Context, "afterloop", TheFunction);
+    Builder.CreateBr(loop_body);
+    Builder.SetInsertPoint(loop_body);
+
+    PHINode *Variable = Builder.CreatePHI(Type::getInt32Ty(Context), 2, var);
+    Variable->addIncoming(St, pre_header_basic_block);
+    /* Store the old value */
+    Value *cond = end->codegen();
+    if (cond == nullptr) {
+        //compilerConstructs->errors++;
+        auto error_msg = "Invalid Condition";
+        cout << error_msg << endl; 
+    }
+
+    // Check if condition is a location
+    if (end->form == exprType::loca) {
+        cond = Builder.CreateLoad(cond);
+    }
+    /* Fix for break and return */ 
+    //loops->push(new loopInfo(afterBB, loop_body, cond, var, Variable));
+    llvm::AllocaInst *OldVal = NamedValues[var];
+    NamedValues[var] = Alloca;
+    /* Generate the code for the body */
+    if (bl->codegen() == nullptr) {
+        return nullptr;
+    }
+
+    Value *cur = Builder.CreateLoad(Alloca, var);
+    Value *next_val = Builder.CreateAdd(cur, step_val, "NextVal");
+    Builder.CreateStore(next_val, Alloca);
+    cond = Builder.CreateICmpSLT(next_val, cond, "loopcondition");
+    BasicBlock *loopEndBlock = Builder.GetInsertBlock();
+    Builder.CreateCondBr(cond, loop_body, afterBB);
+    Builder.SetInsertPoint(afterBB);
+    Variable->addIncoming(next_val, loopEndBlock);
+
+    if (OldVal) {
+        NamedValues[var] = OldVal;
+    } else {
+        NamedValues.erase(var);
+    }
+    llvm::Value *V = ConstantInt::get(Context, APInt(32, 1));
+    return V;
+} 
+Value* returnSt::codegen() {
+    Value *V = nullptr;
+    if (ret != nullptr) {
+        V = ret->codegen();
+        if (ret->form == exprType::loca) {
+            V = Builder.CreateLoad(V);
+        }
+        Builder.CreateRet(V);
+        return V;
+    }
+    return Builder.CreateRetVoid();
+}
+
+
 Value* terminalSt::codegen() {} 
 
 Value* methodCallSt::codegen() {} 
@@ -385,11 +517,9 @@ Value* methodCall::codegen() {
     // return ConstantInt::get(Context, llvm::APInt(32, 1));
      
      /* Get reference to the function that is to be called */
-    cout << "iske andar aaya? " << endl; 
     Function *calle = TheModule->getFunction(methodName);
     //Function *calle = TheModule->getFunction(methodName);
    
-    trace(calle == nullptr, methodName);
     if (calle == nullptr) {
         // compilerConstructs->errors++;
         auto error_msg = "Unknown Function name " + methodName;
@@ -427,9 +557,55 @@ Value* methodCall::codegen() {
 
 Value* methodCallArgs::codegen() {} 
 
-Value* calloutCall::codegen() {} 
+Value* calloutCall::codegen() {
+    vector<Type *> argTypes;
+    vector<Value *> Args;
+    // vector<class calloutArgument *> args_list = args->getArgsList();
+    /**
+     * Iterate through the arguments and generate the code required for each one of them
+     */
+    for (auto &arg : args->list) {
+        Value *V = arg->codegen();
+        if (V == nullptr) {
+            return V;
+        }
+        Args.push_back(V);
+        argTypes.push_back(V->getType());
+    }
+    /* Generate the code for the function execution */
+    ArrayRef<Type *> argsRef(argTypes);
+    ArrayRef<Value *> funcargs(Args);
+    FunctionType *FType = FunctionType::get(Type::getInt32Ty(Context), argsRef, false);
+    char *p = new char[1000];
+    int i; 
+    for(i=1;callName->value[i]!='"';i++)
+    {
+        // cout<<S[i];
+        p[i-1] = callName->value[i];
+        // printf("%c %c\n",S[i],p[i-1]);
+    }
+    p[i-1] = '\0';
+    Constant *func = TheModule->getOrInsertFunction(p, FType);
+    if (!func) {
+        // return reportError("Error in inbuilt function. Unknown Function name " + method_name);
+        printf("Error in inbuilt function. Unknown Function name\n");
+        return nullptr;
+    }
+    Value *v = Builder.CreateCall(func, funcargs);
+    return v;
+}
+
 Value* CalloutArgs::codegen() {} 
-Value* calloutArg::codegen() {} 
+Value* calloutArg::codegen() {
+    if (exp) {
+        Value *V = exp->codegen();
+        if (exp->form == exprType::loca) {
+            V = Builder.CreateLoad(V);
+        }
+    return V;
+    } 
+    return Builder.CreateGlobalStringPtr(argName->value);
+} 
 
 Value* Expr::codegen() {}
 Value* location::codegen() {
@@ -545,7 +721,7 @@ Value* enclosedExpr::codegen() {
 Value* assignOp::codegen() {} 
 
 Value* intLiteral::codegen() {
-    return ConstantInt::get(Context, llvm::APInt(32, static_cast<uint64_t>(value)));
+    return ConstantInt::get(Context, APInt(32, static_cast<uint64_t>(value)));
 } 
 
 Value* boolLiteral::codegen() {

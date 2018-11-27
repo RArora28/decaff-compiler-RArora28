@@ -504,7 +504,7 @@ public:
 	Value* codegen(); 
 	~charLiteral(); 
 };
-class stringLiteral: public baseAstNode {
+class stringLiteral: public Expr {
 public:
 	char* value; 
 	stringLiteral(char* value_); 

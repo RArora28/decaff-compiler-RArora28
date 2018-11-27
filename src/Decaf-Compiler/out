@@ -1,0 +1,76 @@
+; ModuleID = 'Compiler for flatB language'
+
+@arr = global [10 x i32] zeroinitializer
+@0 = private unnamed_addr constant [5 x i8] c"%d\5Cn\00"
+
+declare i32 @printf(i8*, ...)
+
+define void @main() {
+entry:
+  %i7 = alloca i32
+  %i1 = alloca i32
+  %i = alloca i32
+  %input = alloca i32
+  %sum = alloca i32
+  %n = alloca i32
+  store i32 0, i32* %n
+  store i32 0, i32* %sum
+  store i32 0, i32* %input
+  store i32 0, i32* %i
+  %0 = load i32, i32* %n
+  store i32 5, i32* %n
+  %1 = load i32, i32* %sum
+  store i32 0, i32* %sum
+  store i32 0, i32* %i1
+  br label %loop
+
+loop:                                             ; preds = %loop, %entry
+  %i2 = phi i32 [ 0, %entry ], [ %NextVal, %loop ]
+  %2 = load i32, i32* %i1
+  %addtmp = add i32 %2, 48
+  %3 = load i32, i32* %i1
+  %arr = getelementptr [10 x i32], [10 x i32]* @arr, i32 0, i32 %3
+  %4 = load i32, i32* %arr
+  store i32 %addtmp, i32* %arr
+  %5 = load i32, i32* %i1
+  %arr3 = getelementptr [10 x i32], [10 x i32]* @arr, i32 0, i32 %5
+  %6 = load i32, i32* %arr3
+  %subtmp = sub i32 %6, 48
+  %7 = load i32, i32* %i1
+  %arr4 = getelementptr [10 x i32], [10 x i32]* @arr, i32 0, i32 %7
+  %8 = load i32, i32* %arr4
+  store i32 %subtmp, i32* %arr4
+  %i5 = load i32, i32* %i1
+  %NextVal = add i32 %i5, 1
+  store i32 %NextVal, i32* %i1
+  %9 = load i32, i32* %n
+  %subtmp6 = sub i32 %9, 1
+  %loopcondition = icmp ule i32 %NextVal, %subtmp6
+  br i1 %loopcondition, label %loop, label %afterloop
+
+afterloop:                                        ; preds = %loop
+  store i32 0, i32* %i7
+  br label %loop8
+
+loop8:                                            ; preds = %loop8, %afterloop
+  %i9 = phi i32 [ 0, %afterloop ], [ %NextVal13, %loop8 ]
+  %10 = load i32, i32* %i7
+  %arr10 = getelementptr [10 x i32], [10 x i32]* @arr, i32 0, i32 %10
+  %11 = load i32, i32* %sum
+  %12 = load i32, i32* %arr10
+  %addtmp11 = add i32 %11, %12
+  %13 = load i32, i32* %sum
+  store i32 %addtmp11, i32* %sum
+  %i12 = load i32, i32* %i7
+  %NextVal13 = add i32 %i12, 1
+  store i32 %NextVal13, i32* %i7
+  %14 = load i32, i32* %n
+  %subtmp14 = sub i32 %14, 1
+  %loopcondition15 = icmp ule i32 %NextVal13, %subtmp14
+  br i1 %loopcondition15, label %loop8, label %afterloop16
+
+afterloop16:                                      ; preds = %loop8
+  %15 = load i32, i32* %sum
+  %16 = call i32 bitcast (i32 (i8*, ...)* @printf to i32 (i8*, i32)*)(i8* getelementptr inbounds ([5 x i8], [5 x i8]* @0, i32 0, i32 0), i32 %15)
+  ret void
+}

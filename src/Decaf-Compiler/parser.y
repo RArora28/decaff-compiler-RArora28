@@ -298,7 +298,7 @@ method_call_args		: 	expr
 /* General Method Call */ 
 callout_call			: 	CALLOUT OPEN string_literal CLOSE 
 							{ 	$$ = new calloutCall($3, NULL); }
-						| 	CALLOUT OPEN string_literal COMMA 							callout_args CLOSE
+						| 	CALLOUT OPEN string_literal COMMA callout_args CLOSE
 							{ 	$$ = new calloutCall($3, $5); }
 						; 
 
@@ -402,7 +402,7 @@ string_literal 			: 	STRING
 int main(int argc, char **argv) {
  	Visitor* v = new Visitor(); 
  	yyparse();
- 	v->visit(root); 
+ 	// v->visit(root); 
  	root->codegen(); 
  	root->generateCode(); 
  	return 0; 
