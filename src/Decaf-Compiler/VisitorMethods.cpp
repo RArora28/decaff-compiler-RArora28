@@ -4,6 +4,23 @@ using namespace std;
 
 #include "ast.h"
 
+#define TRACE 
+#ifdef  TRACE
+#define trace(...) __f(#__VA_ARGS__, __VA_ARGS__)
+	template <typename Arg1>
+	void __f(const char* name, Arg1&& arg1){
+		cerr << name << " : " << arg1 << endl;
+	}
+	template <typename Arg1, typename... Args>
+	void __f(const char* names, Arg1&& arg1, Args&&... args){
+		const char* comma = strchr(names + 1, ','); 
+		cerr.write(names, comma - names) << " : " << arg1 << " | ";
+		__f(comma + 1, args...);
+	}
+#else
+#define trace(...)
+#endif
+
 vector < map < string, string > > Vars;
 map < string, string > currVars;
 map < string, string > currMethodArgs;    
@@ -128,7 +145,6 @@ int Visitor::visit(methodDeclaration* m) {
 int Visitor::visit(parameterDeclarations* p) {
 	if (p) {
 		for(auto x: p->listParams) {
-
 			visit(x); 
 		}
 	}
@@ -187,6 +203,7 @@ int Visitor::visit(varNames* v) {
 				cout << "Compilation terminated due to repeated variable declaration in the same scope." << endl; 
 				exit(0); 
 			}
+			currVars[x] = currType; 
 		}
 	}
 	return 0;
@@ -212,9 +229,10 @@ int Visitor::visit(assignSt* aSt) {
 		visit(aSt->asOp); 
 		visit(aSt->loc); 
 		string op = aSt->asOp->op; 
+		trace(aSt->exp->type, aSt->loc->type);
 		if (op == "=") {
-			// trace(aSt->loc->type, aSt->exp->type);
 			if (aSt->exp->type != aSt->loc->type) {
+				trace("voila", aSt->exp->type, aSt->loc->type);
 				cout << "panga in =" << endl; 
 			}
 		} else {
@@ -377,7 +395,8 @@ int Visitor::visit(binExpr* b) {
 		// trace(b->exp2->type, b->exp1->type, op);	
 		if (find(arith_op.begin(), arith_op.end(), op) != arith_op.end()) {
 	    	if (b->exp1->type != "int" || b->exp2->type != "int") {
-	    		cout << "expression me panga" << endl; 
+	    		cout << "Invalid type error" << endl; 
+	    		exit(0); 
 	    	}
 	    	b->type = "int"; 
 	    	return 0;
@@ -385,7 +404,8 @@ int Visitor::visit(binExpr* b) {
 
 	    if (find(rel_op.begin(), rel_op.end(), op) != cond_op.end()) {
 	    	if (b->exp1->type != "int" || b->exp2->type != "int") {
-
+				cout << "Invalid type error" << endl; 
+	    		exit(0); 
 	    	}
 	    	b->type = "boolean"; 
 	    	return 0;
@@ -393,7 +413,8 @@ int Visitor::visit(binExpr* b) {
 
 	    if (find(cond_op.begin(), cond_op.end(), op) != rel_op.end()) {
 	    	if (b->exp1->type != "boolean" || b->exp2->type  != "boolean") {
-
+				cout << "Invalid type error" << endl; 
+	    		exit(0); 
 	    	}
 	    	b->type = "boolean"; 
 	    	return 0;
@@ -401,7 +422,8 @@ int Visitor::visit(binExpr* b) {
 
 		if (find(eq_op.begin(), eq_op.end(), op) != eq_op.end()) {
 			if (b->exp1->type != b->exp2->type) {
-
+				cout << "Invalid type error" << endl; 
+	    		exit(0); 
 			}
 			b->type = "boolean"; 
 			return 0;
@@ -430,18 +452,26 @@ int Visitor::visit(assignOp* aOp) {
 }
 
 int Visitor::visit(intLiteral* i) {
-	if (i) {}
+	if (i) {
+		i->type = "int";
+	}
 	return 0; 
 } 
 int Visitor::visit(boolLiteral* b) {
-	if (b) {}
+	if (b) {
+		b->type = "boolean";
+	}
 	return 0;
 } 
 int Visitor::visit(charLiteral* c) {
-	if (c) {}
+	if (c) {
+		c->type = "char"; 
+	}
 	return 0;
 } 
 int Visitor::visit(stringLiteral* s) {
-	if (s) {}
+	if (s) {
+		s->type = "string";
+	}
 	return 0;
 } 

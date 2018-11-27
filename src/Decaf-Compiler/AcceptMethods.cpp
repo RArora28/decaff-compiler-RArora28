@@ -29,5 +29,6 @@ int binExpr::accept(Visitor *v) {
 	return v->visit(this); 
 }
 int location::accept(Visitor *v) {
+	cout << this << endl; 
 	return v->visit(this);
 }
