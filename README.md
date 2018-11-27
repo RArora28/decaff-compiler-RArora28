@@ -5,8 +5,7 @@
 - `ast.cpp` : Implements the various AST Nodes. 
 - `AcceptMethods.cpp` : Implements the accept functions of AST nodes.  
 - `VisitorMethods.cpp` : Implements a simple visitor for the purpose of Semantic Analysis. 
-- `codeGen.cpp` : Implements the visitor for the code generation. 
-- `driver.cc` : Scaffolding code to run `flex` and `bison` with C++
+- `codeGen.cpp` : Implements the visitor for the code generation.
 - `lexer.l` : Regular expressions for scanner genaration
 - `parser.y` : Grammar rules for parsing
 - `Sample-Decaf-Codes` : contains sample programs
@@ -25,8 +24,7 @@
 The above steps use the config utility `llvm-config`, which must be installed
 on the system path and be available without specifying a version number.
 
-This project uses the `clang++` compiler, since `llvm-config` produces some
-flags which are not understood by `g++`.
+This project uses the `clang++` compiler.
 
 ## Description
 The project combines the `flex` scanner generator and `bison` parser. Parsing leads to generation of the Abstract Syntax Tree. 

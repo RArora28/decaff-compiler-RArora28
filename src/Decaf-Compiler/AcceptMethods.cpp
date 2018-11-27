@@ -44,3 +44,6 @@ int charLiteral::accept(Visitor *v) {
 int stringLiteral::accept(Visitor *v) {
 	return v->visit(this);
 }
+int methodCall::accept(Visitor *v) {
+	return v->visit(this);
+}

@@ -71,7 +71,7 @@ int Visitor::visit(program* p) {
 }
 int Visitor::visit(fieldDeclarations* f) {
 	if (f) {
-		for(auto x: f->list) {
+		for(auto &x: f->list) {
 			visit(x); 
 		}
 	}
@@ -93,7 +93,7 @@ int Visitor::visit(varType* v) {
 }
 int Visitor::visit(fieldNames* f) {
 	if (f) {
-		for(auto x: f->fields) {
+		for(auto &x: f->fields) {
 			visit(x); 
 		}
 	}
@@ -115,7 +115,8 @@ int Visitor::visit(field* f) {
 
 int Visitor::visit(methodDeclarations* m) {
 	if (m) {
-		for(auto x: m->list) {
+		reverse(m->list.begin(), m->list.end());
+		for(auto &x: m->list) {
 			currMethodArgs.clear(); 
 			visit(x);
 		}
@@ -124,7 +125,7 @@ int Visitor::visit(methodDeclarations* m) {
 } 
 int Visitor::visit(methodDeclaration* m) {
 	if (m) {
-		if (Main || m->methodName == "main") {
+		if (!Main || m->methodName == "main") {
 			visit(m->returnType); 
 			currMethodName = m->methodName;
 			returnType[currMethodName] = currType;
@@ -144,7 +145,7 @@ int Visitor::visit(methodDeclaration* m) {
 } 
 int Visitor::visit(parameterDeclarations* p) {
 	if (p) {
-		for(auto x: p->listParams) {
+		for(auto &x: p->listParams) {
 			visit(x); 
 		}
 	}
@@ -183,7 +184,7 @@ int Visitor::visit(block* b) {
 
 int Visitor::visit(varDeclarations* v) {
 	if (v) {
-		for(auto x: v->list) { 
+		for(auto &x: v->list) { 
 			visit(x);
 		}
 	}
@@ -198,7 +199,7 @@ int Visitor::visit(varDeclaration* v) {
 }
 int Visitor::visit(varNames* v) {
 	if (v) {
-		for(auto x: v->names) {
+		for(auto &x: v->names) {
 			if (currVars.count(x)) {
 				cout << "Compilation terminated due to repeated variable declaration in the same scope." << endl; 
 				exit(0); 
@@ -211,7 +212,7 @@ int Visitor::visit(varNames* v) {
 
 int Visitor::visit(statements* st) {
 	if (st) {
-		for(auto x: st->list) {
+		for(auto &x: st->list) {
 			x->accept(this); 
 		}
 	}
@@ -333,8 +334,14 @@ int Visitor::visit(methodCallSt* mSt) {
 	return 0;
 }
 
+string currMethod; 
 int Visitor::visit(methodCall* mC) {
 	if (mC) {
+		if (!methodArgs.count(mC->methodName)) {
+			cout << "Called Method not declared" << endl; 
+			exit(0);
+		}
+		currMethod = mC->methodName; 
 		visit(mC->args);
 	}
 	return 0;
@@ -342,8 +349,17 @@ int Visitor::visit(methodCall* mC) {
 
 int Visitor::visit(methodCallArgs* m) {
 	if (m) {
-		for(auto x: m->list) {
+		if (m->list.size() != methodArgs[currMethod].size()) {
+			cout << "No. of parameter mismatch" << endl; 
+			exit(0); 
+		}
+		int idx = 0;
+		for(auto &x: m->list) {
 			visit(x);
+			if (x->type != methodArgs[currMethod][idx].second) {
+				cout << "Call parameters type mismatch" << endl; 
+				exit(0);
+			}
 		}
 	}
 	return 0;
@@ -357,7 +373,7 @@ int Visitor::visit(calloutCall* c) {
 }
 int Visitor::visit(CalloutArgs* n) {
 	if (n) {
-		for(auto x: n->list) {
+		for(auto &x: n->list) {
 			visit(x);
 		}
 	}

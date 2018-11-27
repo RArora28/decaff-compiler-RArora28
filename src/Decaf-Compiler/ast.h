@@ -390,6 +390,7 @@ public:
 	class methodCallArgs* args; 
 	methodCall(const string& methodName_,
 			   class methodCallArgs* args_); 
+	int accept(Visitor*); 
 	Value* codegen(); 
 	~methodCall(); 
 }; 

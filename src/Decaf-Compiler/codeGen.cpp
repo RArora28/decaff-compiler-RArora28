@@ -30,6 +30,7 @@ Value* program::codegen() {
 	V = fieldDecls->codegen();
     if (V == nullptr) {
         cout << "Invalid Field Declarations" << endl; 
+        exit(0);
         return nullptr;
 	}
 	V = methodDecls->codegen(); 
