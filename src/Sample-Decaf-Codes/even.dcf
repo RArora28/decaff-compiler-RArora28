@@ -1,8 +1,8 @@
 class Program {
+	int arr[10]; 
 	int main() {
 		int n;
 		n = read(); 
-		int arr[n]; 
 		for i = 0, n {
 			arr[i] = read(); 
 			if (arr[i] % 2 == 0) {
