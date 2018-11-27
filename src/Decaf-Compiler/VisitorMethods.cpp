@@ -229,15 +229,15 @@ int Visitor::visit(assignSt* aSt) {
 		visit(aSt->asOp); 
 		visit(aSt->loc); 
 		string op = aSt->asOp->op; 
-		trace(aSt->exp->type, aSt->loc->type);
 		if (op == "=") {
 			if (aSt->exp->type != aSt->loc->type) {
-				trace("voila", aSt->exp->type, aSt->loc->type);
-				cout << "panga in =" << endl; 
+				cout << "Invalid = statement." << endl;
+				exit(0); 
 			}
 		} else {
 			if (aSt->exp->type != "int" || aSt->loc->type != "int") {
-				cout << "panga in " << op << endl; 
+				cout << "Invalid " << op << " statement."<< endl; 
+				exit(0);
 			}
 		}
 	}
@@ -392,7 +392,6 @@ int Visitor::visit(binExpr* b) {
 		b->exp2->accept(this);
 		string op = b->op;
 		
-		// trace(b->exp2->type, b->exp1->type, op);	
 		if (find(arith_op.begin(), arith_op.end(), op) != arith_op.end()) {
 	    	if (b->exp1->type != "int" || b->exp2->type != "int") {
 	    		cout << "Invalid type error" << endl; 

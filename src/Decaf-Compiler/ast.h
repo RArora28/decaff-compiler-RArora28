@@ -487,28 +487,32 @@ class intLiteral: public Expr {
 public:
 	int value; 
 	intLiteral(int value_);
-	Value* codegen(); 
+	Value* codegen();
+	int accept(Visitor*);  
 	~intLiteral();  
 };
 class boolLiteral: public Expr {
 public:
 	bool value; 
 	boolLiteral(bool value_); 
-	Value* codegen(); 
+	Value* codegen();
+	int accept(Visitor*);  
 	~boolLiteral(); 
 };
 class charLiteral: public Expr {
 public:
 	char* value; 
 	charLiteral(char* value_); 
-	Value* codegen(); 
+	Value* codegen();
+	int accept(Visitor*);  
 	~charLiteral(); 
 };
 class stringLiteral: public Expr {
 public:
 	char* value; 
 	stringLiteral(char* value_); 
-	Value* codegen(); 
+	Value* codegen();
+	int accept(Visitor*);  
 	~stringLiteral(); 
 };
 
