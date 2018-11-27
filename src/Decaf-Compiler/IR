@@ -4,46 +4,43 @@
 @sum = global i32 0
 @0 = private unnamed_addr constant [7 x i8] c"\22%d\5Cn\22\00"
 
+define i32 @fac(i32 %x) {
+entry:
+  %x1 = alloca i32
+  store i32 %x, i32* %x1
+  %0 = load i32, i32* %x1
+  %le = icmp sle i32 %0, 1
+  br i1 %le, label %if, label %else
+
+if:                                               ; preds = %entry
+  ret i32 1
+  br label %ifcont
+
+else:                                             ; preds = %entry
+  br label %ifcont
+
+ifcont:                                           ; preds = %else, %if
+  %1 = load i32, i32* %x1
+  %sub = sub i32 %1, 1
+  %2 = call i32 @fac(i32 %sub)
+  %3 = load i32, i32* %x1
+  %mult = mul i32 %3, %2
+  ret i32 %mult
+}
+
 define void @main() {
 entry:
-  %i1 = alloca i32
   %i = alloca i32
   store i32 0, i32* %i
   %0 = load i32, i32* @n
   store i32 5, i32* @n
-  %1 = load i32, i32* @sum
-  store i32 0, i32* @sum
-  store i32 0, i32* %i1
-  br label %loop
-
-loop:                                             ; preds = %ifcont, %entry
-  %i2 = phi i32 [ 0, %entry ], [ %NextVal, %ifcont ]
-  %2 = load i32, i32* @n
-  %3 = load i32, i32* %i1
-  %gt = icmp sgt i32 %3, 2
-  br i1 %gt, label %if, label %else
-
-afterloop:                                        ; preds = %ifcont
-  %4 = load i32, i32* @sum
+  %1 = load i32, i32* @n
+  %2 = call i32 @fac(i32 %1)
+  %3 = load i32, i32* %i
+  store i32 %2, i32* %i
+  %4 = load i32, i32* %i
   %5 = call i32 @printf(i8* getelementptr inbounds ([7 x i8], [7 x i8]* @0, i32 0, i32 0), i32 %4)
   ret void
-
-if:                                               ; preds = %loop
-  %6 = load i32, i32* %i1
-  %7 = load i32, i32* @sum
-  %addEqualToTmp = add i32 %7, %6
-  store i32 %addEqualToTmp, i32* @sum
-  br label %ifcont
-
-else:                                             ; preds = %loop
-  br label %ifcont
-
-ifcont:                                           ; preds = %else, %if
-  %i3 = load i32, i32* %i1
-  %NextVal = add i32 %i3, 1
-  store i32 %NextVal, i32* %i1
-  %loopcondition = icmp slt i32 %NextVal, %2
-  br i1 %loopcondition, label %loop, label %afterloop
 }
 
 declare i32 @printf(i8*, i32)

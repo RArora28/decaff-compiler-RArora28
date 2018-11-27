@@ -377,14 +377,14 @@ public:
 	// ~Expr(); 
 }; 
 
-class methodCallSt: public statement, public Expr {
+class methodCallSt: public statement {
 public:
 	methodCallSt() {} 
 	virtual Value* codegen(); 
 	~methodCallSt() {}
 }; 
 
-class methodCall: public methodCallSt {
+class methodCall: public methodCallSt, public Expr {
 public:
 	string methodName; 
 	class methodCallArgs* args; 
@@ -403,7 +403,7 @@ public:
 	~methodCallArgs(); 
 }; 
 
-class calloutCall: public methodCallSt {
+class calloutCall: public methodCallSt, public Expr {
 public:
 	class stringLiteral *callName; 
 	class CalloutArgs* args; 

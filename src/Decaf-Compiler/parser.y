@@ -321,7 +321,8 @@ callout_arg 			: 	expr
 						;
 
 expr					: 	location				{ $$ = $1; }
-						| 	method_call_statement 	{ $$ = $1; }
+						| 	method_call 			{ $$ = $1; }
+						|	callout_call 			{ $$ = $1; }
 						| 	char_literal 			{ $$ = $1; }
 						|	int_literal				{ $$ = $1; }
 						| 	bool_literal			{ $$ = $1; }

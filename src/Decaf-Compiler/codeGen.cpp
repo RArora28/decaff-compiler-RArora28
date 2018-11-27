@@ -93,6 +93,7 @@ Value* varType::codegen() {}
 
 Value* methodDeclarations::codegen() {
 	Value *V = ConstantInt::get(Context, APInt(32, 0));
+    reverse(list.begin(), list.end());
     for (auto x : list) {
         V = x->codegen();
         if (V == nullptr) {
@@ -396,7 +397,6 @@ Value* ifSt::codegen() {
 
     if (eSt->bl) {
         /// Generate code for else block
-        else_val = eSt->bl->codegen();
         // if (else_val == nullptr) {
         //     return nullptr;
         // }
